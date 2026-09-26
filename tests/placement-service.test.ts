@@ -35,6 +35,8 @@ describe('PlacementOS Core Engine Integration', () => {
       claimedLevel: 4.5,
       source: 'resume_parsed' as const,
       verified: false,
+      selfAssessedAt: new Date().toISOString(),
+      confidenceSelfRating: 'high' as const,
     };
     const demonstrated = 2.5;
     const result = EvidenceEngine.computeCalibrationGap(claimed, demonstrated, 'Fault Analysis');
