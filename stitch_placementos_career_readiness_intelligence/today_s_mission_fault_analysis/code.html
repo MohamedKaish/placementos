@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_standard" name="shell-type"/><title>PlacementOS</title><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;family=Plus+Jakarta+Sans:wght@600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={darkMode:"class",theme:{extend:{"colors":{"on-surface":"#131b2e","secondary-fixed":"#e1e0ff","surface-variant":"#dae2fd","on-error":"#ffffff","primary":"#0058be","on-secondary":"#ffffff","on-tertiary-container":"#f5fff6","on-primary-fixed":"#001a42","on-primary-container":"#fefcff","on-tertiary":"#ffffff","surface-container-high":"#e2e7ff","surface-bright":"#faf8ff","surface":"#faf8ff","primary-container":"#2170e4","on-secondary-fixed":"#07006c","on-surface-variant":"#424754","secondary-container":"#6063ee","surface-container-highest":"#dae2fd","on-primary-fixed-variant":"#004395","tertiary-fixed":"#6ffbbe","tertiary-fixed-dim":"#4edea3","on-tertiary-fixed-variant":"#005236","on-error-container":"#93000a","tertiary":"#006947","surface-container":"#eaedff","outline-variant":"#c2c6d6","on-tertiary-fixed":"#002113","error":"#ba1a1a","surface-container-low":"#f2f3ff","primary-fixed-dim":"#adc6ff","background":"#faf8ff","inverse-primary":"#adc6ff","surface-container-lowest":"#ffffff","surface-dim":"#d2d9f4","inverse-on-surface":"#eef0ff","tertiary-container":"#00855b","secondary-fixed-dim":"#c0c1ff","on-secondary-container":"#fffbff","error-container":"#ffdad6","outline":"#727785","surface-tint":"#005ac2","on-background":"#131b2e","on-secondary-fixed-variant":"#2f2ebe","inverse-surface":"#283044","secondary":"#4648d4","primary-fixed":"#d8e2ff","on-primary":"#ffffff"},"borderRadius":{"DEFAULT":"0.125rem","lg":"0.25rem","xl":"0.5rem","full":"0.75rem"},"spacing":{"space-md":"1rem","space-xs":"0.25rem","margin":"2rem","gutter":"1.5rem","space-lg":"1.5rem","margin-mobile":"1rem","gutter-mobile":"0.75rem","space-sm":"0.5rem","space-xl":"2.5rem"},"fontFamily":{"headline-xl":["Plus Jakarta Sans"],"body-lg":["Inter"],"label-sm":["JetBrains Mono"],"headline-lg-mobile":["Plus Jakarta Sans"],"label-md":["JetBrains Mono"],"headline-xl-mobile":["Plus Jakarta Sans"],"headline-lg":["Plus Jakarta Sans"],"body-md":["Inter"],"headline-sm":["Plus Jakarta Sans"],"body-sm":["Inter"],"headline-md":["Plus Jakarta Sans"]},"fontSize":{"headline-xl":["36px",{"lineHeight":"44px","letterSpacing":"-0.025em","fontWeight":"700"}],"body-lg":["16px",{"lineHeight":"24px","fontWeight":"400"}],"label-sm":["11px",{"lineHeight":"16px","letterSpacing":"0.04em","fontWeight":"500"}],"headline-lg-mobile":["22px",{"lineHeight":"30px","letterSpacing":"-0.015em","fontWeight":"700"}],"label-md":["13px",{"lineHeight":"18px","letterSpacing":"0.02em","fontWeight":"500"}],"headline-xl-mobile":["28px",{"lineHeight":"36px","letterSpacing":"-0.02em","fontWeight":"700"}],"headline-lg":["28px",{"lineHeight":"36px","letterSpacing":"-0.02em","fontWeight":"700"}],"body-md":["14px",{"lineHeight":"20px","fontWeight":"400"}],"headline-sm":["16px",{"lineHeight":"24px","letterSpacing":"-0.01em","fontWeight":"600"}],"body-sm":["12px",{"lineHeight":"18px","fontWeight":"400"}],"headline-md":["20px",{"lineHeight":"28px","letterSpacing":"-0.015em","fontWeight":"600"}]}}}}</script></head><body class="bg-surface font-body-md text-on-surface antialiased min-h-screen"><header class="fixed top-0 left-0 right-0 z-50 bg-inverse-surface text-inverse-on-surface shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="h-16 w-full px-margin flex items-center justify-between gap-gutter"><div class="flex items-center gap-space-md"><div class="flex items-center gap-space-sm"><img alt="PlacementOS Logo" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1USjgZrvws3ec5x_CZtJvp_3rwzv_2mKlk7EcMF3arDILReDctX9RlkQQ000M-OrZxr4_9h9qP7OWMZPjX1eIoVR73dVqTuFcUYGSdUMXanmXfzhzFYFnKNaLbzsUynDlAs_4MghO320UGjoQp7ZrpNX2Z6TxOMeyUXodGn_w0BQ4lFGFSlGm-rG0bZr68qgbbHiUe81SB5vGPawmgXunUZsNTXTOjveFvCDR10SWNY1I1HAAjTenHzj9g"/><span class="font-headline-sm text-headline-sm text-surface-container-lowest font-bold tracking-tight">PlacementOS</span></div><div class="hidden xl:flex items-center px-space-sm py-1 bg-on-surface/40 rounded border border-outline-variant/30 text-surface-container-low font-label-sm text-label-sm tracking-wide"><span class="w-1.5 h-1.5 rounded-full bg-tertiary-fixed mr-2 animate-pulse"></span>Target: Power Systems Engineer • EEE</div></div><nav class="hidden lg:flex items-center gap-space-xs" data-active-classes="bg-inverse-on-surface/10 text-surface-container-lowest font-semibold rounded"><a class="px-space-sm py-1.5 text-surface-container-high hover:text-surface-container-lowest font-body-md text-body-md transition-colors" data-path="overview" href="#">Overview</a><a class="px-space-sm py-1.5 text-surface-container-high hover:text-surface-container-lowest font-body-md text-body-md transition-colors" data-path="assessments" href="#">Assessments</a><a class="px-space-sm py-1.5 text-surface-container-high hover:text-surface-container-lowest font-body-md text-body-md transition-colors" data-path="skills" href="#">Skills</a><a aria-current="page" class="px-space-sm py-1.5 transition-colors bg-inverse-on-surface/10 text-surface-container-lowest font-semibold rounded" data-path="missions" href="#">Missions</a><a class="px-space-sm py-1.5 text-surface-container-high hover:text-surface-container-lowest font-body-md text-body-md transition-colors" data-path="progress" href="#">Progress</a></nav><div class="flex items-center gap-space-md"><div class="hidden sm:flex items-center gap-space-xs px-space-sm py-1 bg-surface-container-highest/20 rounded border border-outline/30"><span class="font-label-sm text-label-sm text-surface-container-highest uppercase tracking-wider">Readiness:</span><span class="font-label-sm text-label-sm text-tertiary-fixed font-semibold">Developing</span></div><button aria-label="Notifications" class="p-1 text-surface-container-high hover:text-surface-container-lowest transition-colors" type="button"><span class="material-symbols-outlined text-[20px] leading-none">notifications</span></button><div class="flex items-center gap-space-xs pl-space-xs border-l border-outline-variant/30"><img alt="Profile" class="w-8 h-8 rounded-full object-cover ring-1 ring-outline-variant/40" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD0DnHIRDE-jVhDFBzkEjDvxt-Hhl3sk0orqqqMf3cvtS_sGNFMSz33GdWzGsarB_U3lsZxsTRRkwZtXYftG16nWNRS14cwkLMs-H5umcDtovotgeCdMsewjFGmQGzlixvUOkLi56cL-EyrSWpN9RImNvw3YemELZ_IjmKPtlv8NwOvBuahOx_J_Di5820K_RIUYw-JeganbJn8mjgxb_pUni30B8bcYizdLuTRRxqx2r6uFnSWnVjQ2g"/><button aria-label="User menu" class="text-surface-container-high hover:text-surface-container-lowest transition-colors" type="button"><span class="material-symbols-outlined text-[18px] leading-none">expand_more</span></button></div></div></div></header><main class="w-full pt-16 bg-surface"><div class="flex flex-col w-full">
+<div class="w-full px-margin py-space-lg flex flex-col gap-space-lg max-w-[1440px] mx-auto">
+<!-- Mission Header & Context -->
+<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-space-md bg-surface-container-lowest p-space-lg rounded-xl shadow-sm">
+<div class="flex flex-col gap-space-xs">
+<div class="flex items-center gap-space-sm flex-wrap">
+<span class="inline-flex items-center px-2 py-0.5 rounded text-error bg-error-container/40 font-label-sm text-label-sm tracking-wide uppercase font-semibold">
+<span class="w-1.5 h-1.5 rounded-full bg-error mr-1.5 animate-ping"></span>
+            Priority Intervention
+          </span>
+<span class="font-label-sm text-label-sm text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[15px]">schedule</span>
+            40 Min Target • 4 Structured Stages
+          </span>
+<span class="font-label-sm text-label-sm text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[15px]">verified_user</span>
+            ID: EEE-CAL-F092
+          </span>
+</div>
+<h1 class="font-headline-lg text-headline-lg text-on-surface font-bold tracking-tight">
+          Mission: Symmetrical Faults &amp; Sequence Network Resolution
+        </h1>
+<p class="font-body-md text-body-md text-on-surface-variant">
+          Precision calibration module for high-voltage impedance modeling and symmetrical component phase-to-ground derivation.
+        </p>
+</div>
+<!-- Action Status / Live Clock -->
+<div class="flex items-center gap-space-md self-start lg:self-center shrink-0">
+<div class="flex flex-col items-end">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase">Time In Stage</span>
+<span class="font-label-md text-label-md font-bold text-primary font-mono tracking-wider" id="stageTimer">07:42</span>
+</div>
+<button class="flex items-center gap-space-xs px-space-md py-2 rounded bg-surface-container hover:bg-surface-container-high transition-colors text-on-surface font-body-md text-body-md font-medium" type="button">
+<span class="material-symbols-outlined text-[18px]">pause</span>
+<span>Pause Session</span>
+</button>
+</div>
+</div>
+<!-- Diagnostic Rationale Banner -->
+<div class="bg-surface-container-low p-space-md rounded-xl shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-space-md">
+<div class="flex items-start gap-space-md">
+<div class="w-10 h-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0 mt-0.5">
+<span class="material-symbols-outlined text-[22px]">analytics</span>
+</div>
+<div class="flex flex-col">
+<div class="flex items-center gap-space-xs">
+<span class="font-label-sm text-label-sm text-primary uppercase font-bold tracking-wide">Target Role Rationale:</span>
+<span class="font-headline-sm text-headline-sm text-on-surface font-semibold">Fault Analysis (Symmetrical &amp; Unsymmetrical)</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant mt-0.5">
+            Target role demands benchmark index of <span class="font-semibold text-on-surface font-mono">7.0</span>; verified baseline registered at <span class="font-semibold text-error font-mono">4.5</span> (Calibration Gap: <span class="font-semibold text-error font-mono">-2.5</span>). Root-cause trace: 4 of 7 errors stemmed from zero/negative sequence impedance sign conventions and reference earth bus grounding factors.
+          </p>
+</div>
+</div>
+<div class="flex items-center gap-space-sm shrink-0 self-end md:self-center">
+<span class="px-2.5 py-1 rounded bg-surface-container font-label-sm text-label-sm text-on-surface-variant font-mono">
+          Δ Required: +2.5 Index
+        </span>
+</div>
+</div>
+<!-- 4-Stage Action Pipeline Stepper -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-space-sm w-full">
+<!-- Stage 1: Learn (Done) -->
+<div class="bg-surface-container-lowest p-space-md rounded-xl shadow-sm flex flex-col justify-between gap-space-sm relative overflow-hidden">
+<div class="absolute top-0 left-0 right-0 h-1 bg-tertiary"></div>
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-1.5">
+<span class="font-label-sm text-label-sm font-bold text-tertiary uppercase">Stage 01</span>
+<span class="text-on-surface-variant font-label-sm text-label-sm">• 10 Min</span>
+</div>
+<span class="w-5 h-5 rounded-full bg-tertiary-fixed text-on-tertiary-fixed flex items-center justify-center text-[13px] font-bold">
+<span class="material-symbols-outlined text-[14px]">check</span>
+</span>
+</div>
+<div class="flex flex-col">
+<h2 class="font-headline-sm text-headline-sm text-on-surface font-semibold">Sequence Network Fundamentals</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1 line-clamp-2">Fortescue transform boundary conditions &amp; mutual coupling decoupling principles.</p>
+</div>
+<div class="flex items-center justify-between pt-space-xs font-label-sm text-label-sm text-tertiary font-medium">
+<span>Mastery Logged</span>
+<span class="font-mono">100%</span>
+</div>
+</div>
+<!-- Stage 2: Practice (Active) -->
+<div class="bg-surface-container-lowest p-space-md rounded-xl shadow-sm flex flex-col justify-between gap-space-sm relative overflow-hidden ring-2 ring-primary">
+<div class="absolute top-0 left-0 right-0 h-1 bg-primary"></div>
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-1.5">
+<span class="font-label-sm text-label-sm font-bold text-primary uppercase">Stage 02</span>
+<span class="text-on-surface-variant font-label-sm text-label-sm">• 15 Min</span>
+</div>
+<span class="px-2 py-0.5 rounded bg-primary-fixed text-on-primary-fixed font-label-sm text-label-sm font-semibold animate-pulse">
+            Active Now
+          </span>
+</div>
+<div class="flex flex-col">
+<h2 class="font-headline-sm text-headline-sm text-on-surface font-semibold">Bus Impedance (Zbus) Computation</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1 line-clamp-2">Interactive subtransient fault current calculation &amp; phase network interconnection.</p>
+</div>
+<div class="flex items-center justify-between pt-space-xs font-label-sm text-label-sm text-primary font-medium">
+<span>In Progress</span>
+<span class="font-mono">Step 2 of 4</span>
+</div>
+</div>
+<!-- Stage 3: Apply (Upcoming) -->
+<div class="bg-surface-container-lowest/80 p-space-md rounded-xl shadow-sm flex flex-col justify-between gap-space-sm opacity-80">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-1.5">
+<span class="font-label-sm text-label-sm font-bold text-on-surface-variant uppercase">Stage 03</span>
+<span class="text-on-surface-variant font-label-sm text-label-sm">• 10 Min</span>
+</div>
+<span class="material-symbols-outlined text-outline-variant text-[18px]">lock</span>
+</div>
+<div class="flex flex-col">
+<h2 class="font-headline-sm text-headline-sm text-on-surface font-semibold">Substation Relay Protection Setup</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1 line-clamp-2">Real-world scenario with 230kV GIS feeder trip curve calibration.</p>
+</div>
+<div class="flex items-center justify-between pt-space-xs font-label-sm text-label-sm text-on-surface-variant">
+<span>Pending Step 2</span>
+<span class="font-mono">Locked</span>
+</div>
+</div>
+<!-- Stage 4: Verify (Upcoming) -->
+<div class="bg-surface-container-lowest/80 p-space-md rounded-xl shadow-sm flex flex-col justify-between gap-space-sm opacity-80">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-1.5">
+<span class="font-label-sm text-label-sm font-bold text-on-surface-variant uppercase">Stage 04</span>
+<span class="text-on-surface-variant font-label-sm text-label-sm">• 5 Min</span>
+</div>
+<span class="material-symbols-outlined text-outline-variant text-[18px]">lock</span>
+</div>
+<div class="flex flex-col">
+<h2 class="font-headline-sm text-headline-sm text-on-surface font-semibold">Adaptive Calibration Check</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1 line-clamp-2">3 high-velocity test items to seal verification telemetry update.</p>
+</div>
+<div class="flex items-center justify-between pt-space-xs font-label-sm text-label-sm text-on-surface-variant">
+<span>Final Gate</span>
+<span class="font-mono">3 Items</span>
+</div>
+</div>
+</div>
+<!-- Main Workspace Split: Practice Sandbox (Left 8-col) + Reassessment & Velocity Tracker (Right 4-col) -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-space-lg w-full items-start">
+<!-- Left Column: Interactive Problem Sandbox (Col 8) -->
+<div class="lg:col-span-8 flex flex-col gap-space-md">
+<!-- Engineering Sandbox Container -->
+<div class="bg-inverse-surface text-inverse-on-surface rounded-xl p-space-lg shadow-md flex flex-col gap-space-md">
+<!-- Problem Meta -->
+<div class="flex items-center justify-between flex-wrap gap-space-sm border-b border-outline-variant/20 pb-space-sm">
+<div class="flex items-center gap-space-sm">
+<span class="px-2 py-0.5 rounded bg-surface-container-highest/20 text-inverse-on-surface font-label-sm text-label-sm font-mono">
+                PROBLEM REF #0492-LG
+              </span>
+<span class="font-label-sm text-label-sm text-inverse-on-surface/70">
+                Type: Unsymmetrical Fault • L-G Solid
+              </span>
+</div>
+<div class="flex items-center gap-space-xs text-tertiary-fixed font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[16px]">bolt</span>
+<span>Subtransient Generator Direct State</span>
+</div>
+</div>
+<!-- Problem Statement -->
+<div class="flex flex-col gap-space-xs">
+<h3 class="font-headline-md text-headline-md text-surface-container-lowest font-bold">
+              Subtransient Fault Calculation for Solid Single Line-to-Ground (SLG)
+            </h3>
+<p class="font-body-md text-body-md text-inverse-on-surface/90 leading-relaxed">
+              A 3-phase, <span class="font-mono font-semibold text-secondary-fixed">50 MVA</span>, <span class="font-mono font-semibold text-secondary-fixed">11 kV</span> synchronous generator with a solidly grounded neutral has subtransient reactances of:
+            </p>
+<div class="grid grid-cols-3 gap-space-sm my-space-xs">
+<div class="bg-inverse-surface/60 p-space-sm rounded bg-surface-container-highest/10 flex flex-col">
+<span class="font-label-sm text-label-sm text-inverse-on-surface/60">X''₁ (Positive Seq)</span>
+<span class="font-mono font-bold text-surface-container-lowest text-headline-sm">0.15 p.u. (15%)</span>
+</div>
+<div class="bg-inverse-surface/60 p-space-sm rounded bg-surface-container-highest/10 flex flex-col">
+<span class="font-label-sm text-label-sm text-inverse-on-surface/60">X₂ (Negative Seq)</span>
+<span class="font-mono font-bold text-surface-container-lowest text-headline-sm">0.10 p.u. (10%)</span>
+</div>
+<div class="bg-inverse-surface/60 p-space-sm rounded bg-surface-container-highest/10 flex flex-col">
+<span class="font-label-sm text-label-sm text-inverse-on-surface/60">X₀ (Zero Seq)</span>
+<span class="font-mono font-bold text-surface-container-lowest text-headline-sm">0.05 p.u. (5%)</span>
+</div>
+</div>
+<p class="font-body-md text-body-md text-inverse-on-surface/90">
+              The generator is operating at rated terminal voltage under no-load condition before the fault occurs at terminal Phase A. Determine the <strong class="text-surface-container-lowest font-semibold">magnitude of the subtransient fault current (I''f)</strong> in physical RMS units.
+            </p>
+</div>
+<!-- Formula Schematic Preview -->
+<div class="bg-surface-container-highest/10 p-space-md rounded-lg flex flex-col gap-space-xs">
+<div class="flex items-center justify-between text-inverse-on-surface/70 font-label-sm text-label-sm">
+<span class="uppercase tracking-wider">Sequence Formula Blueprint</span>
+<span class="font-mono text-tertiary-fixed">SLG: Series Interconnection</span>
+</div>
+<div class="font-mono text-surface-container-lowest text-headline-sm py-1 overflow-x-auto whitespace-nowrap">
+              I''_{f} = 3 \cdot I_{a0} = 3 \cdot \frac{E_{a}}{X''_{1} + X_{2} + X_{0} + 3Z_{f}}
+            </div>
+<div class="text-inverse-on-surface/60 font-body-sm text-body-sm">
+              With solid ground (Z_{f} = 0) and pre-fault rated voltage E_{a} = 1.0 \angle 0^\circ \text{ p.u.}
+            </div>
+</div>
+<!-- Interactive Workspace Calculation Inputs -->
+<div class="bg-surface-container-highest/20 p-space-md rounded-lg flex flex-col gap-space-md">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-space-sm">
+<label class="font-headline-sm text-headline-sm text-surface-container-lowest font-semibold" for="faultCurrentInput">
+                Your Calculated Result:
+              </label>
+<!-- Unit Selector -->
+<div class="flex items-center bg-inverse-surface rounded p-1" id="unitToggleContainer">
+<button class="unit-btn active px-3 py-1 text-label-sm font-label-sm font-mono rounded bg-primary text-on-primary" type="button">kA (RMS)</button>
+<button class="unit-btn px-3 py-1 text-label-sm font-label-sm font-mono text-inverse-on-surface/80 hover:text-surface-container-lowest" type="button">p.u.</button>
+<button class="unit-btn px-3 py-1 text-label-sm font-label-sm font-mono text-inverse-on-surface/80 hover:text-surface-container-lowest" type="button">Amperes</button>
+</div>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-12 gap-space-sm items-center">
+<div class="sm:col-span-8 relative">
+<input class="w-full px-space-md py-3 rounded bg-surface-container-lowest text-on-surface font-mono font-bold text-headline-sm focus:outline-none focus:ring-2 focus:ring-primary shadow-inner" id="faultCurrentInput" placeholder="e.g. 26.24" type="text" value="26.24"/>
+<span class="absolute right-4 top-3.5 font-mono text-on-surface-variant font-semibold text-body-md" id="activeUnitLabel">kA</span>
+</div>
+<div class="sm:col-span-4 flex items-center justify-center p-2 rounded bg-tertiary/20 text-tertiary-fixed font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[16px] mr-1">check_circle</span>
+<span>Base Current: 2.624 kA</span>
+</div>
+</div>
+<!-- Confidence Slider -->
+<div class="flex flex-col gap-space-xs pt-space-xs">
+<div class="flex justify-between items-center">
+<span class="font-label-sm text-label-sm text-inverse-on-surface/80 uppercase font-semibold">Self-Assessment Calibration Weight:</span>
+<span class="font-label-sm text-label-sm font-mono font-bold text-tertiary-fixed" id="confidenceLabel">95% • High Conviction</span>
+</div>
+<input class="w-full h-1.5 bg-inverse-surface rounded-lg appearance-none cursor-pointer accent-tertiary-fixed" id="confidenceSlider" max="100" min="10" type="range" value="95"/>
+<div class="flex justify-between text-[11px] font-label-sm text-inverse-on-surface/50 font-mono">
+<span>20% Guess</span>
+<span>50% Plausible</span>
+<span>80% Confident</span>
+<span>100% Mathematical Proof</span>
+</div>
+</div>
+</div>
+<!-- Sandbox Action Controls -->
+<div class="flex flex-col sm:flex-row items-center justify-between gap-space-md pt-space-xs">
+<button class="text-inverse-on-surface/80 hover:text-surface-container-lowest font-body-md text-body-md flex items-center gap-space-xs transition-colors" id="hintToggleBtn" type="button">
+<span class="material-symbols-outlined text-[18px]">lightbulb</span>
+<span>Show First-Principles Derivation</span>
+</button>
+<div class="flex items-center gap-space-sm w-full sm:w-auto justify-end">
+<button class="px-space-md py-2.5 rounded bg-surface-container-highest/20 hover:bg-surface-container-highest/30 text-surface-container-lowest font-body-md text-body-md transition-colors" type="button">
+                Scratchpad
+              </button>
+<button class="px-space-lg py-2.5 rounded bg-primary hover:bg-primary-container text-on-primary font-headline-sm text-headline-sm font-semibold transition-all shadow-md flex items-center gap-space-xs" id="validateEvidenceBtn" type="button">
+<span>Validate &amp; Record Evidence</span>
+<span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- Hidden Hint Drawer -->
+<div class="hidden bg-surface-container-highest/10 p-space-md rounded text-inverse-on-surface/90 text-body-sm font-body-sm flex flex-col gap-1.5 transition-all" id="hintBox">
+<span class="font-bold text-surface-container-lowest flex items-center gap-1 font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[16px] text-tertiary-fixed">tips_and_updates</span>
+              FIRST PRINCIPLES BREAKDOWN:
+            </span>
+<p>1. <span class="font-mono">I_{base} = \frac{S_{base}}{\sqrt{3} \cdot V_{base}} = \frac{50 \times 10^6}{\sqrt{3} \cdot 11 \times 10^3} \approx 2624.32 \text{ A} = 2.624 \text{ kA}</span></p>
+<p>2. Sequence impedance total: <span class="font-mono">X_{eq} = X''_1 + X_2 + X_0 = 0.15 + 0.10 + 0.05 = 0.30 \text{ p.u.}</span></p>
+<p>3. Fault current in p.u.: <span class="font-mono">I''_f = 3 \times \frac{1.0}{0.30} = 10.0 \text{ p.u.}</span></p>
+<p>4. Fault current in kA: <span class="font-mono">10.0 \times 2.624 = 26.24 \text{ kA}</span></p>
+</div>
+</div>
+<!-- Telemetry Evidence Stream Micro-card -->
+<div class="bg-surface-container-lowest p-space-md rounded-xl shadow-sm flex items-center justify-between gap-space-md">
+<div class="flex items-center gap-space-sm">
+<span class="material-symbols-outlined text-tertiary text-[20px]">fingerprint</span>
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm font-semibold text-on-surface">Cryptographic Proof &amp; Timestamping</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Live telemetry stream active. All input variations and latency tracked for proof-of-work.</span>
+</div>
+</div>
+<span class="font-mono text-label-sm text-label-sm text-tertiary font-semibold shrink-0">BLOCK #82914-HASH</span>
+</div>
+</div>
+<!-- Right Column: Reassessment & Velocity Tracker (Col 4) -->
+<div class="lg:col-span-4 flex flex-col gap-space-md">
+<!-- Before vs After Velocity Projection Card -->
+<div class="bg-surface-container-lowest p-space-lg rounded-xl shadow-sm flex flex-col gap-space-md">
+<div class="flex items-center justify-between pb-space-xs border-b border-outline-variant/20">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase font-bold tracking-wider">Velocity Telemetry</span>
+<span class="px-2 py-0.5 rounded bg-tertiary-fixed text-on-tertiary-fixed font-label-sm text-label-sm font-semibold">
+              Live Projection
+            </span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-bold">
+            Reassessment Index Projection
+          </h3>
+<!-- Visual Bar Comparators -->
+<div class="flex flex-col gap-space-md pt-space-xs">
+<!-- Baseline / Before -->
+<div class="flex flex-col gap-1">
+<div class="flex justify-between items-center text-body-sm font-body-sm">
+<span class="text-on-surface-variant">Before Demonstration:</span>
+<span class="font-mono font-bold text-error">4.5 / 10.0</span>
+</div>
+<div class="w-full bg-surface-container rounded-full h-2 overflow-hidden flex">
+<div class="bg-error h-full rounded-full" style="width: 45%;"></div>
+</div>
+<span class="text-[11px] font-label-sm text-on-surface-variant text-right">Registered Diagnostic State</span>
+</div>
+<!-- Target Bar -->
+<div class="flex flex-col gap-1">
+<div class="flex justify-between items-center text-body-sm font-body-sm">
+<span class="text-on-surface-variant">Target Required (Bar):</span>
+<span class="font-mono font-bold text-on-surface">7.0 / 10.0</span>
+</div>
+<div class="w-full bg-surface-container rounded-full h-2 overflow-hidden flex">
+<div class="bg-on-surface h-full rounded-full" style="width: 70%;"></div>
+</div>
+<span class="text-[11px] font-label-sm text-on-surface-variant text-right">Enterprise Minimum Requisite</span>
+</div>
+<!-- Projected After -->
+<div class="flex flex-col gap-1">
+<div class="flex justify-between items-center text-body-sm font-body-sm">
+<span class="text-on-surface font-semibold flex items-center gap-1">
+                  Projected Post-Mission:
+                  <span class="material-symbols-outlined text-tertiary text-[14px]">trending_up</span>
+</span>
+<span class="font-mono font-bold text-tertiary">6.8 / 10.0</span>
+</div>
+<div class="w-full bg-surface-container rounded-full h-3 overflow-hidden flex relative">
+<div class="bg-error/40 h-full" style="width: 45%;"></div>
+<div class="bg-tertiary h-full relative" style="width: 23%;">
+<span class="absolute right-0 top-0 bottom-0 w-0.5 bg-surface-container-lowest"></span>
+</div>
+</div>
+<div class="flex justify-between text-[11px] font-label-sm">
+<span class="text-tertiary font-semibold">+2.3 pt Delta Expected</span>
+<span class="text-on-surface-variant font-mono">Remaining Gap: 0.2</span>
+</div>
+</div>
+</div>
+<!-- Learning Velocity Stat Block -->
+<div class="bg-surface-container-low p-space-md rounded-lg flex flex-col gap-space-xs mt-space-xs">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase font-semibold">Measured Velocity</span>
+<div class="flex items-baseline gap-space-xs">
+<span class="font-headline-xl text-headline-xl text-primary font-bold font-mono tracking-tight">+2.3</span>
+<span class="font-label-md text-label-md text-on-surface-variant font-medium">pts / hour</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+              Intervention efficiency places learning speed at the <strong class="text-on-surface font-semibold">92nd percentile</strong> for Power Systems diagnostic cohorts.
+            </p>
+</div>
+<!-- Micro SVG Metric Chart: Velocity Delta Acceleration -->
+<div class="flex flex-col gap-1 pt-space-xs">
+<span class="font-label-sm text-label-sm text-on-surface-variant font-medium">Convergence Acceleration:</span>
+<div class="w-full h-16 bg-surface-container-low rounded flex items-end p-2 relative overflow-hidden">
+<svg class="w-full h-full text-primary" fill="none" preserveaspectratio="none" viewbox="0 0 200 40">
+<path d="M0 35 Q 40 32, 70 28 T 120 18 T 170 8 T 200 4" stroke="currentColor" stroke-linecap="round" stroke-width="2"></path>
+<path d="M0 35 Q 40 32, 70 28 T 120 18 T 170 8 T 200 4 L 200 40 L 0 40 Z" fill="currentColor" fill-opacity="0.1"></path>
+<!-- Key Data Points -->
+<circle cx="0" cy="35" fill="#ba1a1a" r="3"></circle>
+<circle cx="70" cy="28" fill="#0058be" r="3"></circle>
+<circle cx="170" cy="8" fill="#006947" r="3"></circle>
+</svg>
+</div>
+<div class="flex justify-between font-mono text-[10px] text-on-surface-variant">
+<span>Stage 1 (Learn)</span>
+<span>Stage 2 (Practice)</span>
+<span>Stage 4 (Seal)</span>
+</div>
+</div>
+<!-- Evidence Integrity Stamp -->
+<div class="pt-space-sm border-t border-outline-variant/20 flex items-center justify-between font-label-sm text-label-sm">
+<div class="flex items-center gap-1.5 text-on-surface">
+<span class="material-symbols-outlined text-[16px] text-primary">verified</span>
+<span class="font-semibold">Evidence Integrity Guaranteed</span>
+</div>
+<span class="text-on-surface-variant font-mono">v4.1.2</span>
+</div>
+</div>
+<!-- Role Calibration Path Preview Mini-Module -->
+<div class="bg-surface-container-lowest p-space-md rounded-xl shadow-sm flex flex-col gap-space-sm">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase font-semibold">Sub-Competency Progress</span>
+<span class="font-label-sm text-label-sm font-mono text-tertiary">3 / 4 In Spec</span>
+</div>
+<div class="space-y-2">
+<div class="flex items-center justify-between text-body-sm font-body-sm">
+<span class="text-on-surface">3-Phase Symmetrical Faults</span>
+<span class="font-mono text-tertiary font-medium">8.2 ✓</span>
+</div>
+<div class="flex items-center justify-between text-body-sm font-body-sm">
+<span class="text-on-surface">Line-to-Ground (SLG)</span>
+<span class="font-mono text-primary font-medium animate-pulse">4.5 → 6.8</span>
+</div>
+<div class="flex items-center justify-between text-body-sm font-body-sm">
+<span class="text-on-surface">Line-to-Line (L-L)</span>
+<span class="font-mono text-tertiary font-medium">7.4 ✓</span>
+</div>
+<div class="flex items-center justify-between text-body-sm font-body-sm">
+<span class="text-on-surface">Zero-Sequence Earth Impedance</span>
+<span class="font-mono text-on-surface font-medium">Pending Stage 3</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<script>
+  // Simple interactive handlers for sandbox controls
+  const hintBtn = document.getElementById('hintToggleBtn');
+  const hintBox = document.getElementById('hintBox');
+  if (hintBtn && hintBox) {
+    hintBtn.addEventListener('click', () => {
+      hintBox.classList.toggle('hidden');
+    });
+  }
+
+  // Confidence slider live value update
+  const slider = document.getElementById('confidenceSlider');
+  const label = document.getElementById('confidenceLabel');
+  if (slider && label) {
+    slider.addEventListener('input', (e) => {
+      const val = e.target.value;
+      let text = 'High Conviction';
+      if (val < 40) text = 'Educated Guess';
+      else if (val < 70) text = 'Plausible Approximation';
+      else if (val < 90) text = 'Confident Calculation';
+      label.innerText = `${val}% • ${text}`;
+    });
+  }
+
+  // Unit button toggle
+  const unitButtons = document.querySelectorAll('.unit-btn');
+  const activeUnitLabel = document.getElementById('activeUnitLabel');
+  const faultInput = document.getElementById('faultCurrentInput');
+  unitButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      unitButtons.forEach(b => {
+        b.classList.remove('bg-primary', 'text-on-primary');
+        b.classList.add('text-inverse-on-surface/80');
+      });
+      btn.classList.add('bg-primary', 'text-on-primary');
+      btn.classList.remove('text-inverse-on-surface/80');
+      
+      const txt = btn.innerText.trim();
+      if (txt.includes('kA')) {
+        activeUnitLabel.innerText = 'kA';
+        faultInput.value = '26.24';
+      } else if (txt.includes('p.u.')) {
+        activeUnitLabel.innerText = 'p.u.';
+        faultInput.value = '10.00';
+      } else {
+        activeUnitLabel.innerText = 'A';
+        faultInput.value = '26243';
+      }
+    });
+  });
+
+  // Action button submission feedback
+  const submitBtn = document.getElementById('validateEvidenceBtn');
+  if (submitBtn) {
+    submitBtn.addEventListener('click', () => {
+      const orig = submitBtn.innerHTML;
+      submitBtn.innerHTML = '<span class="material-symbols-outlined text-[18px] animate-spin">refresh</span><span>Verifying Proof...</span>';
+      setTimeout(() => {
+        submitBtn.innerHTML = '<span class="material-symbols-outlined text-[18px]">verified</span><span>Proof Recorded!</span>';
+        submitBtn.classList.remove('bg-primary');
+        submitBtn.classList.add('bg-tertiary');
+      }, 700);
+    });
+  }
+
+  // Live timer micro-ticker
+  let seconds = 462;
+  const timerEl = document.getElementById('stageTimer');
+  setInterval(() => {
+    seconds++;
+    const m = Math.floor(seconds / 60).toString().padStart(2, '0');
+    const s = (seconds % 60).toString().padStart(2, '0');
+    if (timerEl) timerEl.innerText = `${m}:${s}`;
+  }, 1000);
+</script></main><footer class="w-full bg-surface-container-low border-t border-outline-variant/20 py-space-xl mt-space-xl"><div class="w-full px-margin flex flex-col md:flex-row items-center justify-between gap-space-md font-label-sm text-label-sm text-on-surface-variant"><div>© 2025 PlacementOS Enterprise. All rights reserved. High-Density Talent Telemetry.</div><div class="flex items-center gap-space-lg"><a class="hover:text-on-surface transition-colors" href="#">System Status</a><a class="hover:text-on-surface transition-colors" href="#">Benchmark Methodology</a><a class="hover:text-on-surface transition-colors" href="#">Security &amp; Trust</a></div></div></footer></body></html>
