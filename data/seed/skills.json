@@ -1,0 +1,165 @@
+[
+  {
+    "id": "skill_dsa",
+    "domainId": "domain_cse_sw",
+    "name": "Data Structures & Algorithms",
+    "description": "Complexity analysis, array/tree/graph representations, and algorithmic problem solving.",
+    "isFoundational": true,
+    "subskills": [
+      { "id": "sub_dsa_arrays", "skillId": "skill_dsa", "name": "Arrays, HashMaps & Two Pointers", "description": "Linear data structures and hashing algorithms" },
+      { "id": "sub_dsa_trees", "skillId": "skill_dsa", "name": "Trees & Graph Traversals", "description": "BFS, DFS, Dijkstra, and tree balancing" }
+    ],
+    "tools": [
+      { "id": "tool_leetcode", "name": "LeetCode / HackerRank", "category": "Assessment Platform" }
+    ]
+  },
+  {
+    "id": "skill_backend_apis",
+    "domainId": "domain_cse_sw",
+    "name": "REST & Microservice Architecture",
+    "description": "API design, authentication protocols, ORM integration, and server-side logic.",
+    "isFoundational": false,
+    "subskills": [
+      { "id": "sub_api_design", "skillId": "skill_backend_apis", "name": "RESTful Endpoint Design & Auth", "description": "JWT, OAuth, idempotency, and status semantics" },
+      { "id": "sub_db_integration", "skillId": "skill_backend_apis", "name": "Database Schema Design & Querying", "description": "Migrations, indexes, and connection pooling" }
+    ],
+    "tools": [
+      { "id": "tool_postman", "name": "Postman", "category": "API Client" },
+      { "id": "tool_node", "name": "Node.js / Express", "category": "Runtime" }
+    ]
+  },
+  {
+    "id": "skill_sql_analytics",
+    "domainId": "domain_cse_data",
+    "name": "SQL & Relational Analytics",
+    "description": "Complex joins, window functions, CTEs, aggregation, and query performance tuning.",
+    "isFoundational": true,
+    "subskills": [
+      { "id": "sub_sql_joins", "skillId": "skill_sql_analytics", "name": "Multi-table Joins & Subqueries", "description": "Aggregating relations accurately" },
+      { "id": "sub_sql_window", "skillId": "skill_sql_analytics", "name": "Window Functions & Partitioning", "description": "Running totals, ranking, and lag/lead queries" }
+    ],
+    "tools": [
+      { "id": "tool_postgres", "name": "PostgreSQL", "category": "Database" },
+      { "id": "tool_dbeaver", "name": "DBeaver", "category": "SQL Client" }
+    ]
+  },
+  {
+    "id": "skill_python_data",
+    "domainId": "domain_cse_data",
+    "name": "Python for Data Analysis",
+    "description": "Data wrangling, statistical profiling, and automation with Pandas and NumPy.",
+    "isFoundational": false,
+    "subskills": [
+      { "id": "sub_py_pandas", "skillId": "skill_python_data", "name": "Pandas DataFrames Wrangling", "description": "Filtering, merging, pivot tables, and null handling" },
+      { "id": "sub_py_viz", "skillId": "skill_python_data", "name": "Visual Data Storytelling", "description": "Charts, distributions, and correlation heatmaps" }
+    ],
+    "tools": [
+      { "id": "tool_pandas", "name": "Pandas", "category": "Python Library" },
+      { "id": "tool_jupyter", "name": "Jupyter Notebooks", "category": "Notebook" }
+    ]
+  },
+  {
+    "id": "skill_embedded_c",
+    "domainId": "domain_ece_embedded",
+    "name": "Embedded C & Hardware Interfacing",
+    "description": "Bitwise manipulation, register-level hardware programming, memory-mapped I/O, and pointers.",
+    "isFoundational": true,
+    "subskills": [
+      { "id": "sub_c_pointers", "skillId": "skill_embedded_c", "name": "Pointers, Structs & Bitfields", "description": "Low-level memory layouts and pointer arithmetic" },
+      { "id": "sub_c_interrupts", "skillId": "skill_embedded_c", "name": "Interrupt Service Routines (ISRs)", "description": "Hardware interrupts, debouncing, and volatile keywords" }
+    ],
+    "tools": [
+      { "id": "tool_gcc_arm", "name": "GNU Arm Embedded Toolchain", "category": "Compiler" },
+      { "id": "tool_stm32cube", "name": "STM32CubeIDE", "category": "Embedded IDE" }
+    ]
+  },
+  {
+    "id": "skill_microcontrollers",
+    "domainId": "domain_ece_embedded",
+    "name": "Microcontroller Peripherals & Bus Protocols",
+    "description": "Configuring UART, SPI, I2C, Timers, ADC, and PWM for sensor/actuator control.",
+    "isFoundational": false,
+    "subskills": [
+      { "id": "sub_mcu_comms", "skillId": "skill_microcontrollers", "name": "UART, SPI & I2C Bus Communication", "description": "Master-slave packet timing and arbitration" },
+      { "id": "sub_mcu_pwm", "skillId": "skill_microcontrollers", "name": "Timers, Counters & PWM Generation", "description": "Motor speed control and precision event triggering" }
+    ],
+    "tools": [
+      { "id": "tool_logic_analyzer", "name": "Saleae Logic Analyzer", "category": "Hardware Debugger" },
+      { "id": "tool_oscilloscope", "name": "Digital Storage Oscilloscope", "category": "Hardware Test" }
+    ]
+  },
+  {
+    "id": "skill_digital_electronics",
+    "domainId": "domain_ece_vlsi",
+    "name": "Digital Logic & Circuit Fundamentals",
+    "description": "Combinational logic, sequential state machines, setup/hold timings, and Boolean minimization.",
+    "isFoundational": true,
+    "subskills": [
+      { "id": "sub_fsm_design", "skillId": "skill_digital_electronics", "name": "Finite State Machines (Mealy/Moore)", "description": "Synchronous state transition design" },
+      { "id": "sub_timing_analysis", "skillId": "skill_digital_electronics", "name": "Static Timing & Clock Domains", "description": "Clock skew, setup time, and hold margins" }
+    ],
+    "tools": [
+      { "id": "tool_verilog", "name": "Verilog HDL", "category": "Hardware Description" },
+      { "id": "tool_modelsim", "name": "ModelSim", "category": "Simulation" }
+    ]
+  },
+  {
+    "id": "skill_power_analysis",
+    "domainId": "domain_eee_power",
+    "name": "Power System Analysis & Grid Protection",
+    "description": "Load flow computations, symmetrical components, fault currents, and protective relay settings.",
+    "isFoundational": true,
+    "subskills": [
+      { "id": "sub_fault_calc", "skillId": "skill_power_analysis", "name": "Short-Circuit & Fault Calculations", "description": "Per-unit system and sequence networks" },
+      { "id": "sub_relays", "skillId": "skill_power_analysis", "name": "Protective Relays & Circuit Breakers", "description": "Overcurrent, differential, and distance coordination" }
+    ],
+    "tools": [
+      { "id": "tool_etap", "name": "ETAP", "category": "Power Simulation" },
+      { "id": "tool_matlab_power", "name": "MATLAB SimPowerSystems", "category": "Simulation" }
+    ]
+  },
+  {
+    "id": "skill_cad_modeling",
+    "domainId": "domain_mech_design",
+    "name": "3D Parametric CAD Modeling & Assembly",
+    "description": "Feature-based solid modeling, constraint-based parametric assemblies, and sheet metal drafting.",
+    "isFoundational": true,
+    "subskills": [
+      { "id": "sub_cad_features", "skillId": "skill_cad_modeling", "name": "Parametric Sketching & Solid Features", "description": "Extrusions, sweeps, lofts, and filleting" },
+      { "id": "sub_gdt", "skillId": "skill_cad_modeling", "name": "Geometric Dimensioning & Tolerancing (GD&T)", "description": "Datum reference frames, position tolerances, and runout" }
+    ],
+    "tools": [
+      { "id": "tool_solidworks", "name": "SolidWorks", "category": "CAD Software" },
+      { "id": "tool_fusion", "name": "Autodesk Fusion 360", "category": "CAD Software" }
+    ]
+  },
+  {
+    "id": "skill_fea_simulation",
+    "domainId": "domain_mech_design",
+    "name": "Finite Element Analysis (FEA)",
+    "description": "Stress-strain analysis, mesh convergence, boundary constraints, and factor of safety evaluation.",
+    "isFoundational": false,
+    "subskills": [
+      { "id": "sub_fea_meshing", "skillId": "skill_fea_simulation", "name": "Meshing Quality & Convergence Study", "description": "Hex/tet meshing, singularities, and refinement" },
+      { "id": "sub_von_mises", "skillId": "skill_fea_simulation", "name": "Von Mises Stress & Yield Criteria", "description": "Failure theories under static and cyclic loads" }
+    ],
+    "tools": [
+      { "id": "tool_ansys", "name": "ANSYS Mechanical", "category": "FEA Solver" }
+    ]
+  },
+  {
+    "id": "skill_structural_analysis",
+    "domainId": "domain_civil_structures",
+    "name": "Structural Analysis & Reinforced Concrete",
+    "description": "Bending moment/shear envelopes, limit state design, column buckling, and seismic load codes.",
+    "isFoundational": true,
+    "subskills": [
+      { "id": "sub_rc_design", "skillId": "skill_structural_analysis", "name": "Limit State Concrete Beam & Slab Design", "description": "Flexural capacity, shear stirrups, and deflection limits" },
+      { "id": "sub_frame_analysis", "skillId": "skill_structural_analysis", "name": "Portal Frame & Truss Force Distribution", "description": "Moment distribution and matrix stiffness methods" }
+    ],
+    "tools": [
+      { "id": "tool_staad", "name": "STAAD.Pro", "category": "Structural Analysis" },
+      { "id": "tool_etabs", "name": "ETABS", "category": "Structural Modeling" }
+    ]
+  }
+]

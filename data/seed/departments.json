@@ -1,0 +1,32 @@
+[
+  {
+    "id": "dept_cse",
+    "name": "Computer Science and Engineering",
+    "code": "CSE",
+    "description": "Computing systems, software architecture, algorithms, and data infrastructure."
+  },
+  {
+    "id": "dept_eee",
+    "name": "Electrical and Electronics Engineering",
+    "code": "EEE",
+    "description": "Power generation and distribution, power electronics, electrical machines, and control systems."
+  },
+  {
+    "id": "dept_ece",
+    "name": "Electronics and Communication Engineering",
+    "code": "ECE",
+    "description": "Semiconductors, embedded hardware, signal processing, and communication networks."
+  },
+  {
+    "id": "dept_mech",
+    "name": "Mechanical Engineering",
+    "code": "MECH",
+    "description": "Thermal dynamics, machine design, CAD/CAM manufacturing, and robotics."
+  },
+  {
+    "id": "dept_civil",
+    "name": "Civil Engineering",
+    "code": "CIVIL",
+    "description": "Structural analysis, geotechnical surveying, construction management, and environmental systems."
+  }
+]

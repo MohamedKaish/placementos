@@ -1,0 +1,23 @@
+[
+  {
+    "id": "trans_c_to_dsa",
+    "sourceSkillId": "skill_embedded_c",
+    "targetSkillId": "skill_dsa",
+    "transferMultiplier": 0.65,
+    "rationale": "Memory manipulation, array layouts, and pointer fundamentals directly translate to data structure implementations."
+  },
+  {
+    "id": "trans_python_to_analytics",
+    "sourceSkillId": "skill_python_data",
+    "targetSkillId": "skill_sql_analytics",
+    "transferMultiplier": 0.55,
+    "rationale": "Relational DataFrame manipulation (groupby, join, filter) strongly mirrors SQL set logic."
+  },
+  {
+    "id": "trans_digital_to_embedded",
+    "sourceSkillId": "skill_digital_electronics",
+    "targetSkillId": "skill_microcontrollers",
+    "transferMultiplier": 0.60,
+    "rationale": "Understanding timing diagrams and register flip-flops accelerates peripheral bus mastery."
+  }
+]
