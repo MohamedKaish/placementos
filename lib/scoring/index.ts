@@ -1,66 +1,102 @@
 /**
- * PlacementOS - Deterministic Scoring & Readiness Engine
- * CRITICAL RULE: Gemini must NOT calculate the final readiness score.
- * Deterministic formulas evaluate requirements, gaps, and readiness bands.
+ * PlacementOS - Deterministic Scoring & Skill Gap Engine
+ * Differentiator: "Claimed skill != Demonstrated skill != Required skill"
+ * Gemini is NEVER used to compute scores or prioritize gaps.
  */
 
 import { JobRole } from '@/types/skill-graph';
 import {
   RoleReadinessReport,
   SkillGapAnalysis,
-  CalibrationGapAnalysis
+  SkillCalibrationComparison
 } from '@/types/scoring';
 import { StudentClaimedSkill } from '@/types/evidence';
 import { EvidenceEngine } from '@/lib/evidence-engine';
 
-export interface UserSkillLevels {
-  // Map of skillId to evidence-backed demonstrated level (0.0 to 5.0)
-  evidenceLevels: Record<string, number>;
+export interface UserSkillEvaluationState {
+  // Map of skillId to demonstrated status & level
+  demonstratedSkills: Record<
+    string,
+    {
+      level: number | 'NOT_ASSESSED';
+      confidence: number;
+    }
+  >;
   // Map of skillId to claimed levels
-  claimedLevels?: Record<string, StudentClaimedSkill>;
+  claimedSkills?: Record<string, StudentClaimedSkill>;
 }
 
 export class ScoringEngine {
   /**
    * Deterministically calculates gaps for all requirements in a target role
+   * Prioritization formula:
+   * Priority = roleImportance * skillDeficit * evidenceConfidence * (isCritical ? 1.5 : 1.0) * 10
    */
   public static calculateSkillGaps(
     role: JobRole,
-    userLevels: UserSkillLevels,
+    evaluationState: UserSkillEvaluationState,
     skillNameLookup: (skillId: string) => string = (id) => id
   ): SkillGapAnalysis[] {
     return role.requirements.map((req) => {
-      const currentLevel = userLevels.evidenceLevels[req.skillId] ?? 0;
-      const rawGap = req.minimumLevel - currentLevel;
-      const gapMagnitude = Number(Math.max(0, rawGap).toFixed(2));
+      const skillName = skillNameLookup(req.skillId);
+      const demonstratedEntry = evaluationState.demonstratedSkills[req.skillId];
+      const demonstratedLevel = demonstratedEntry ? demonstratedEntry.level : 'NOT_ASSESSED';
+      const confidence = demonstratedEntry ? demonstratedEntry.confidence : 0;
 
+      let gapMagnitude = 0;
       let status: SkillGapAnalysis['status'] = 'proficient';
-      if (gapMagnitude > 0) {
-        status = req.critical || gapMagnitude >= 1.5 ? 'critical_gap' : 'minor_gap';
+      let traceableReason = '';
+      let priorityScore = 0;
+
+      if (demonstratedLevel === 'NOT_ASSESSED') {
+        gapMagnitude = req.minimumLevel;
+        status = 'unassessed_gap';
+        const criticalMultiplier = req.critical ? 1.5 : 1.0;
+        priorityScore = Number((req.weight * gapMagnitude * 0.35 * criticalMultiplier * 10).toFixed(2));
+        traceableReason = `Recommended because ${skillName} is a ${req.critical ? 'critical' : 'core'} requirement for ${role.title} and has not yet been demonstrated through verified evidence.`;
+      } else {
+        const rawGap = req.minimumLevel - demonstratedLevel;
+        gapMagnitude = Number(Math.max(0, rawGap).toFixed(2));
+
+        if (gapMagnitude > 0) {
+          status = req.critical || gapMagnitude >= 1.5 ? 'critical_gap' : 'minor_gap';
+          const criticalMultiplier = req.critical ? 1.5 : 1.0;
+          // Prioritize by role importance * skill deficit * evidence confidence * critical multiplier
+          const confidenceFactor = Math.max(0.4, confidence);
+          priorityScore = Number((req.weight * gapMagnitude * confidenceFactor * criticalMultiplier * 10).toFixed(2));
+          traceableReason = `Recommended because ${skillName} is your ${req.critical ? 'highest-priority critical demonstrated' : 'demonstrated'} gap for the selected ${role.title} role (Demonstrated: Level ${demonstratedLevel}, Required: Level ${req.minimumLevel}).`;
+        } else {
+          status = 'proficient';
+          priorityScore = 0;
+          traceableReason = `${skillName} meets or exceeds target requirement (Demonstrated: Level ${demonstratedLevel}, Required: Level ${req.minimumLevel}).`;
+        }
       }
 
       return {
         skillId: req.skillId,
-        skillName: skillNameLookup(req.skillId),
+        skillName,
         requiredLevel: req.minimumLevel,
-        currentEvidenceLevel: currentLevel,
+        demonstratedLevel,
         gapMagnitude,
         importanceWeight: req.weight,
         isCritical: req.critical,
-        status
+        evidenceConfidence: confidence,
+        priorityScore,
+        status,
+        traceableReason
       };
     });
   }
 
   /**
-   * Generates a multi-dimensional role readiness report without false precision
+   * Generates a multi-dimensional role readiness report exposing Claimed vs Demonstrated vs Required
    */
   public static evaluateRoleReadiness(
     role: JobRole,
-    userLevels: UserSkillLevels,
+    evaluationState: UserSkillEvaluationState,
     skillNameLookup: (skillId: string) => string = (id) => id
   ): RoleReadinessReport {
-    const gaps = this.calculateSkillGaps(role, userLevels, skillNameLookup);
+    const gaps = this.calculateSkillGaps(role, evaluationState, skillNameLookup);
 
     let totalWeight = 0;
     let satisfiedWeight = 0;
@@ -68,19 +104,23 @@ export class ScoringEngine {
     let evidenceCount = 0;
 
     for (const req of role.requirements) {
-      const currentLevel = userLevels.evidenceLevels[req.skillId] ?? 0;
-      if (currentLevel > 0) {
+      const demonstratedEntry = evaluationState.demonstratedSkills[req.skillId];
+      const demonstratedLevel = demonstratedEntry ? demonstratedEntry.level : 'NOT_ASSESSED';
+
+      if (demonstratedLevel !== 'NOT_ASSESSED') {
         evidenceCount++;
-      }
+        // Check if critical minimum requirement is met
+        if (req.critical && demonstratedLevel < req.minimumLevel) {
+          criticalRequirementsMet = false;
+        }
 
-      // Check if critical minimum requirement is met
-      if (req.critical && currentLevel < req.minimumLevel) {
-        criticalRequirementsMet = false;
+        const fulfillment = Math.min(1.0, demonstratedLevel / req.minimumLevel);
+        satisfiedWeight += fulfillment * req.weight;
+      } else {
+        if (req.critical) {
+          criticalRequirementsMet = false;
+        }
       }
-
-      // Continuous fulfillment ratio capped at 1.0
-      const fulfillment = Math.min(1.0, currentLevel / req.minimumLevel);
-      satisfiedWeight += fulfillment * req.weight;
       totalWeight += req.weight;
     }
 
@@ -92,12 +132,10 @@ export class ScoringEngine {
       ? Math.round((evidenceCount / role.requirements.length) * 100)
       : 0;
 
-    // Foundational check (skills with weight <= 0.25 or marked critical min levels)
     const foundationReadiness = Math.round(
       (coreSkillsReadiness * 0.7) + (evidenceCoverage * 0.3)
     );
 
-    // Determine overall qualitative band based on multidimensional metrics
     let overallReadinessBand: RoleReadinessReport['overallReadinessBand'] = 'Needs_Foundation';
     if (criticalRequirementsMet && coreSkillsReadiness >= 85 && evidenceCoverage >= 80) {
       overallReadinessBand = 'Target_Ready';
@@ -107,22 +145,26 @@ export class ScoringEngine {
       overallReadinessBand = 'Developing';
     }
 
-    // Calibration gaps if claimed levels exist
-    const calibrationGaps: CalibrationGapAnalysis[] = [];
-    if (userLevels.claimedLevels) {
-      for (const [skillId, claimed] of Object.entries(userLevels.claimedLevels)) {
-        const evidence = userLevels.evidenceLevels[skillId] ?? 0;
-        const skillName = skillNameLookup(skillId);
-        calibrationGaps.push(
-          EvidenceEngine.computeCalibrationGap(claimed, evidence, skillName)
-        );
-      }
-    }
+    // Expose explicit Claimed vs Demonstrated vs Required comparisons
+    const calibrations: SkillCalibrationComparison[] = role.requirements.map((req) => {
+      const skillName = skillNameLookup(req.skillId);
+      const claimed = evaluationState.claimedSkills ? evaluationState.claimedSkills[req.skillId] : undefined;
+      const demonstratedEntry = evaluationState.demonstratedSkills[req.skillId];
+      const demonstratedLevel = demonstratedEntry ? demonstratedEntry.level : 'NOT_ASSESSED';
 
-    // Top priority gaps: sorted by gapMagnitude * importanceWeight
+      return EvidenceEngine.evaluateCalibration(
+        req.skillId,
+        skillName,
+        claimed,
+        demonstratedLevel,
+        req.minimumLevel
+      );
+    });
+
+    // Top priority gaps: sorted strictly by priority score
     const topPriorityGaps = [...gaps]
       .filter((g) => g.gapMagnitude > 0)
-      .sort((a, b) => (b.gapMagnitude * b.importanceWeight) - (a.gapMagnitude * a.importanceWeight))
+      .sort((a, b) => b.priorityScore - a.priorityScore)
       .map((g) => g.skillId);
 
     return {
@@ -134,8 +176,8 @@ export class ScoringEngine {
       evidenceCoverage,
       criticalRequirementsMet,
       overallReadinessBand,
+      calibrations,
       skillGaps: gaps,
-      calibrationGaps,
       topPriorityGapSkillIds: topPriorityGaps
     };
   }

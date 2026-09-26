@@ -1,45 +1,51 @@
 /**
  * PlacementOS - Deterministic Scoring & Readiness Types
- * Critical Rule: Gemini should NOT calculate the final readiness score.
- * Deterministic formulas calculate readiness, calibration gaps, and skill gaps.
+ * Differentiator: "Claimed skill != Demonstrated skill != Required skill"
+ * Gemini NEVER calculates readiness scores.
  */
 
-import { SkillProficiencyLevel } from './skill-graph';
+export type CalibrationClassification =
+  | 'well_calibrated'  // |gap| <= 0.6
+  | 'overconfident'    // gap > 0.6 (claims high, demonstrates low)
+  | 'underconfident'   // gap < -0.6 (imposter syndrome: demonstrates higher than claimed)
+  | 'NOT_ASSESSED';    // Insufficient evidence to calibrate
+
+export interface SkillCalibrationComparison {
+  skillId: string;
+  skillName: string;
+  claimedLevel: number; // What student claims (0.0 to 5.0)
+  demonstratedLevel: number | 'NOT_ASSESSED'; // Evidence-backed level
+  requiredLevel: number; // Role requirement
+  calibrationDelta: number | 'NOT_ASSESSED'; // claimed - demonstrated
+  classification: CalibrationClassification;
+  explanation: string;
+}
 
 export interface SkillGapAnalysis {
   skillId: string;
   skillName: string;
-  requiredLevel: SkillProficiencyLevel;
-  currentEvidenceLevel: number;
-  gapMagnitude: number; // requiredLevel - currentEvidenceLevel (clamped to >= 0)
-  importanceWeight: number; // from JobRole
-  isCritical: boolean;
-  status: 'proficient' | 'minor_gap' | 'critical_gap';
-}
-
-export interface CalibrationGapAnalysis {
-  skillId: string;
-  skillName: string;
-  claimedLevel: SkillProficiencyLevel;
-  demonstratedLevel: number;
-  gap: number; // claimed - demonstrated
-  classification:
-    | 'well_calibrated'      // |gap| <= 0.5
-    | 'overconfident'        // gap > 0.5 (claims high, demonstrates low)
-    | 'underconfident';      // gap < -0.5 (imposter syndrome: demonstrates higher than claimed)
+  subskillName?: string;
+  requiredLevel: number; // e.g. 3.0
+  demonstratedLevel: number | 'NOT_ASSESSED'; // e.g. 1.5 or NOT_ASSESSED
+  gapMagnitude: number; // requiredLevel - demonstratedLevel (clamped >= 0)
+  importanceWeight: number; // from JobRole (0.0 to 1.0)
+  isCritical: boolean; // hard gate
+  evidenceConfidence: number; // 0.0 to 1.0
+  priorityScore: number; // deterministically calculated
+  status: 'proficient' | 'minor_gap' | 'critical_gap' | 'unassessed_gap';
+  traceableReason: string; // e.g. "Recommended because Fault Analysis is your highest-priority demonstrated gap for the selected Power Systems role."
 }
 
 export interface RoleReadinessReport {
   roleId: string;
   roleTitle: string;
   evaluatedAt: string;
-  // Multi-dimensional breakdown rather than a single fake percentage
-  foundationReadiness: number; // 0 - 100%
-  coreSkillsReadiness: number; // 0 - 100%
+  foundationReadiness: number; // 0 to 100%
+  coreSkillsReadiness: number; // 0 to 100%
   evidenceCoverage: number;    // % of required skills that have verifiable evidence
   criticalRequirementsMet: boolean;
   overallReadinessBand: 'Target_Ready' | 'Advancing' | 'Developing' | 'Needs_Foundation';
+  calibrations: SkillCalibrationComparison[];
   skillGaps: SkillGapAnalysis[];
-  calibrationGaps: CalibrationGapAnalysis[];
   topPriorityGapSkillIds: string[];
 }
