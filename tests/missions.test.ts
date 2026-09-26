@@ -5,50 +5,66 @@ import { SkillGapAnalysis } from '@/types/scoring';
 describe('Mission Prioritization Engine', () => {
   it('prioritizes critical gaps over non-critical gaps of equal magnitude', () => {
     const criticalGap: SkillGapAnalysis = {
-      skillId: 's1',
-      skillName: 'Critical Skill',
+      skillId: 'skill_fault_analysis',
+      skillName: 'Fault Analysis',
       requiredLevel: 3,
-      currentEvidenceLevel: 1,
-      gapMagnitude: 2,
-      importanceWeight: 0.5,
+      demonstratedLevel: 1.0,
+      gapMagnitude: 2.0,
+      importanceWeight: 0.45,
       isCritical: true,
-      status: 'critical_gap'
+      evidenceConfidence: 1.0,
+      priorityScore: 13.5, // 0.45 * 2 * 1.0 * 1.5 * 10
+      status: 'critical_gap',
+      traceableReason: 'Critical gate deficit'
     };
 
     const nonCriticalGap: SkillGapAnalysis = {
-      skillId: 's2',
-      skillName: 'Non-Critical Skill',
+      skillId: 'skill_power_analysis',
+      skillName: 'Power Flow',
       requiredLevel: 3,
-      currentEvidenceLevel: 1,
-      gapMagnitude: 2,
-      importanceWeight: 0.5,
+      demonstratedLevel: 1.0,
+      gapMagnitude: 2.0,
+      importanceWeight: 0.45,
       isCritical: false,
-      status: 'minor_gap'
+      evidenceConfidence: 1.0,
+      priorityScore: 9.0, // 0.45 * 2 * 1.0 * 1.0 * 10
+      status: 'minor_gap',
+      traceableReason: 'Core deficit'
     };
 
-    const scoreCritical = MissionEngine.calculatePriorityScore(criticalGap);
-    const scoreNonCritical = MissionEngine.calculatePriorityScore(nonCriticalGap);
+    const missions = MissionEngine.generatePrioritizedMissions(
+      'user_123',
+      'Power Systems Engineer',
+      [nonCriticalGap, criticalGap]
+    );
 
-    expect(scoreCritical).toBeGreaterThan(scoreNonCritical);
+    // Critical gap must be ranked #1
+    expect(missions[0].targetSkillId).toBe('skill_fault_analysis');
+    expect(missions[0].priorityScore).toBeGreaterThan(missions[1].priorityScore);
   });
 
-  it('generates a mission directly traced to a detected gap', () => {
+  it('generates a mission directly traced to a detected gap with practice tasks and success criteria', () => {
     const gap: SkillGapAnalysis = {
-      skillId: 'skill_dsa',
-      skillName: 'Data Structures',
+      skillId: 'skill_fault_analysis',
+      skillName: 'Fault Analysis',
+      subskillName: 'Fortescue Symmetrical Components',
       requiredLevel: 3,
-      currentEvidenceLevel: 1.5,
+      demonstratedLevel: 1.5,
       gapMagnitude: 1.5,
-      importanceWeight: 0.4,
+      importanceWeight: 0.45,
       isCritical: true,
-      status: 'critical_gap'
+      evidenceConfidence: 1.0,
+      priorityScore: 10.13,
+      status: 'critical_gap',
+      traceableReason: 'Recommended because Fault Analysis is your highest-priority critical gap for Power Systems Engineer.'
     };
 
-    const mission = MissionEngine.generateMissionFromGap('user_123', 'role_swe', gap);
+    const mission = MissionEngine.generateMissionFromGap('user_123', 'Power Systems Engineer', gap);
 
-    expect(mission.linkedSkillId).toBe('skill_dsa');
-    expect(mission.tracedGapMagnitude).toBe(1.5);
-    expect(mission.steps.length).toBeGreaterThan(0);
-    expect(mission.priorityScore).toBeGreaterThan(0);
+    expect(mission.targetSkillId).toBe('skill_fault_analysis');
+    expect(mission.reason).toContain('Fault Analysis is your highest-priority critical gap');
+    expect(mission.steps.length).toBe(3);
+    expect(mission.practice.title).toContain('Fault Analysis');
+    expect(mission.successCriteria).toContain('Level 3');
   });
 });
