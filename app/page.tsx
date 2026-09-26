@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { LoadingScreen } from '@/components/LoadingScreen';
 import { Header, ScreenId } from '@/components/Header';
 import { LandingScreen } from '@/components/LandingScreen';
 import { OnboardingScreen } from '@/components/OnboardingScreen';
@@ -13,6 +14,7 @@ import { defaultPlacementService } from '@/lib/placement-service';
 import { CalibrationResult, Mission, ReadinessReport, Department, AcademicYear } from '@/types/team2-contract';
 
 export default function Home() {
+  const [appReady, setAppReady] = useState(false);
   const [currentScreen, setCurrentScreen] = useState<ScreenId>('landing');
   const [calibrationResult, setCalibrationResult] = useState<CalibrationResult>(() =>
     defaultPlacementService.finalizeAssessment()
@@ -39,6 +41,12 @@ export default function Home() {
 
   // Candidate identity
   const [candidateName, setCandidateName] = useState<string>('');
+
+  // Show loading screen briefly on first mount
+  useEffect(() => {
+    const timer = setTimeout(() => setAppReady(true), 1600);
+    return () => clearTimeout(timer);
+  }, []);
 
   // Navigation Handlers
   const handleStartIntake = () => {
@@ -87,6 +95,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-surface flex flex-col">
+      {!appReady && <LoadingScreen />}
       {/* Top Header Navigation */}
       <Header
         currentScreen={currentScreen}
