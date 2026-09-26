@@ -15,6 +15,7 @@ import { ScoringEngine } from '@/lib/scoring';
 import { EvidenceEngine } from '@/lib/evidence-engine';
 import { AssessmentEngine } from '@/lib/assessment-engine';
 import { MissionEngine } from '@/lib/missions';
+import { getQuestionsForDepartment, DepartmentCode } from '@/data/seed/assessment-questions';
 
 export class PlacementService {
   private currentStudent = {
@@ -214,170 +215,12 @@ export class PlacementService {
     ];
   }
 
-  // Diagnostic Assessment Questions for Power Systems (Deterministic Core Benchmark)
+  // Diagnostic Assessment Questions — Deterministic, department-specific
+  // Loads pre-filled questions from the static question bank. No AI generation.
   public getQuestionsForRole(roleId: string): AssessmentQuestion[] {
-    return [
-      {
-        id: 'ps-q1',
-        skillId: 'ps-fault-analysis',
-        skillName: 'Power Systems: Fault Analysis',
-        subskill: 'Sequence Networks',
-        difficulty: 'INTERMEDIATE',
-        questionText:
-          'In a Single Line-to-Ground (SLG) fault on Phase A with neutral grounding impedance Zn, what is the exact interconnection constraint between positive (Z1), negative (Z2), and zero (Z0) sequence networks?',
-        contextCodeOrFormula: 'Fault condition: Ia ≠ 0, Ib = 0, Ic = 0; Va = Ia · Zf',
-        options: [
-          {
-            id: 'opt-a',
-            text: 'Sequence networks are connected in Series with an added impedance of 3Zn in the zero-sequence loop.',
-          },
-          {
-            id: 'opt-b',
-            text: 'Sequence networks are connected in Parallel with total admittance Y_eq = Y1 + Y2 + Y0 + 1/(3Zn).',
-          },
-          {
-            id: 'opt-c',
-            text: 'Positive and negative sequence networks are in series, but zero sequence is isolated with impedance Zn.',
-          },
-          {
-            id: 'opt-d',
-            text: 'Sequence networks are connected in series with an impedance Zn (without the factor 3).',
-          },
-        ],
-        correctOptionId: 'opt-a',
-        explanation:
-          'For an SLG fault, Ia0 = Ia1 = Ia2 = Ia/3. Equality of sequence currents dictates a SERIES connection of all three sequence networks. Neutral current In = 3Ia0 flows through Zn, resulting in an effective drop of 3Ia0·Zn in the sequence loop.',
-        sequenceFactor: '3Zn',
-      },
-      {
-        id: 'ps-q2',
-        skillId: 'ps-fault-analysis',
-        skillName: 'Power Systems: Fault Analysis',
-        subskill: 'Symmetrical Components',
-        difficulty: 'ADVANCED',
-        questionText:
-          'Given an unloaded synchronous generator with zero-sequence reactance X0 = 0.05 p.u., negative-sequence reactance X2 = 0.15 p.u., and subtransient positive-sequence reactance Xd" = 0.20 p.u. with solid neutral grounding (Zn = 0), how does the SLG fault current compare to a solid 3-phase symmetrical fault current?',
-        contextCodeOrFormula: 'Prefault voltage E_a = 1.0 p.u. Symmetrical 3-phase If_3ph = 1.0 / Xd"',
-        options: [
-          {
-            id: 'opt-a',
-            text: 'The SLG fault current is larger: If_SLG = 7.5 p.u. vs If_3ph = 5.0 p.u.',
-          },
-          {
-            id: 'opt-b',
-            text: 'The 3-phase fault current is larger: If_3ph = 6.67 p.u. vs If_SLG = 5.0 p.u.',
-          },
-          {
-            id: 'opt-c',
-            text: 'Both fault currents are strictly equal because subtransient reactance dominates.',
-          },
-          {
-            id: 'opt-d',
-            text: 'The SLG fault current is smaller because zero-sequence impedance adds excessive damping.',
-          },
-        ],
-        correctOptionId: 'opt-a',
-        explanation:
-          'If_3ph = 1.0 / Xd" = 1.0 / 0.20 = 5.0 p.u. For SLG: Ia0 = 1.0 / (X1 + X2 + X0) = 1.0 / (0.20 + 0.15 + 0.05) = 1.0 / 0.40 = 2.5 p.u. Total fault current If_SLG = 3·Ia0 = 7.5 p.u. This 50% increase is a critical reason high-voltage generator neutrals require grounding impedance.',
-        sequenceFactor: 'X0 < Xd"',
-      },
-      {
-        id: 'ps-q3',
-        skillId: 'ps-fault-analysis',
-        skillName: 'Power Systems: Fault Analysis',
-        subskill: 'Bus Impedance Matrix',
-        difficulty: 'ADVANCED',
-        questionText:
-          'When calculating the symmetrical short-circuit current for a bolted 3-phase fault at Bus k using the Z-bus matrix, what represents the Thevenin impedance seen from the fault point?',
-        contextCodeOrFormula: 'I_f,k = V_k(0) / Z_th',
-        options: [
-          {
-            id: 'opt-a',
-            text: 'The diagonal entry Zkk of the bus impedance matrix Z_bus.',
-          },
-          {
-            id: 'opt-b',
-            text: 'The reciprocal of the diagonal entry of Y_bus: 1 / Ykk.',
-          },
-          {
-            id: 'opt-c',
-            text: 'The sum of all row elements Σ Zkj for j = 1 to n.',
-          },
-          {
-            id: 'opt-d',
-            text: 'The off-diagonal mutual transfer impedance Zkj between bus k and reference.',
-          },
-        ],
-        correctOptionId: 'opt-a',
-        explanation:
-          'By definition of the bus impedance matrix, Zkk corresponds directly to the Thevenin driving-point impedance at Bus k with all generators replaced by their internal subtransient impedances to reference.',
-        sequenceFactor: 'Zkk',
-      },
-      {
-        id: 'ps-q4',
-        skillId: 'ps-fault-analysis',
-        skillName: 'Power Systems: Fault Analysis',
-        subskill: 'Sequence Networks',
-        difficulty: 'INTERMEDIATE',
-        questionText:
-          'In a Delta-Wye (Δ-Y) grounded transformer connection, how does the zero-sequence equivalent circuit behave looking into the Delta side?',
-        contextCodeOrFormula: 'Primary: Delta (Δ), Secondary: Grounded Star (Yg)',
-        options: [
-          {
-            id: 'opt-a',
-            text: 'It presents an open circuit to the external Delta system, preventing zero-sequence current from circulating outside the delta.',
-          },
-          {
-            id: 'opt-b',
-            text: 'It creates a direct short circuit to ground, allowing zero-sequence currents to freely enter both transmission networks.',
-          },
-          {
-            id: 'opt-c',
-            text: 'It shifts the zero-sequence angle by 30 degrees while maintaining continuous impedance.',
-          },
-          {
-            id: 'opt-d',
-            text: 'Zero-sequence current is doubled because circulating delta currents amplify phase ground return.',
-          },
-        ],
-        correctOptionId: 'opt-a',
-        explanation:
-          'Delta windings trap zero-sequence currents inside the closed mesh; zero-sequence currents cannot enter or leave through the ungrounded line terminals of the delta side, acting as an open boundary.',
-        sequenceFactor: 'Delta Isolation',
-      },
-      {
-        id: 'ps-q5',
-        skillId: 'ps-fault-analysis',
-        skillName: 'Power Systems: Fault Analysis',
-        subskill: 'Fault Analysis',
-        difficulty: 'INTERMEDIATE',
-        questionText:
-          'For a Double Line-to-Ground (LLG) fault on Phases B and C, what is the boundary condition relating the three sequence voltages Va1, Va2, and Va0 at the fault point (assuming bolted fault Zf = 0)?',
-        contextCodeOrFormula: 'Fault condition: Vb = Vc = 0, Ia = 0',
-        options: [
-          {
-            id: 'opt-a',
-            text: 'Va1 = Va2 = Va0 (all sequence voltages are equal, meaning parallel connection of sequence networks).',
-          },
-          {
-            id: 'opt-b',
-            text: 'Va1 + Va2 + Va0 = 0 (sequence voltages cancel out completely).',
-          },
-          {
-            id: 'opt-c',
-            text: 'Va1 = Va2, while Va0 is strictly equal to zero.',
-          },
-          {
-            id: 'opt-d',
-            text: 'Va1 = -Va2, indicating anti-phase cancellation with decoupled zero sequence.',
-          },
-        ],
-        correctOptionId: 'opt-a',
-        explanation:
-          'In an LLG fault with Zf = 0, Vb = Vc = 0. Solving sequence transformations yields Va0 = Va1 = Va2 = (1/3)Va. Equality of sequence voltages means the positive, negative, and zero sequence networks are connected in PARALLEL.',
-        sequenceFactor: 'Parallel Network',
-      },
-    ];
+    // Use the current student's department to load the correct question set
+    const dept = this.currentStudent.department as DepartmentCode;
+    return getQuestionsForDepartment(dept);
   }
 
   // Start Assessment Flow

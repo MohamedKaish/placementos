@@ -1,31 +1,44 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { AssessmentQuestion, CalibrationResult } from '@/types/team2-contract';
+import React, { useState, useEffect, useRef } from 'react';
+import { AssessmentQuestion, CalibrationResult, Department, AcademicYear } from '@/types/team2-contract';
 import { defaultPlacementService } from '@/lib/placement-service';
 
 interface AssessmentScreenProps {
   onComplete: (result: CalibrationResult) => void;
+  department?: Department;
+  roleId?: string;
+  academicYear?: AcademicYear;
+  claimedScore?: number;
 }
 
-export const AssessmentScreen: React.FC<AssessmentScreenProps> = ({ onComplete }) => {
+export const AssessmentScreen: React.FC<AssessmentScreenProps> = ({
+  onComplete,
+  department = 'EEE',
+  roleId = 'power-systems-engineer',
+  academicYear = 'Year 4',
+  claimedScore = 8.0,
+}) => {
   const [questions, setQuestions] = useState<AssessmentQuestion[]>([]);
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const [selectedOption, setSelectedOption] = useState<string>('');
   const [confidence, setConfidence] = useState<'LOW' | 'MEDIUM' | 'HIGH'>('HIGH');
   const [submissionsCount, setSubmissionsCount] = useState<number>(0);
   const [startTime, setStartTime] = useState<number>(Date.now());
+  const initialized = useRef(false);
 
   useEffect(() => {
+    if (initialized.current) return;
+    initialized.current = true;
     const session = defaultPlacementService.startAssessment({
-      roleId: 'power-systems-engineer',
-      department: 'EEE',
-      academicYear: 'Year 4',
-      claimedScore: 8.0,
+      roleId,
+      department,
+      academicYear,
+      claimedScore,
     });
     setQuestions(session.questions);
     setStartTime(Date.now());
-  }, []);
+  }, [department, roleId, academicYear, claimedScore]);
 
   const currentQ = questions[currentIndex];
 

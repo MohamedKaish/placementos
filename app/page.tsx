@@ -10,7 +10,7 @@ import { MissionScreen } from '@/components/MissionScreen';
 import { ReadinessDashboardScreen } from '@/components/ReadinessDashboardScreen';
 import { ReassessmentScreen } from '@/components/ReassessmentScreen';
 import { defaultPlacementService } from '@/lib/placement-service';
-import { CalibrationResult, Mission, ReadinessReport } from '@/types/team2-contract';
+import { CalibrationResult, Mission, ReadinessReport, Department, AcademicYear } from '@/types/team2-contract';
 
 export default function Home() {
   const [currentScreen, setCurrentScreen] = useState<ScreenId>('landing');
@@ -24,6 +24,19 @@ export default function Home() {
     defaultPlacementService.getReadinessReport()
   );
 
+  // Onboarding data passed to assessment
+  const [onboardingData, setOnboardingData] = useState<{
+    department: Department;
+    academicYear: AcademicYear;
+    roleId: string;
+    claimedScore: number;
+  }>({
+    department: 'EEE',
+    academicYear: 'Year 4',
+    roleId: 'power-systems-engineer',
+    claimedScore: 8.0,
+  });
+
   // Demo Flow Navigation Handlers
   const handleStartDemo = () => {
     // Directly proceeds to Onboarding with EEE / Power Systems Engineer preset
@@ -36,11 +49,11 @@ export default function Home() {
     roleId: string;
     claimedScore: number;
   }) => {
-    // Start diagnostic assessment session
-    defaultPlacementService.startAssessment({
-      roleId: data.roleId,
+    // Store onboarding data and navigate to assessment
+    setOnboardingData({
       department: data.department,
       academicYear: data.academicYear,
+      roleId: data.roleId,
       claimedScore: data.claimedScore,
     });
     setCurrentScreen('assessment');
@@ -93,7 +106,13 @@ export default function Home() {
         )}
 
         {currentScreen === 'assessment' && (
-          <AssessmentScreen onComplete={handleAssessmentComplete} />
+          <AssessmentScreen
+            onComplete={handleAssessmentComplete}
+            department={onboardingData.department}
+            roleId={onboardingData.roleId}
+            academicYear={onboardingData.academicYear}
+            claimedScore={onboardingData.claimedScore}
+          />
         )}
 
         {currentScreen === 'calibration' && (
