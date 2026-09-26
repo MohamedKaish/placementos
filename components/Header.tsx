@@ -1,6 +1,8 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { clearSession } from '@/lib/candidate-store';
 
 export type ScreenId =
   | 'landing'
@@ -23,23 +25,51 @@ interface HeaderProps {
 export const Header: React.FC<HeaderProps> = ({
   currentScreen,
   onNavigate,
-  targetRole = 'Power Systems Engineer',
-  department = 'EEE',
+  targetRole = 'Engineering Role',
+  department = '',
   readinessStatus = 'Developing',
   candidateName = '',
 }) => {
+  const router = useRouter();
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+
   const initials = candidateName
     ? candidateName.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2)
     : 'U';
+
   const navItems: Array<{ id: ScreenId; label: string }> = [
     { id: 'landing', label: 'Overview' },
     { id: 'onboarding', label: 'Intake' },
     { id: 'assessment', label: 'Assessment' },
     { id: 'calibration', label: 'Calibration Result' },
-    { id: 'mission', label: 'Today\'s Mission' },
+    { id: 'mission', label: "Today's Mission" },
     { id: 'dashboard', label: 'Readiness Dashboard' },
     { id: 'reassessment', label: 'Reassessment' },
   ];
+
+  // Close menu on outside click
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        setMenuOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, []);
+
+  const handleLogout = () => {
+    setMenuOpen(false);
+    clearSession();
+    router.replace('/login');
+  };
+
+  const handleSwitchUser = () => {
+    setMenuOpen(false);
+    clearSession();
+    router.replace('/login');
+  };
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-inverse-surface text-inverse-on-surface shadow-[0_1px_8px_rgba(0,0,0,0.04)]">
@@ -59,10 +89,12 @@ export const Header: React.FC<HeaderProps> = ({
           </button>
 
           {/* Specialization chip */}
-          <div className="hidden xl:flex items-center px-2.5 py-1 bg-on-surface/40 rounded border border-outline-variant/30 text-surface-container-low font-label-sm text-[11px] tracking-wide">
-            <span className="w-1.5 h-1.5 rounded-full bg-tertiary-fixed mr-2 animate-pulse"></span>
-            Target: {targetRole} • {department}
-          </div>
+          {targetRole && (
+            <div className="hidden xl:flex items-center px-2.5 py-1 bg-on-surface/40 rounded border border-outline-variant/30 text-surface-container-low font-label-sm text-[11px] tracking-wide">
+              <span className="w-1.5 h-1.5 rounded-full bg-tertiary-fixed mr-2 animate-pulse" />
+              Target: {targetRole}{department ? ` • ${department}` : ''}
+            </div>
+          )}
         </div>
 
         {/* Navigation Tabs */}
@@ -96,20 +128,78 @@ export const Header: React.FC<HeaderProps> = ({
             </span>
           </div>
 
+          {/* Profile avatar + dropdown */}
           {candidateName && (
-          <div className="flex items-center gap-2 pl-2 border-l border-outline-variant/30">
-            <div className="w-8 h-8 rounded-full bg-surface-container-high border border-outline-variant/40 flex items-center justify-center text-[12px] font-semibold text-inverse-on-surface">
-              {initials}
+            <div className="relative flex items-center gap-2 pl-2 border-l border-outline-variant/30" ref={menuRef}>
+              {/* Name display */}
+              <div className="hidden md:flex flex-col text-left">
+                <span className="text-[12px] font-medium text-surface-container-lowest leading-tight">
+                  {candidateName}
+                </span>
+                {department && (
+                  <span className="text-[10px] text-surface-container-high font-mono">
+                    {department}
+                  </span>
+                )}
+              </div>
+
+              {/* Avatar button */}
+              <button
+                id="profile-menu-btn"
+                onClick={() => setMenuOpen(prev => !prev)}
+                aria-haspopup="true"
+                aria-expanded={menuOpen}
+                className="w-8 h-8 rounded-full bg-surface-container-high border border-outline-variant/40 flex items-center justify-center text-[12px] font-bold text-inverse-on-surface hover:bg-surface-container transition-colors focus:outline-none focus:ring-2 focus:ring-primary/40"
+              >
+                {initials}
+              </button>
+
+              {/* Dropdown menu */}
+              {menuOpen && (
+                <div
+                  role="menu"
+                  className="absolute top-10 right-0 z-50 w-44 bg-surface-container-lowest border border-outline-variant/40 rounded-lg shadow-lg py-1 flex flex-col text-on-surface"
+                >
+                  {/* Profile info header */}
+                  <div className="px-3.5 py-2.5 border-b border-outline-variant/30">
+                    <div className="text-[13px] font-semibold text-on-surface truncate">{candidateName}</div>
+                    <div className="text-[10px] font-mono text-on-surface-variant">{department}</div>
+                  </div>
+
+                  <button
+                    id="profile-menu-profile"
+                    role="menuitem"
+                    onClick={() => { setMenuOpen(false); onNavigate('onboarding'); }}
+                    className="flex items-center gap-2.5 px-3.5 py-2 text-[13px] hover:bg-surface-container transition-colors text-left w-full"
+                  >
+                    <span className="material-symbols-outlined text-[16px] text-on-surface-variant">person</span>
+                    Profile
+                  </button>
+
+                  <button
+                    id="profile-menu-switch"
+                    role="menuitem"
+                    onClick={handleSwitchUser}
+                    className="flex items-center gap-2.5 px-3.5 py-2 text-[13px] hover:bg-surface-container transition-colors text-left w-full"
+                  >
+                    <span className="material-symbols-outlined text-[16px] text-on-surface-variant">swap_horiz</span>
+                    Switch User
+                  </button>
+
+                  <div className="border-t border-outline-variant/30 mt-1 pt-1">
+                    <button
+                      id="profile-menu-logout"
+                      role="menuitem"
+                      onClick={handleLogout}
+                      className="flex items-center gap-2.5 px-3.5 py-2 text-[13px] hover:bg-error/10 text-error transition-colors text-left w-full"
+                    >
+                      <span className="material-symbols-outlined text-[16px]">logout</span>
+                      Logout
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
-            <div className="hidden md:flex flex-col text-left">
-              <span className="text-[12px] font-medium text-surface-container-lowest leading-tight">
-                {candidateName}
-              </span>
-              <span className="text-[10px] text-surface-container-high font-mono">
-                {department}
-              </span>
-            </div>
-          </div>
           )}
         </div>
       </div>

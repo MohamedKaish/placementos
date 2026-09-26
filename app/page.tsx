@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { LoadingScreen } from '@/components/LoadingScreen';
+import { useRouter } from 'next/navigation';
 import { Header, ScreenId } from '@/components/Header';
 import { LandingScreen } from '@/components/LandingScreen';
 import { OnboardingScreen } from '@/components/OnboardingScreen';
@@ -10,11 +10,18 @@ import { CalibrationResultScreen } from '@/components/CalibrationResultScreen';
 import { MissionScreen } from '@/components/MissionScreen';
 import { ReadinessDashboardScreen } from '@/components/ReadinessDashboardScreen';
 import { ReassessmentScreen } from '@/components/ReassessmentScreen';
+import { LoadingScreen } from '@/components/LoadingScreen';
 import { defaultPlacementService } from '@/lib/placement-service';
+import { getStoredProfile, saveProfile, CandidateProfile } from '@/lib/candidate-store';
 import { CalibrationResult, Mission, ReadinessReport, Department, AcademicYear } from '@/types/team2-contract';
 
 export default function Home() {
+  const router = useRouter();
+
+  // App initialization state
   const [appReady, setAppReady] = useState(false);
+  const [profile, setProfile] = useState<CandidateProfile | null>(null);
+
   const [currentScreen, setCurrentScreen] = useState<ScreenId>('landing');
   const [calibrationResult, setCalibrationResult] = useState<CalibrationResult>(() =>
     defaultPlacementService.finalizeAssessment()
@@ -26,7 +33,7 @@ export default function Home() {
     defaultPlacementService.getReadinessReport()
   );
 
-  // Onboarding data passed to assessment
+  // Onboarding data — seeded from stored profile if available
   const [onboardingData, setOnboardingData] = useState<{
     department: Department;
     academicYear: AcademicYear;
@@ -36,17 +43,33 @@ export default function Home() {
     department: 'EEE',
     academicYear: 'Year 4',
     roleId: 'power-systems-engineer',
-    claimedScore: 8.0,
+    claimedScore: 7.0,
   });
 
-  // Candidate identity
+  // Candidate identity resolved from stored profile
   const [candidateName, setCandidateName] = useState<string>('');
 
-  // Show loading screen briefly on first mount
+  // On mount: check for stored profile, redirect to /login if missing
   useEffect(() => {
+    const stored = getStoredProfile();
+    if (!stored) {
+      router.replace('/login');
+      return;
+    }
+    // Hydrate state from stored profile
+    setProfile(stored);
+    setCandidateName(stored.studentName);
+    setOnboardingData({
+      department: stored.department as Department,
+      academicYear: stored.academicYear as AcademicYear,
+      roleId: stored.roleId,
+      claimedScore: stored.claimedScore,
+    });
+
+    // Brief loading screen delay
     const timer = setTimeout(() => setAppReady(true), 1600);
     return () => clearTimeout(timer);
-  }, []);
+  }, [router]);
 
   // Navigation Handlers
   const handleStartIntake = () => {
@@ -60,22 +83,33 @@ export default function Home() {
     claimedScore: number;
     studentName: string;
   }) => {
-    setCandidateName(data.studentName);
-    setOnboardingData({
+    const name = data.studentName.trim() || candidateName || 'Candidate';
+    setCandidateName(name);
+    const newOnboarding = {
       department: data.department,
       academicYear: data.academicYear,
       roleId: data.roleId,
       claimedScore: data.claimedScore,
+    };
+    setOnboardingData(newOnboarding);
+
+    // Persist updated profile
+    saveProfile({
+      studentName: name,
+      department: data.department,
+      academicYear: data.academicYear,
+      roleId: data.roleId,
+      claimedScore: data.claimedScore,
+      createdAt: profile?.createdAt ?? new Date().toISOString(),
     });
+
     setCurrentScreen('assessment');
   };
 
   const handleAssessmentComplete = (result: CalibrationResult) => {
     setCalibrationResult(result);
-    // Generate targeted mission based on calibration
     const generatedMission = defaultPlacementService.generateTargetedMission();
     setMission(generatedMission);
-    // Update readiness report
     setReadinessReport(defaultPlacementService.getReadinessReport());
     setCurrentScreen('calibration');
   };
@@ -89,13 +123,17 @@ export default function Home() {
   };
 
   const handleRestart = () => {
-    setCandidateName('');
+    // Keep profile, just go back to landing
     setCurrentScreen('landing');
   };
 
+  // While checking localStorage, show loading
+  if (!appReady || !profile) {
+    return <LoadingScreen />;
+  }
+
   return (
     <div className="min-h-screen bg-surface flex flex-col">
-      {!appReady && <LoadingScreen />}
       {/* Top Header Navigation */}
       <Header
         currentScreen={currentScreen}
