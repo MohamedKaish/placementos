@@ -91,7 +91,11 @@ export default function Home() {
       <Header
         currentScreen={currentScreen}
         onNavigate={(screen) => setCurrentScreen(screen)}
-        targetRole={calibrationResult?.roleTitle ?? 'Power Systems Engineer'}
+        targetRole={
+          defaultPlacementService.getJobRoles().find(r => r.id === onboardingData.roleId)?.title ??
+          calibrationResult?.roleTitle ??
+          'Engineering Role'
+        }
         department={onboardingData.department}
         readinessStatus={readinessReport?.overallBand === 'DEVELOPING' ? 'Developing' : 'Ready'}
         candidateName={candidateName}

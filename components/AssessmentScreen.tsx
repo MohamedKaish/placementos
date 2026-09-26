@@ -114,7 +114,7 @@ export const AssessmentScreen: React.FC<AssessmentScreenProps> = ({
           <div className="flex items-center gap-2">
             <span>Assessments</span>
             <span className="material-symbols-outlined text-[14px]">chevron_right</span>
-            <span>Diagnostic Run #104</span>
+            <span>Diagnostic Assessment</span>
             <span className="material-symbols-outlined text-[14px]">chevron_right</span>
             <span className="text-primary font-semibold">Live Empirical Telemetry Probe</span>
           </div>

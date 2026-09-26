@@ -14,6 +14,12 @@ export const CalibrationResultScreen: React.FC<CalibrationResultScreenProps> = (
   onStartMission,
   onViewDashboard,
 }) => {
+  const demPct = Math.min(Math.max((result.demonstratedScore / 10) * 100, 5), 95);
+  const reqPct = Math.min(Math.max((result.requiredScore / 10) * 100, 5), 95);
+  const clmPct = Math.min(Math.max((result.claimedScore / 10) * 100, 5), 95);
+  const distanceToBar = Number((result.demonstratedScore - result.requiredScore).toFixed(1));
+  const primaryWeakSkill = result.weakSubskills?.[0];
+
   return (
     <div className="w-full min-h-screen pt-16 bg-surface">
       {/* Top Utility Context Bar */}
@@ -28,7 +34,7 @@ export const CalibrationResultScreen: React.FC<CalibrationResultScreenProps> = (
           </div>
           <div className="flex items-center gap-2">
             <span className="px-2 py-0.5 bg-surface-container-highest rounded text-on-surface font-mono text-[11px]">
-              TELEMETRY RUN: 0x7E3_GRID
+              TELEMETRY RUN: {result.runId}
             </span>
             <span className="px-2 py-0.5 bg-tertiary-container text-on-tertiary font-mono text-[11px] rounded flex items-center gap-1">
               <span className="material-symbols-outlined text-[12px]">verified</span> BENCHMARK LOCKED
@@ -45,11 +51,11 @@ export const CalibrationResultScreen: React.FC<CalibrationResultScreenProps> = (
             <div className="flex flex-col gap-2 max-w-3xl">
               <div className="flex flex-wrap items-center gap-2 mb-1">
                 <span className="px-2.5 py-0.5 bg-secondary-fixed text-on-secondary-fixed font-mono text-[11px] rounded uppercase tracking-wider font-semibold">
-                  Diagnostic Run #104
+                  Diagnostic Run: #{result.runId}
                 </span>
                 <span className="px-2.5 py-0.5 bg-surface-container-high text-on-surface font-mono text-[11px] rounded flex items-center gap-1">
                   <span className="material-symbols-outlined text-[14px] text-primary">engineering</span>
-                  {result.department} Specialization: High-Voltage Transmission
+                  {result.department} • {result.roleTitle}
                 </span>
               </div>
               <h1 className="font-headline-xl text-2xl sm:text-3xl text-on-surface font-bold tracking-tight">
@@ -61,7 +67,7 @@ export const CalibrationResultScreen: React.FC<CalibrationResultScreenProps> = (
               <div className="flex items-center gap-2 mt-1 font-mono text-[11px]">
                 <span className="w-2 h-2 rounded-full bg-primary animate-ping"></span>
                 <span className="text-on-surface-variant">Benchmark Profile:</span>
-                <span className="text-on-surface font-semibold">{result.roleTitle} (Tier-1 Grid & Energy Infrastructure)</span>
+                <span className="text-on-surface font-semibold">{result.roleTitle} (Market Benchmark Profile)</span>
               </div>
             </div>
 
@@ -189,13 +195,15 @@ export const CalibrationResultScreen: React.FC<CalibrationResultScreenProps> = (
                     Target Role Demand
                   </p>
                   <p className="font-body-sm text-[13px] text-on-surface-variant mt-2 leading-relaxed">
-                    Aggregated market bar calibrated against 140+ active Power Systems Engineer technical scorecards in Tier-1 infrastructure organizations.
+                    Aggregated market bar calibrated against verified technical scorecards for {result.roleTitle}.
                   </p>
                 </div>
                 <div className="mt-4 pt-2 bg-primary-fixed/30 p-3 rounded">
                   <div className="flex justify-between items-center font-mono text-[11px] text-on-surface-variant">
                     <span>Distance to Cutoff Bar:</span>
-                    <span className="font-bold text-primary font-mono text-[13px]">-2.5 Pts</span>
+                    <span className="font-bold text-primary font-mono text-[13px]">
+                      {distanceToBar >= 0 ? `+${distanceToBar}` : `${distanceToBar}`} Pts
+                    </span>
                   </div>
                 </div>
               </div>
@@ -219,9 +227,9 @@ export const CalibrationResultScreen: React.FC<CalibrationResultScreenProps> = (
                 </div>
 
                 <div className="flex items-center gap-4 font-mono text-[11px]">
-                  <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded bg-error"></span> Demonstrated (4.5)</span>
-                  <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded bg-primary"></span> Target Bar (7.0)</span>
-                  <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded bg-secondary"></span> Claimed (8.0)</span>
+                  <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded bg-error"></span> Demonstrated ({result.demonstratedScore.toFixed(1)})</span>
+                  <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded bg-primary"></span> Target Bar ({result.requiredScore.toFixed(1)})</span>
+                  <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded bg-secondary"></span> Claimed ({result.claimedScore.toFixed(1)})</span>
                 </div>
               </div>
 
@@ -229,30 +237,43 @@ export const CalibrationResultScreen: React.FC<CalibrationResultScreenProps> = (
               <div className="w-full pt-8 pb-4 relative">
                 <div className="w-full h-3 bg-surface-container rounded-full relative">
                   {/* Gap Segment: Demonstrated to Target */}
-                  <div className="absolute h-3 bg-primary/20" style={{ left: '45%', width: '25%' }}></div>
-                  {/* Gap Segment: Target to Claimed */}
-                  <div className="absolute h-3 bg-secondary/20" style={{ left: '70%', width: '10%' }}></div>
+                  <div
+                    className="absolute h-3 bg-primary/20"
+                    style={{
+                      left: `${Math.min(demPct, reqPct)}%`,
+                      width: `${Math.abs(reqPct - demPct)}%`,
+                    }}
+                  ></div>
 
-                  {/* 4.5 Marker (DEMONSTRATED) */}
-                  <div className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 flex flex-col items-center z-10" style={{ left: '45%' }}>
+                  {/* DEMONSTRATED Marker */}
+                  <div
+                    className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 flex flex-col items-center z-10"
+                    style={{ left: `${demPct}%` }}
+                  >
                     <div className="absolute -top-7 px-2 py-0.5 bg-error text-white font-mono text-[11px] rounded whitespace-nowrap font-bold shadow-sm">
-                      4.5 DEMONSTRATED
+                      {result.demonstratedScore.toFixed(1)} DEMONSTRATED
                     </div>
                     <div className="w-4 h-4 rounded-full bg-error ring-4 ring-error-container"></div>
                   </div>
 
-                  {/* 7.0 Marker (REQUIRED) */}
-                  <div className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 flex flex-col items-center z-10" style={{ left: '70%' }}>
+                  {/* REQUIRED Marker */}
+                  <div
+                    className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 flex flex-col items-center z-10"
+                    style={{ left: `${reqPct}%` }}
+                  >
                     <div className="absolute -top-7 px-2 py-0.5 bg-primary text-white font-mono text-[11px] rounded whitespace-nowrap font-bold shadow-sm">
-                      7.0 TARGET BAR
+                      {result.requiredScore.toFixed(1)} TARGET BAR
                     </div>
                     <div className="w-4 h-4 rounded-full bg-primary ring-4 ring-primary-fixed"></div>
                   </div>
 
-                  {/* 8.0 Marker (CLAIMED) */}
-                  <div className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 flex flex-col items-center z-10" style={{ left: '80%' }}>
+                  {/* CLAIMED Marker */}
+                  <div
+                    className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 flex flex-col items-center z-10"
+                    style={{ left: `${clmPct}%` }}
+                  >
                     <div className="absolute -top-7 px-2 py-0.5 bg-secondary text-white font-mono text-[11px] rounded whitespace-nowrap font-semibold shadow-sm">
-                      8.0 CLAIMED
+                      {result.claimedScore.toFixed(1)} CLAIMED
                     </div>
                     <div className="w-4 h-4 rounded-full bg-secondary ring-4 ring-secondary-fixed"></div>
                   </div>
@@ -260,10 +281,10 @@ export const CalibrationResultScreen: React.FC<CalibrationResultScreenProps> = (
 
                 <div className="w-full flex justify-between font-mono text-[11px] text-on-surface-variant mt-3 px-1">
                   <span>0.0</span>
-                  <span>2.0</span>
-                  <span className="font-semibold text-error">4.5 Demonstrated</span>
-                  <span className="font-semibold text-primary">7.0 Target Bar</span>
-                  <span className="font-semibold text-secondary">8.0 Claimed</span>
+                  <span>2.5</span>
+                  <span className="font-semibold text-error">{result.demonstratedScore.toFixed(1)} Demonstrated</span>
+                  <span className="font-semibold text-primary">{result.requiredScore.toFixed(1)} Target Bar</span>
+                  <span className="font-semibold text-secondary">{result.claimedScore.toFixed(1)} Claimed</span>
                   <span>10.0</span>
                 </div>
               </div>
@@ -274,11 +295,15 @@ export const CalibrationResultScreen: React.FC<CalibrationResultScreenProps> = (
                   <span className="material-symbols-outlined text-error text-[22px] shrink-0 mt-0.5">warning</span>
                   <div className="flex flex-col">
                     <div className="flex items-center gap-2 font-mono">
-                      <span className="text-[13px] text-error font-bold">Calibration Gap: +{result.calibrationGap.toFixed(1)}</span>
-                      <span className="text-[11px] text-on-surface-variant font-medium">(OVERCONFIDENT)</span>
+                      <span className="text-[13px] text-error font-bold">
+                        Calibration Gap: {result.calibrationGap >= 0 ? `+${result.calibrationGap.toFixed(1)}` : `${result.calibrationGap.toFixed(1)}`}
+                      </span>
+                      <span className="text-[11px] text-on-surface-variant font-medium">
+                        ({result.calibrationStatus})
+                      </span>
                     </div>
                     <p className="font-body-sm text-[13px] text-on-surface-variant mt-1 leading-normal">
-                      Overestimation vs Empirical Evidence: You currently demonstrate significantly less than you believe you know. High-risk profile for technical system design boards.
+                      {result.explanation}
                     </p>
                   </div>
                 </div>
@@ -287,11 +312,13 @@ export const CalibrationResultScreen: React.FC<CalibrationResultScreenProps> = (
                   <span className="material-symbols-outlined text-primary text-[22px] shrink-0 mt-0.5">trending_up</span>
                   <div className="flex flex-col">
                     <div className="flex items-center gap-2 font-mono">
-                      <span className="text-[13px] text-primary font-bold">Readiness Gap: -2.5</span>
+                      <span className="text-[13px] text-primary font-bold">
+                        Readiness Gap: {distanceToBar >= 0 ? `+${distanceToBar}` : `${distanceToBar}`}
+                      </span>
                       <span className="text-[11px] text-on-surface-variant font-medium">(Distance to Target Bar)</span>
                     </div>
                     <p className="font-body-sm text-[13px] text-on-surface-variant mt-1 leading-normal">
-                      Empirical distance to reach hiring readiness. Projected remediation velocity: ~1 targeted intervention mission to bridge the deficit before placement.
+                      {result.nextActionRecommendation}
                     </p>
                   </div>
                 </div>
@@ -310,16 +337,16 @@ export const CalibrationResultScreen: React.FC<CalibrationResultScreenProps> = (
                       PRIMARY SKILL BOTTLENECK
                     </span>
                     <h3 className="font-headline-sm text-xl text-on-surface font-bold mt-0.5">
-                      WEAK SUBSKILL: Fault Analysis (Symmetrical & Unsymmetrical)
+                      WEAK SUBSKILL: {primaryWeakSkill ? primaryWeakSkill.name : result.targetSkill}
                     </h3>
                   </div>
                   <span className="px-2.5 py-1 bg-error-container text-on-error-container font-mono text-[11px] font-bold rounded">
-                    CRITICAL GAP IDENTIFIED
+                    {result.calibrationGap > 0 ? 'CRITICAL GAP IDENTIFIED' : 'BENCHMARK ALIGNED'}
                   </span>
                 </div>
 
                 <p className="font-body-md text-[14px] text-on-surface-variant leading-relaxed">
-                  The diagnostic telemetry engine detected systemic calculation errors during sequence network impedance formulation (Z₀, Z₁, Z₂) under simulated line-to-ground (SLG) and double line-to-ground (LLG) fault conditions.
+                  {primaryWeakSkill ? primaryWeakSkill.rootCause : result.explanation}
                 </p>
 
                 {/* Evidence Used List */}
@@ -377,82 +404,73 @@ export const CalibrationResultScreen: React.FC<CalibrationResultScreenProps> = (
                 </div>
 
                 <div className="flex flex-col gap-4">
-                  {/* Fault Analysis (The Critical Weakness) */}
-                  <div className="p-3 bg-error-container/20 rounded border border-error/30 flex flex-col gap-1.5">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-1.5">
-                        <span className="material-symbols-outlined text-[16px] text-error">cancel</span>
-                        <span className="font-mono text-[13px] text-error font-bold">
-                          Fault Analysis
+                  {result.weakSubskills && result.weakSubskills.length > 0 ? (
+                    result.weakSubskills.map((subskill, idx) => (
+                      <div
+                        key={idx}
+                        className="p-3 bg-error-container/20 rounded border border-error/30 flex flex-col gap-1.5"
+                      >
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-1.5">
+                            <span className="material-symbols-outlined text-[16px] text-error">cancel</span>
+                            <span className="font-mono text-[13px] text-error font-bold">
+                              {subskill.name}
+                            </span>
+                          </div>
+                          <div className="flex items-center gap-2 font-mono text-[12px]">
+                            <span className="font-bold text-error">
+                              {result.demonstratedScore.toFixed(1)} / 10
+                            </span>
+                            <span className="bg-error text-white px-1.5 py-0.5 rounded font-bold text-[10px]">
+                              WEAK SUBSKILL
+                            </span>
+                          </div>
+                        </div>
+                        <div className="w-full bg-surface-container h-2 rounded-full overflow-hidden">
+                          <div
+                            className="bg-error h-2 rounded-full"
+                            style={{ width: `${Math.min(100, (result.demonstratedScore / 10) * 100)}%` }}
+                          ></div>
+                        </div>
+                        <span className="font-body-sm text-[11px] text-on-surface-variant leading-tight">
+                          {subskill.rootCause}
                         </span>
                       </div>
-                      <div className="flex items-center gap-2 font-mono text-[12px]">
-                        <span className="font-bold text-error">4.5 / 10</span>
-                        <span className="bg-error text-white px-1.5 py-0.5 rounded font-bold text-[10px]">
-                          WEAK SUBSKILL
-                        </span>
+                    ))
+                  ) : (
+                    <div className="p-3 bg-surface-container-low rounded border border-outline-variant/30 flex flex-col gap-1.5">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-1.5">
+                          <span className="material-symbols-outlined text-[16px] text-tertiary">check_circle</span>
+                          <span className="font-mono text-[13px] text-on-surface font-semibold">
+                            {result.targetSkill}
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-2 font-mono text-[12px]">
+                          <span className="font-bold text-on-surface">
+                            {result.demonstratedScore.toFixed(1)} / 10
+                          </span>
+                          <span className="text-tertiary bg-tertiary-fixed/30 px-1.5 py-0.5 rounded font-semibold text-[10px]">
+                            DEMONSTRATED
+                          </span>
+                        </div>
                       </div>
-                    </div>
-                    <div className="w-full bg-surface-container h-2 rounded-full overflow-hidden">
-                      <div className="bg-error h-2 rounded-full" style={{ width: '45%' }}></div>
-                    </div>
-                    <span className="font-body-sm text-[11px] text-on-surface-variant leading-tight">
-                      Root cause: 4 of 7 errors stemmed from zero/negative sequence impedance sign conventions and reference earth bus grounding factors.
-                    </span>
-                  </div>
-
-                  {/* Power Flow */}
-                  <div className="p-3 bg-surface-container-low rounded border border-outline-variant/30 flex flex-col gap-1.5">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-1.5">
-                        <span className="material-symbols-outlined text-[16px] text-tertiary">check_circle</span>
-                        <span className="font-mono text-[13px] text-on-surface font-semibold">
-                          Load Flow Studies
-                        </span>
+                      <div className="w-full bg-surface-container h-2 rounded-full overflow-hidden">
+                        <div
+                          className="bg-tertiary h-2 rounded-full"
+                          style={{ width: `${Math.min(100, (result.demonstratedScore / 10) * 100)}%` }}
+                        ></div>
                       </div>
-                      <div className="flex items-center gap-2 font-mono text-[12px]">
-                        <span className="font-bold text-on-surface">6.8 / 10</span>
-                        <span className="text-tertiary bg-tertiary-fixed/30 px-1.5 py-0.5 rounded font-semibold text-[10px]">
-                          CALIBRATED
-                        </span>
-                      </div>
+                      <span className="font-body-sm text-[11px] text-on-surface-variant">
+                        Core engineering competency evaluated through empirical assessment.
+                      </span>
                     </div>
-                    <div className="w-full bg-surface-container h-2 rounded-full overflow-hidden">
-                      <div className="bg-tertiary h-2 rounded-full" style={{ width: '68%' }}></div>
-                    </div>
-                    <span className="font-body-sm text-[11px] text-on-surface-variant">
-                      Newton-Raphson & Fast Decoupled matrix assembly verified.
-                    </span>
-                  </div>
-
-                  {/* Protection */}
-                  <div className="p-3 bg-surface-container-low rounded border border-outline-variant/30 flex flex-col gap-1.5">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-1.5">
-                        <span className="material-symbols-outlined text-[16px] text-on-surface-variant">radio_button_partial</span>
-                        <span className="font-mono text-[13px] text-on-surface font-semibold">
-                          Protection & Relaying
-                        </span>
-                      </div>
-                      <div className="flex items-center gap-2 font-mono text-[12px]">
-                        <span className="font-bold text-on-surface">6.9 / 10</span>
-                        <span className="text-on-surface-variant bg-surface-container-high px-1.5 py-0.5 rounded text-[10px]">
-                          SURPASSED
-                        </span>
-                      </div>
-                    </div>
-                    <div className="w-full bg-surface-container h-2 rounded-full overflow-hidden">
-                      <div className="bg-primary h-2 rounded-full" style={{ width: '69%' }}></div>
-                    </div>
-                    <span className="font-body-sm text-[11px] text-on-surface-variant">
-                      Overcurrent and distance relay coordination within tolerances.
-                    </span>
-                  </div>
+                  )}
                 </div>
 
                 <div className="mt-auto pt-3 border-t border-outline-variant/30 flex items-center justify-between font-mono text-[11px]">
                   <span className="text-on-surface-variant">Target Benchmark:</span>
-                  <span className="font-bold text-primary">7.0 Required Bar</span>
+                  <span className="font-bold text-primary">{result.requiredScore.toFixed(1)} Required Bar</span>
                 </div>
               </div>
             </div>
@@ -472,7 +490,7 @@ export const CalibrationResultScreen: React.FC<CalibrationResultScreenProps> = (
                     NEXT ACTION: GENERATED TARGETED MISSION
                   </span>
                   <h2 className="font-headline-sm text-xl text-on-surface font-bold">
-                    Mission: Symmetrical Faults & Sequence Network Resolution
+                    Mission: {primaryWeakSkill ? `${primaryWeakSkill.name} Mastery` : `${result.targetSkill} Skill Remediation`}
                   </h2>
                 </div>
               </div>
@@ -484,8 +502,11 @@ export const CalibrationResultScreen: React.FC<CalibrationResultScreenProps> = (
             </div>
 
             <p className="font-body-md text-[14px] text-on-surface-variant leading-relaxed">
-              Prescribed intervention module engineered to extinguish the <strong className="text-error font-mono">+3.5 calibration gap</strong>. 
-              This mission re-anchors sequence network derivations, enforces zero-sequence loop grounding equations ($3Z_n$), and validates mastery before placement interviews.
+              Prescribed intervention module engineered to extinguish the{' '}
+              <strong className="text-error font-mono">
+                {result.calibrationGap >= 0 ? `+${result.calibrationGap.toFixed(1)}` : `${result.calibrationGap.toFixed(1)}`} calibration gap
+              </strong>. 
+              This mission reinforces core concepts in {result.targetSkill} and validates empirical mastery before placement interviews.
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-3 border-t border-outline-variant/30">

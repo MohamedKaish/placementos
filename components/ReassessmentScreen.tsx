@@ -24,7 +24,7 @@ export const ReassessmentScreen: React.FC<ReassessmentScreenProps> = ({
           <div className="flex items-center gap-2">
             <span>Reassessment</span>
             <span className="material-symbols-outlined text-[14px]">chevron_right</span>
-            <span>Telemetry Run #0x8A1</span>
+            <span>Telemetry Run: #{reassessmentData.verificationTelemetryRun}</span>
             <span className="material-symbols-outlined text-[14px]">chevron_right</span>
             <span className="text-primary font-semibold">Post-Intervention Verification</span>
           </div>
@@ -41,7 +41,7 @@ export const ReassessmentScreen: React.FC<ReassessmentScreenProps> = ({
                     : 'text-on-surface-variant hover:text-on-surface'
                 }`}
               >
-                Post-Mission (+2.7Δ)
+                Post-Mission (+{reassessmentData.delta.toFixed(1)}Δ)
               </button>
               <button
                 onClick={() => setHasCompletedMission(false)}
@@ -140,7 +140,7 @@ export const ReassessmentScreen: React.FC<ReassessmentScreenProps> = ({
                     </div>
                   </div>
                   <div className="mt-4 pt-2 border-t border-outline-variant/30 font-mono text-[11px] text-error font-semibold">
-                    BELOW 7.0 BENCHMARK (-2.5)
+                    PRE-INTERVENTION BASELINE
                   </div>
                 </div>
 
@@ -158,7 +158,7 @@ export const ReassessmentScreen: React.FC<ReassessmentScreenProps> = ({
                     </div>
                   </div>
                   <div className="mt-4 pt-2 border-t border-primary/30 font-mono text-[11px] text-primary font-bold">
-                    SURPASSED TIER-1 CUTOFF
+                    {reassessmentData.delta > 0 ? 'MEASURED COMPETENCY GAIN' : 'BASELINE RE-BENCHMARKED'}
                   </div>
                 </div>
 
@@ -179,8 +179,8 @@ export const ReassessmentScreen: React.FC<ReassessmentScreenProps> = ({
                     </div>
                   </div>
                   <div className="mt-4 pt-2 border-t border-outline-variant/30 font-mono text-[11px] text-tertiary font-semibold flex items-center justify-between">
-                    <span>STATUS: READY</span>
-                    <span>&gt; 7.0 BAR</span>
+                    <span>STATUS: {reassessmentData.status}</span>
+                    <span>+{reassessmentData.delta.toFixed(1)} DELTA</span>
                   </div>
                 </div>
               </div>
@@ -196,7 +196,7 @@ export const ReassessmentScreen: React.FC<ReassessmentScreenProps> = ({
                       Quantified Learning Velocity
                     </span>
                     <span className="font-headline-sm text-lg text-on-surface font-bold">
-                      +{reassessmentData.learningVelocity} Index Points per Study Hour
+                      +{reassessmentData.learningVelocity ?? 0.45} Index Points per Study Hour
                     </span>
                     <p className="font-body-sm text-[13px] text-on-surface-variant mt-0.5">
                       {reassessmentData.notes}
@@ -205,7 +205,7 @@ export const ReassessmentScreen: React.FC<ReassessmentScreenProps> = ({
                 </div>
 
                 <div className="shrink-0 font-mono text-[11px] bg-tertiary-fixed text-on-tertiary-fixed px-3 py-1.5 rounded font-bold">
-                  92ND PERCENTILE VELOCITY
+                  {reassessmentData.delta > 0 ? 'ACCELERATED VELOCITY' : 'BASELINE VELOCITY'}
                 </div>
               </div>
 
@@ -215,7 +215,9 @@ export const ReassessmentScreen: React.FC<ReassessmentScreenProps> = ({
                   <span className="w-2 h-2 rounded-full bg-tertiary-fixed animate-ping"></span>
                   <span>VERIFICATION AUDIT RUN: {reassessmentData.verificationTelemetryRun}</span>
                 </div>
-                <span className="text-tertiary-fixed font-bold">BENCHMARK ACHIEVED</span>
+                <span className="text-tertiary-fixed font-bold">
+                  {reassessmentData.delta > 0 ? 'BENCHMARK PROGRESS VERIFIED' : 'AUDIT LOGGED'}
+                </span>
               </div>
             </div>
           )}

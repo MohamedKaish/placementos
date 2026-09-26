@@ -103,11 +103,13 @@ export const ReadinessDashboardScreen: React.FC<ReadinessDashboardScreenProps> =
                 <span className="material-symbols-outlined text-[16px]">person_outline</span>
               </div>
               <div className="mt-3">
-                <span className="font-headline-lg text-2xl font-bold font-mono text-on-surface">7.6</span>
+                <span className="font-headline-lg text-2xl font-bold font-mono text-on-surface">
+                  {(report.skillsBreakdown?.[0]?.claimed ?? 7.0).toFixed(1)}
+                </span>
                 <span className="font-mono text-[11px] text-on-surface-variant"> / 10 Avg</span>
               </div>
               <span className="font-body-sm text-[12px] text-on-surface-variant mt-1">
-                Self-declared student portfolio & CV claims
+                Self-declared student portfolio baseline
               </span>
               <div className="absolute right-0 top-0 bottom-0 w-1 bg-surface-variant"></div>
             </div>
@@ -119,11 +121,13 @@ export const ReadinessDashboardScreen: React.FC<ReadinessDashboardScreenProps> =
                 <span className="material-symbols-outlined text-[16px] text-primary">analytics</span>
               </div>
               <div className="mt-3">
-                <span className="font-headline-lg text-2xl font-bold font-mono text-primary">5.4</span>
+                <span className="font-headline-lg text-2xl font-bold font-mono text-primary">
+                  {report.overallScore !== null ? report.overallScore.toFixed(1) : '—'}
+                </span>
                 <span className="font-mono text-[11px] text-on-surface-variant"> / 10 Avg</span>
               </div>
               <span className="font-body-sm text-[12px] text-on-surface-variant mt-1">
-                Validated via 42 automated tests & sandbox telemetry
+                Validated via empirical assessment telemetry
               </span>
               <div className="absolute right-0 top-0 bottom-0 w-1 bg-primary"></div>
             </div>
@@ -135,11 +139,13 @@ export const ReadinessDashboardScreen: React.FC<ReadinessDashboardScreenProps> =
                 <span className="material-symbols-outlined text-[16px]">flag</span>
               </div>
               <div className="mt-3">
-                <span className="font-headline-lg text-2xl font-bold font-mono text-on-surface">7.2</span>
+                <span className="font-headline-lg text-2xl font-bold font-mono text-on-surface">
+                  {(report.skillsBreakdown?.[0]?.required ?? 7.0).toFixed(1)}
+                </span>
                 <span className="font-mono text-[11px] text-on-surface-variant"> / 10 Req</span>
               </div>
               <span className="font-body-sm text-[12px] text-on-surface-variant mt-1">
-                Grid Operator & Utility tier minimum cut-off
+                Target benchmark minimum cut-off
               </span>
               <div className="absolute right-0 top-0 bottom-0 w-1 bg-outline-variant"></div>
             </div>
@@ -151,11 +157,17 @@ export const ReadinessDashboardScreen: React.FC<ReadinessDashboardScreenProps> =
                 <span className="material-symbols-outlined text-[16px]">warning</span>
               </div>
               <div className="mt-3">
-                <span className="font-headline-lg text-2xl font-bold font-mono text-error">-1.8</span>
+                <span className="font-headline-lg text-2xl font-bold font-mono text-error">
+                  {report.overallScore !== null
+                    ? `${Number((report.overallScore - (report.skillsBreakdown?.[0]?.required ?? 7.0)).toFixed(1))}`
+                    : '—'}
+                </span>
                 <span className="font-mono text-[11px] opacity-80"> Calibration</span>
               </div>
               <span className="font-body-sm text-[12px] opacity-90 mt-1">
-                Immediate shortfall blocking enterprise readiness
+                {report.overallScore !== null && report.overallScore < (report.skillsBreakdown?.[0]?.required ?? 7.0)
+                  ? 'Immediate shortfall blocking enterprise readiness'
+                  : 'Demonstrated performance satisfies industry bar'}
               </span>
               <div className="absolute right-0 top-0 bottom-0 w-1 bg-error"></div>
             </div>
@@ -168,14 +180,14 @@ export const ReadinessDashboardScreen: React.FC<ReadinessDashboardScreenProps> =
               </div>
               <div className="mt-3">
                 <span className="font-headline-sm text-sm font-bold truncate block">
-                  Fault Analysis
+                  {report.skillsBreakdown?.[0]?.name ?? report.studentProfile.targetRole}
                 </span>
                 <span className="font-mono text-[11px] text-primary-fixed block mt-0.5">
-                  Sequence Networks Module
+                  Target Intervention Module
                 </span>
               </div>
               <div className="flex items-center justify-between mt-1 text-primary-fixed font-mono text-[11px]">
-                <span>Est. 40m</span>
+                <span>Est. 30-45m</span>
                 <button
                   onClick={onNavigateToMission}
                   className="font-bold text-white underline cursor-pointer hover:text-white/80"

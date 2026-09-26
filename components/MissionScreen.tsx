@@ -14,12 +14,18 @@ export const MissionScreen: React.FC<MissionScreenProps> = ({
   onCompleteMission,
   onViewDashboard,
 }) => {
-  const [activeStage, setActiveStage] = useState<number>(2);
-  const [calculatedInput, setCalculatedInput] = useState<string>('26.24');
-  const [activeUnit, setActiveUnit] = useState<'kA' | 'p.u.' | 'Amperes'>('kA');
+  const [activeStage, setActiveStage] = useState<number>(1);
+  const [calculatedInput, setCalculatedInput] = useState<string>('8.5');
+  const [activeUnit, setActiveUnit] = useState<'Score' | 'p.u.' | 'Units'>('Score');
   const [confidence, setConfidence] = useState<number>(95);
   const [showHint, setShowHint] = useState<boolean>(false);
   const [isVerified, setIsVerified] = useState<boolean>(false);
+
+  const beforeScore = mission.verifiedBaseline;
+  const targetBar = mission.benchmarkTarget;
+  const projectedAfter = Number(Math.min(10, beforeScore + Math.max(0, (targetBar - beforeScore) * 0.8 + 0.5)).toFixed(1));
+  const deltaGain = Number((projectedAfter - beforeScore).toFixed(1));
+  const learningVelocity = deltaGain > 0 ? Number((deltaGain / 1.5).toFixed(2)) : 0.45;
 
   const handleValidate = () => {
     setIsVerified(true);
@@ -97,132 +103,70 @@ export const MissionScreen: React.FC<MissionScreenProps> = ({
           </div>
         </div>
 
-        {/* 4-Stage Action Pipeline Stepper */}
+        {/* Action Pipeline Stepper */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 w-full">
-          {/* Stage 1: Learn (Done) */}
-          <div
-            onClick={() => setActiveStage(1)}
-            className={`p-4 rounded-xl border shadow-sm flex flex-col justify-between gap-2 relative overflow-hidden cursor-pointer transition-all ${
-              activeStage === 1
-                ? 'bg-surface-container-lowest border-primary ring-1 ring-primary'
-                : 'bg-surface-container-lowest border-outline-variant/40'
-            }`}
-          >
-            <div className="absolute top-0 left-0 right-0 h-1 bg-tertiary"></div>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-1.5">
-                <span className="font-mono text-[11px] font-bold text-tertiary uppercase">Stage 01</span>
-                <span className="text-on-surface-variant font-mono text-[11px]">• 10 Min</span>
+          {mission.stages.map((stage) => {
+            const isCompleted = activeStage > stage.id;
+            const isActive = activeStage === stage.id;
+            return (
+              <div
+                key={stage.id}
+                onClick={() => setActiveStage(stage.id)}
+                className={`p-4 rounded-xl border shadow-sm flex flex-col justify-between gap-2 relative overflow-hidden cursor-pointer transition-all ${
+                  isActive
+                    ? 'bg-surface-container-lowest border-primary ring-2 ring-primary'
+                    : isCompleted
+                    ? 'bg-surface-container-lowest border-outline-variant/40'
+                    : 'bg-surface-container-lowest/80 border-outline-variant/40 opacity-80'
+                }`}
+              >
+                <div
+                  className={`absolute top-0 left-0 right-0 h-1 ${
+                    isCompleted ? 'bg-tertiary' : isActive ? 'bg-primary' : 'bg-outline-variant'
+                  }`}
+                ></div>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-1.5">
+                    <span
+                      className={`font-mono text-[11px] font-bold uppercase ${
+                        isCompleted ? 'text-tertiary' : isActive ? 'text-primary' : 'text-on-surface-variant'
+                      }`}
+                    >
+                      Stage 0{stage.id}
+                    </span>
+                    <span className="text-on-surface-variant font-mono text-[11px]">• {stage.duration}</span>
+                  </div>
+                  {isCompleted ? (
+                    <span className="w-5 h-5 rounded-full bg-tertiary-fixed text-on-tertiary-fixed flex items-center justify-center text-[12px] font-bold">
+                      <span className="material-symbols-outlined text-[14px]">check</span>
+                    </span>
+                  ) : isActive ? (
+                    <span className="px-2 py-0.5 rounded bg-primary-fixed text-on-primary-fixed font-mono text-[10px] font-bold animate-pulse">
+                      Active Now
+                    </span>
+                  ) : (
+                    <span className="material-symbols-outlined text-outline-variant text-[18px]">lock</span>
+                  )}
+                </div>
+                <div className="flex flex-col">
+                  <h2 className="font-headline-sm text-[14px] text-on-surface font-bold">{stage.title}</h2>
+                  <p className="font-body-sm text-[12px] text-on-surface-variant mt-1 line-clamp-2">
+                    {stage.description}
+                  </p>
+                </div>
+                <div className="flex items-center justify-between pt-1 font-mono text-[11px]">
+                  <span
+                    className={
+                      isCompleted ? 'text-tertiary font-semibold' : isActive ? 'text-primary font-medium' : 'text-on-surface-variant'
+                    }
+                  >
+                    {isCompleted ? 'Completed' : isActive ? 'In Progress' : 'Pending'}
+                  </span>
+                  <span className="text-on-surface-variant">Step {stage.id} of {mission.stages.length}</span>
+                </div>
               </div>
-              <span className="w-5 h-5 rounded-full bg-tertiary-fixed text-on-tertiary-fixed flex items-center justify-center text-[12px] font-bold">
-                <span className="material-symbols-outlined text-[14px]">check</span>
-              </span>
-            </div>
-            <div className="flex flex-col">
-              <h2 className="font-headline-sm text-[14px] text-on-surface font-bold">
-                Sequence Network Fundamentals
-              </h2>
-              <p className="font-body-sm text-[12px] text-on-surface-variant mt-1 line-clamp-2">
-                Fortescue transform boundary conditions & mutual coupling decoupling principles.
-              </p>
-            </div>
-            <div className="font-mono text-[11px] text-tertiary font-semibold pt-1">
-              Completed
-            </div>
-          </div>
-
-          {/* Stage 2: Practice (Active) */}
-          <div
-            onClick={() => setActiveStage(2)}
-            className={`p-4 rounded-xl border shadow-sm flex flex-col justify-between gap-2 relative overflow-hidden cursor-pointer transition-all ${
-              activeStage === 2
-                ? 'bg-surface-container-lowest border-primary ring-2 ring-primary'
-                : 'bg-surface-container-lowest border-outline-variant/40'
-            }`}
-          >
-            <div className="absolute top-0 left-0 right-0 h-1 bg-primary"></div>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-1.5">
-                <span className="font-mono text-[11px] font-bold text-primary uppercase">Stage 02</span>
-                <span className="text-on-surface-variant font-mono text-[11px]">• 15 Min</span>
-              </div>
-              <span className="px-2 py-0.5 rounded bg-primary-fixed text-on-primary-fixed font-mono text-[10px] font-bold animate-pulse">
-                Active Now
-              </span>
-            </div>
-            <div className="flex flex-col">
-              <h2 className="font-headline-sm text-[14px] text-on-surface font-bold">
-                Zero-Sequence Network Synthesis
-              </h2>
-              <p className="font-body-sm text-[12px] text-on-surface-variant mt-1 line-clamp-2">
-                Interactive subtransient fault current calculation & phase network interconnection with 3Zn.
-              </p>
-            </div>
-            <div className="flex items-center justify-between pt-1 font-mono text-[11px] text-primary font-medium">
-              <span>In Progress</span>
-              <span>Step 2 of 4</span>
-            </div>
-          </div>
-
-          {/* Stage 3: Apply (Upcoming) */}
-          <div
-            onClick={() => setActiveStage(3)}
-            className={`p-4 rounded-xl border shadow-sm flex flex-col justify-between gap-2 relative overflow-hidden cursor-pointer transition-all ${
-              activeStage === 3
-                ? 'bg-surface-container-lowest border-primary ring-1 ring-primary'
-                : 'bg-surface-container-lowest/80 border-outline-variant/40 opacity-80'
-            }`}
-          >
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-1.5">
-                <span className="font-mono text-[11px] font-bold text-on-surface-variant uppercase">Stage 03</span>
-                <span className="text-on-surface-variant font-mono text-[11px]">• 10 Min</span>
-              </div>
-              <span className="material-symbols-outlined text-outline-variant text-[18px]">lock</span>
-            </div>
-            <div className="flex flex-col">
-              <h2 className="font-headline-sm text-[14px] text-on-surface font-bold">
-                Grounding Impedance Verification
-              </h2>
-              <p className="font-body-sm text-[12px] text-on-surface-variant mt-1 line-clamp-2">
-                3Zn loop compensation derivation under asymmetrical SLG fault dynamics.
-              </p>
-            </div>
-            <div className="flex items-center justify-between pt-1 font-mono text-[11px] text-on-surface-variant">
-              <span>Pending Step 2</span>
-              <span>Locked</span>
-            </div>
-          </div>
-
-          {/* Stage 4: Verify (Upcoming) */}
-          <div
-            onClick={() => setActiveStage(4)}
-            className={`p-4 rounded-xl border shadow-sm flex flex-col justify-between gap-2 relative overflow-hidden cursor-pointer transition-all ${
-              activeStage === 4
-                ? 'bg-surface-container-lowest border-primary ring-1 ring-primary'
-                : 'bg-surface-container-lowest/80 border-outline-variant/40 opacity-80'
-            }`}
-          >
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-1.5">
-                <span className="font-mono text-[11px] font-bold text-on-surface-variant uppercase">Stage 04</span>
-                <span className="text-on-surface-variant font-mono text-[11px]">• 5 Min</span>
-              </div>
-              <span className="material-symbols-outlined text-outline-variant text-[18px]">lock</span>
-            </div>
-            <div className="flex flex-col">
-              <h2 className="font-headline-sm text-[14px] text-on-surface font-bold">
-                Fault Current Validation & Lock
-              </h2>
-              <p className="font-body-sm text-[12px] text-on-surface-variant mt-1 line-clamp-2">
-                4-question high-velocity telemetry probe to seal verified profile update.
-              </p>
-            </div>
-            <div className="flex items-center justify-between pt-1 font-mono text-[11px] text-on-surface-variant">
-              <span>Final Gate</span>
-              <span>3 Items</span>
-            </div>
-          </div>
+            );
+          })}
         </div>
 
         {/* Main Workspace Split: Practice Sandbox (Left 8-col) + Reassessment & Velocity Tracker (Right 4-col) */}
@@ -234,58 +178,43 @@ export const MissionScreen: React.FC<MissionScreenProps> = ({
               <div className="flex items-center justify-between flex-wrap gap-2 border-b border-outline-variant/20 pb-3">
                 <div className="flex items-center gap-2 font-mono text-[12px]">
                   <span className="px-2 py-0.5 rounded bg-surface-container-highest/20 text-inverse-on-surface">
-                    PROBLEM REF #0492-LG
+                    {mission.id}
                   </span>
                   <span className="text-inverse-on-surface/70">
-                    Type: Unsymmetrical Fault • L-G Solid
+                    Domain: {mission.targetSkill}
                   </span>
                 </div>
                 <div className="flex items-center gap-1 text-tertiary-fixed font-mono text-[12px]">
                   <span className="material-symbols-outlined text-[16px]">bolt</span>
-                  <span>Subtransient Generator Direct State</span>
+                  <span>{mission.simulationSandbox.systemState}</span>
                 </div>
               </div>
 
               {/* Problem Statement */}
               <div className="flex flex-col gap-2">
                 <h3 className="font-headline-md text-lg text-surface-container-lowest font-bold">
-                  Subtransient Fault Calculation for Solid Single Line-to-Ground (SLG)
+                  {mission.practiceTask}
                 </h3>
                 <p className="font-body-md text-[14px] text-inverse-on-surface/90 leading-relaxed">
-                  A 3-phase, <span className="font-mono font-semibold text-secondary-fixed">50 MVA</span>, <span className="font-mono font-semibold text-secondary-fixed">11 kV</span> synchronous generator with a solidly grounded neutral has subtransient reactances of:
+                  Focus: <span className="font-mono font-semibold text-secondary-fixed">{mission.simulationSandbox.faultType}</span> • 
+                  Benchmark Target: <span className="font-mono font-semibold text-secondary-fixed">{mission.benchmarkTarget.toFixed(1)} / 10</span>
                 </p>
-
-                <div className="grid grid-cols-3 gap-3 my-2">
-                  <div className="p-3 rounded bg-surface-container-highest/10 flex flex-col font-mono">
-                    <span className="text-[11px] text-inverse-on-surface/60">X&apos;&apos;₁ (Positive Seq)</span>
-                    <span className="font-bold text-surface-container-lowest text-[14px]">0.15 p.u. (15%)</span>
-                  </div>
-                  <div className="p-3 rounded bg-surface-container-highest/10 flex flex-col font-mono">
-                    <span className="text-[11px] text-inverse-on-surface/60">X₂ (Negative Seq)</span>
-                    <span className="font-bold text-surface-container-lowest text-[14px]">0.10 p.u. (10%)</span>
-                  </div>
-                  <div className="p-3 rounded bg-surface-container-highest/10 flex flex-col font-mono">
-                    <span className="text-[11px] text-inverse-on-surface/60">X₀ (Zero Seq)</span>
-                    <span className="font-bold text-surface-container-lowest text-[14px]">0.05 p.u. (5%)</span>
-                  </div>
-                </div>
-
                 <p className="font-body-md text-[13px] text-inverse-on-surface/90 leading-relaxed">
-                  The generator is operating at rated terminal voltage under no-load condition before the fault occurs at terminal Phase A. Determine the <strong className="text-surface-container-lowest font-semibold">magnitude of the subtransient fault current (I&apos;&apos;f)</strong> in physical RMS units.
+                  {mission.simulationSandbox.taskPrompt}
                 </p>
               </div>
 
               {/* Formula Schematic Preview */}
               <div className="bg-surface-container-highest/10 p-4 rounded-lg flex flex-col gap-1.5 font-mono">
                 <div className="flex items-center justify-between text-inverse-on-surface/70 text-[11px]">
-                  <span className="uppercase tracking-wider">Sequence Formula Blueprint</span>
-                  <span className="text-tertiary-fixed">SLG: Series Interconnection</span>
+                  <span className="uppercase tracking-wider">Target Objective & Verification Blueprint</span>
+                  <span className="text-tertiary-fixed">{mission.targetSkill}</span>
                 </div>
-                <div className="text-surface-container-lowest text-[15px] py-1 font-bold">
-                  I&apos;&apos;f = 3 · Ia0 = 3 · [ Ea / (X&apos;&apos;1 + X2 + X0 + 3Zf) ]
+                <div className="text-surface-container-lowest text-[14px] py-1 font-bold whitespace-pre-line">
+                  {mission.simulationSandbox.starterFormulaOrCode}
                 </div>
                 <div className="text-inverse-on-surface/60 text-[12px] font-sans">
-                  With solid ground (Zf = 0) and pre-fault rated voltage Ea = 1.0 ∠ 0° p.u.
+                  {mission.simulationSandbox.verificationRule}
                 </div>
               </div>
 
@@ -297,7 +226,7 @@ export const MissionScreen: React.FC<MissionScreenProps> = ({
                   </label>
 
                   <div className="flex items-center bg-inverse-surface rounded p-0.5">
-                    {(['kA', 'p.u.', 'Amperes'] as const).map((unit) => (
+                    {(['Score', 'p.u.', 'Units'] as const).map((unit) => (
                       <button
                         key={unit}
                         type="button"
@@ -321,7 +250,7 @@ export const MissionScreen: React.FC<MissionScreenProps> = ({
                       value={calculatedInput}
                       onChange={(e) => setCalculatedInput(e.target.value)}
                       className="w-full px-4 py-3 rounded bg-surface-container-lowest text-on-surface font-mono font-bold text-lg focus:outline-none focus:ring-2 focus:ring-primary shadow-inner"
-                      placeholder="e.g. 26.24"
+                      placeholder="e.g. 8.5"
                     />
                     <span className="absolute right-4 top-3.5 font-mono text-on-surface-variant font-semibold text-[14px]">
                       {activeUnit}
@@ -330,7 +259,7 @@ export const MissionScreen: React.FC<MissionScreenProps> = ({
 
                   <div className="sm:col-span-4 flex items-center justify-center p-2.5 rounded bg-tertiary/20 text-tertiary-fixed font-mono text-[12px]">
                     <span className="material-symbols-outlined text-[16px] mr-1">check_circle</span>
-                    <span>Base Current: 2.624 kA</span>
+                    <span>Target: {mission.benchmarkTarget.toFixed(1)}</span>
                   </div>
                 </div>
 
@@ -391,10 +320,10 @@ export const MissionScreen: React.FC<MissionScreenProps> = ({
                     <span className="material-symbols-outlined text-[16px]">tips_and_updates</span>
                     FIRST PRINCIPLES BREAKDOWN:
                   </span>
-                  <p>1. I_base = S_base / (√3 · V_base) = 50×10⁶ / (√3 · 11×10³) ≈ 2624.32 A = 2.624 kA</p>
-                  <p>2. Sequence impedance total: X_eq = X&apos;&apos;₁ + X₂ + X₀ = 0.15 + 0.10 + 0.05 = 0.30 p.u.</p>
-                  <p>3. Fault current in p.u.: I&apos;&apos;f = 3 × (1.0 / 0.30) = 10.0 p.u.</p>
-                  <p>4. Fault current in kA: 10.0 × 2.624 = 26.24 kA</p>
+                  <p>1. Target competency: {mission.targetSkill}</p>
+                  <p>2. Current verified baseline: {beforeScore.toFixed(1)}/10</p>
+                  <p>3. Required industry cutoff: {targetBar.toFixed(1)}/10</p>
+                  <p>4. Goal: Complete practice exercises to close the {mission.deltaTarget} gap</p>
                 </div>
               )}
 
@@ -403,7 +332,7 @@ export const MissionScreen: React.FC<MissionScreenProps> = ({
                 <div className="p-4 bg-tertiary/20 border border-tertiary-fixed/50 rounded flex flex-col sm:flex-row items-center justify-between gap-3">
                   <div className="flex items-center gap-2 text-tertiary-fixed font-mono text-[13px]">
                     <span className="material-symbols-outlined text-[20px]">verified</span>
-                    <span><strong>Proof Verified!</strong> Telemetry records I&apos;&apos;f = 26.24 kA. Zero-sequence loop confirmed.</span>
+                    <span><strong>Proof Verified!</strong> Telemetry records exercise mastery for {mission.targetSkill}. Verification criteria met.</span>
                   </div>
                   <button
                     onClick={onCompleteMission}
@@ -456,10 +385,10 @@ export const MissionScreen: React.FC<MissionScreenProps> = ({
                 <div className="flex flex-col gap-1">
                   <div className="flex justify-between items-center">
                     <span className="text-on-surface-variant font-sans">Before Demonstration:</span>
-                    <span className="font-bold text-error">4.5 / 10.0</span>
+                    <span className="font-bold text-error">{beforeScore.toFixed(1)} / 10.0</span>
                   </div>
                   <div className="w-full bg-surface-container rounded-full h-2 overflow-hidden flex">
-                    <div className="bg-error h-full rounded-full" style={{ width: '45%' }}></div>
+                    <div className="bg-error h-full rounded-full" style={{ width: `${Math.min(100, (beforeScore / 10) * 100)}%` }}></div>
                   </div>
                   <span className="text-[10px] text-on-surface-variant text-right">
                     Registered Diagnostic State
@@ -470,10 +399,10 @@ export const MissionScreen: React.FC<MissionScreenProps> = ({
                 <div className="flex flex-col gap-1">
                   <div className="flex justify-between items-center">
                     <span className="text-on-surface-variant font-sans">Target Required (Bar):</span>
-                    <span className="font-bold text-on-surface">7.0 / 10.0</span>
+                    <span className="font-bold text-on-surface">{targetBar.toFixed(1)} / 10.0</span>
                   </div>
                   <div className="w-full bg-surface-container rounded-full h-2 overflow-hidden flex">
-                    <div className="bg-on-surface h-full rounded-full" style={{ width: '70%' }}></div>
+                    <div className="bg-on-surface h-full rounded-full" style={{ width: `${Math.min(100, (targetBar / 10) * 100)}%` }}></div>
                   </div>
                   <span className="text-[10px] text-on-surface-variant text-right">
                     Tier-1 Enterprise Minimum Requisite
@@ -487,16 +416,16 @@ export const MissionScreen: React.FC<MissionScreenProps> = ({
                       Projected Post-Mission:
                       <span className="material-symbols-outlined text-tertiary text-[14px]">trending_up</span>
                     </span>
-                    <span className="font-bold text-tertiary">7.2 / 10.0</span>
+                    <span className="font-bold text-tertiary">{projectedAfter.toFixed(1)} / 10.0</span>
                   </div>
                   <div className="w-full bg-surface-container rounded-full h-3 overflow-hidden flex relative">
-                    <div className="bg-error/40 h-full" style={{ width: '45%' }}></div>
-                    <div className="bg-tertiary h-full relative" style={{ width: '27%' }}>
+                    <div className="bg-error/40 h-full" style={{ width: `${Math.min(100, (beforeScore / 10) * 100)}%` }}></div>
+                    <div className="bg-tertiary h-full relative" style={{ width: `${Math.max(0, Math.min(100 - (beforeScore / 10) * 100, (deltaGain / 10) * 100))}%` }}>
                       <span className="absolute right-0 top-0 bottom-0 w-0.5 bg-surface-container-lowest"></span>
                     </div>
                   </div>
                   <div className="flex justify-between text-[11px]">
-                    <span className="text-tertiary font-semibold">+2.7 pt Delta Achieved</span>
+                    <span className="text-tertiary font-semibold">+{deltaGain.toFixed(1)} pt Delta Achieved</span>
                     <span className="text-on-surface-variant">Benchmark Surpassed</span>
                   </div>
                 </div>
@@ -509,14 +438,14 @@ export const MissionScreen: React.FC<MissionScreenProps> = ({
                 </span>
                 <div className="flex items-baseline gap-2">
                   <span className="font-headline-xl text-3xl text-primary font-bold font-mono tracking-tight">
-                    +2.7
+                    +{learningVelocity}
                   </span>
                   <span className="font-mono text-[12px] text-on-surface-variant font-medium">
                     pts / mission
                   </span>
                 </div>
                 <p className="font-body-sm text-[12px] text-on-surface-variant leading-relaxed">
-                  Intervention efficiency elevates candidate to the <strong className="text-on-surface font-semibold">92nd percentile</strong> for Power Systems engineering cohorts.
+                  Intervention efficiency elevates candidate toward the target benchmark for <strong className="text-on-surface font-semibold">{mission.targetSkill}</strong> cohorts.
                 </p>
               </div>
 
