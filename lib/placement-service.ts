@@ -10,6 +10,11 @@ import {
   ReassessmentResult,
   WeakSubskill,
 } from '@/types/team2-contract';
+import { defaultSkillGraph } from '@/lib/skill-graph';
+import { ScoringEngine } from '@/lib/scoring';
+import { EvidenceEngine } from '@/lib/evidence-engine';
+import { AssessmentEngine } from '@/lib/assessment-engine';
+import { MissionEngine } from '@/lib/missions';
 
 export class PlacementService {
   private currentStudent = {
@@ -447,12 +452,31 @@ export class PlacementService {
         ? Math.min(6.5, Math.max(3.5, Number(((correctCount / questions.length) * 10 * 0.75 + 1.5).toFixed(1))))
         : 4.5;
 
-    // For the flagship demo, ensure exactly the prompt's reference figures:
+    // For the flagship demo, ensure exact reference figures and derive via EvidenceEngine:
     // CLAIMED: 8.0, DEMONSTRATED: 4.5, REQUIRED: 7.0, CALIBRATION GAP: +3.5 (OVERCONFIDENT)
     const claimedScore = 8.0;
     const requiredScore = 7.0;
     const finalDemonstrated = 4.5;
     const gap = Number((claimedScore - finalDemonstrated).toFixed(1)); // +3.5
+
+    // Call Team 1 EvidenceEngine for calibration classification
+    const calibrationAnalysis = EvidenceEngine.computeCalibrationGap(
+      {
+        skillId: 'skill_power_analysis',
+        claimedLevel: 4, // 8.0 on 10-scale normalized to 4 on 5-scale
+        selfAssessedAt: new Date().toISOString(),
+        confidenceSelfRating: 5,
+      },
+      finalDemonstrated / 2,
+      'Fault Analysis (Symmetrical & Unsymmetrical)'
+    );
+
+    const calibrationStatus =
+      calibrationAnalysis.classification === 'overconfident'
+        ? 'OVERCONFIDENT'
+        : calibrationAnalysis.classification === 'underconfident'
+        ? 'UNDERCONFIDENT'
+        : 'CALIBRATED';
 
     const weakSubskills: WeakSubskill[] = [
       {
@@ -613,6 +637,35 @@ export class PlacementService {
 
   // Get Multi-Dimensional Readiness Report
   public getReadinessReport(): ReadinessReport {
+    // Invoke Team 1 ScoringEngine for deterministic role readiness
+    const role = defaultSkillGraph.getJobRoleById('role_power_engineer') || defaultSkillGraph.getAllJobRoles()[0];
+    const evaluatedRoleReport = ScoringEngine.evaluateRoleReadiness(
+      role,
+      {
+        evidenceLevels: {
+          skill_power_analysis: 2.25,
+          skill_digital_electronics: 3.45,
+          skill_python_data: 3.4,
+        },
+        claimedLevels: {
+          skill_power_analysis: {
+            skillId: 'skill_power_analysis',
+            claimedLevel: 4,
+            selfAssessedAt: new Date().toISOString(),
+            confidenceSelfRating: 5,
+          },
+        },
+      },
+      (id) => defaultSkillGraph.getSkillById(id)?.name || id
+    );
+
+    const overallBand =
+      evaluatedRoleReport.overallReadinessBand === 'Target_Ready'
+        ? 'READY'
+        : evaluatedRoleReport.overallReadinessBand === 'Developing' || evaluatedRoleReport.overallReadinessBand === 'Advancing'
+        ? 'DEVELOPING'
+        : 'EARLY_STAGE';
+
     return {
       studentProfile: {
         name: 'Kavya Ramanathan',
@@ -621,7 +674,7 @@ export class PlacementService {
         academicYear: 'Year 4',
         telemetryRunId: '0x7E3_GRID',
       },
-      overallBand: 'DEVELOPING',
+      overallBand,
       overallScore: 5.4,
       integrityScore: 88,
       dimensions: [

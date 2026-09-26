@@ -11,6 +11,8 @@
     padding: 0;
     background-color: #faf8ff;
     color: #131b2e;
+    overflow-x: hidden;
+    max-width: 100vw;
   }
 }
 
