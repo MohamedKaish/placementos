@@ -1,67 +1,85 @@
 /**
  * PlacementOS - Assessment Engine Types
- * Department-agnostic structured assessments
+ * Department-agnostic structured and adaptive assessments
  */
 
 import { SkillProficiencyLevel } from './skill-graph';
 
-export type QuestionType =
-  | 'multiple_choice'
-  | 'scenario_analysis'
-  | 'code_snippet'
-  | 'system_diagram_reasoning'
-  | 'numerical_problem';
-
-export interface QuestionOption {
+export interface AssessmentQuestionOption {
   id: string;
   text: string;
   isCorrect: boolean;
   explanation: string;
 }
 
-export interface Question {
+export interface AssessmentQuestion {
   id: string;
+  domainId: string;
   skillId: string;
-  subskillId?: string;
-  targetLevel: SkillProficiencyLevel;
-  type: QuestionType;
-  prompt: string;
-  codeOrDiagramSnippet?: string;
-  options?: QuestionOption[]; // For multiple choice
-  rubricCriteria?: string[]; // For open scenario grading
-  maxScore: number;
+  subskillId: string;
+  difficulty: number; // 1 (Novice) to 5 (Expert)
+  question: string;
+  options: AssessmentQuestionOption[];
+  correctAnswer: string;
+  expectedTimeSeconds: number;
+  explanation: string;
 }
 
-export interface QuestionResponse {
+export type StudentQuestionConfidence = 'high' | 'medium' | 'low';
+
+export interface AdaptiveAnswerSubmission {
+  sessionId: string;
   questionId: string;
-  selectedOptionId?: string;
-  textResponse?: string;
-  isCorrect?: boolean;
-  scoreAwarded: number;
+  selectedOptionId: string;
+  confidenceRating: StudentQuestionConfidence;
   timeSpentSeconds: number;
 }
 
-export interface Assessment {
-  id: string;
-  title: string;
-  description: string;
-  targetSkillIds: string[];
-  departmentCodeAgnostic: boolean; // Applicable across engineering disciplines
-  estimatedMinutes: number;
-  totalQuestions: number;
-  passingScore: number;
+export type AdaptiveStepDecision =
+  | 'increase_difficulty'   // Correct + high confidence -> increase difficulty
+  | 'reinforce_concept'     // Wrong + low confidence -> reinforce concept
+  | 'possible_misconception'// Wrong + very high confidence -> possible misconception
+  | 'fragile_knowledge'     // Correct + very slow -> developing/fragile knowledge
+  | 'maintain_level';       // Standard progression
+
+export interface AdaptiveStepResult {
+  questionId: string;
+  isCorrect: boolean;
+  selectedOptionId: string;
+  correctOptionId: string;
+  explanation: string;
+  previousDifficulty: number;
+  nextDifficulty: number;
+  decision: AdaptiveStepDecision;
+  decisionRationale: string;
+  timeSpentSeconds: number;
 }
 
-export interface AssessmentAttempt {
-  id: string;
+export interface AssessmentSession {
+  sessionId: string;
   userId: string;
-  assessmentId: string;
+  targetRoleId?: string;
+  targetSkillId: string;
+  currentDifficulty: number; // 1 to 5
+  history: AdaptiveStepResult[];
+  availableQuestionIds: string[];
+  isCompleted: boolean;
   startedAt: string;
   completedAt?: string;
-  responses: QuestionResponse[];
-  totalScore: number;
-  maxScore: number;
-  percentageScore: number;
-  skillLevelAchieved: Record<string, SkillProficiencyLevel>;
-  status: 'in_progress' | 'completed' | 'abandoned';
+}
+
+export interface AssessmentResult {
+  sessionId: string;
+  userId: string;
+  skillId: string;
+  skillName: string;
+  demonstratedScore: number; // Continuous demonstrated proficiency (0.0 to 5.0)
+  totalQuestionsAnswered: number;
+  correctCount: number;
+  accuracyPercentage: number;
+  misconceptionCount: number;
+  fragileKnowledgeCount: number;
+  achievedProficiencyLevel: SkillProficiencyLevel;
+  confidence: number; // 0.0 to 1.0 (assessment performance confers high confidence)
+  completedAt: string;
 }
