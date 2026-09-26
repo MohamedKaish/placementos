@@ -1,5 +1,49 @@
 [
   {
+    "id": "skill_fault_analysis",
+    "domainId": "domain_eee_power",
+    "name": "Fault Analysis & Symmetrical Components",
+    "description": "Calculation of 3-phase symmetrical and unsymmetrical faults (SLG, LL, DLG) using Fortescue symmetrical components and sequence networks.",
+    "isFoundational": true,
+    "subskills": [
+      { "id": "sub_sym_components", "skillId": "skill_fault_analysis", "name": "Fortescue Symmetrical Components", "description": "Positive, negative, and zero sequence transformation matrices" },
+      { "id": "sub_unsym_faults", "skillId": "skill_fault_analysis", "name": "Unsymmetrical Fault Current Computation", "description": "Interconnection of sequence networks for line-to-ground and double-line faults" },
+      { "id": "sub_bus_impedance", "skillId": "skill_fault_analysis", "name": "Z-Bus Building Algorithm", "description": "Systematic bus impedance matrix formation for multi-bus networks" }
+    ],
+    "tools": [
+      { "id": "tool_etap", "name": "ETAP", "category": "Power System Simulator" },
+      { "id": "tool_matlab_power", "name": "MATLAB SimPowerSystems", "category": "Simulation" }
+    ]
+  },
+  {
+    "id": "skill_protective_relays",
+    "domainId": "domain_eee_power",
+    "name": "Protective Relaying & Switchgear",
+    "description": "Coordination of overcurrent, distance, and differential protection relays in high-voltage substations.",
+    "isFoundational": false,
+    "subskills": [
+      { "id": "sub_relay_coord", "skillId": "skill_protective_relays", "name": "Time-Current Characteristic (TCC) Coordination", "description": "Grading margins, plug setting multipliers, and time multiplier settings" },
+      { "id": "sub_diff_protection", "skillId": "skill_protective_relays", "name": "Differential Protection for Transformers & Generators", "description": "Biased differential relays, percentage bias slope, and inrush restraint" }
+    ],
+    "tools": [
+      { "id": "tool_digsilent", "name": "DIgSILENT PowerFactory", "category": "Relay Coordination" }
+    ]
+  },
+  {
+    "id": "skill_power_analysis",
+    "domainId": "domain_eee_power",
+    "name": "Power Flow & Grid Stability",
+    "description": "Newton-Raphson and Gauss-Seidel load flow equations, swing equation, and transient stability analysis.",
+    "isFoundational": true,
+    "subskills": [
+      { "id": "sub_newton_raphson", "skillId": "skill_power_analysis", "name": "Newton-Raphson Load Flow Iteration", "description": "Jacobian matrix formulation, active/reactive mismatch vectors" },
+      { "id": "sub_swing_equation", "skillId": "skill_power_analysis", "name": "Swing Equation & Equal Area Criterion", "description": "Critical clearing angle and rotor angle stability" }
+    ],
+    "tools": [
+      { "id": "tool_pscad", "name": "PSCAD", "category": "Transient Simulator" }
+    ]
+  },
+  {
     "id": "skill_dsa",
     "domainId": "domain_cse_sw",
     "name": "Data Structures & Algorithms",
@@ -39,8 +83,7 @@
       { "id": "sub_sql_window", "skillId": "skill_sql_analytics", "name": "Window Functions & Partitioning", "description": "Running totals, ranking, and lag/lead queries" }
     ],
     "tools": [
-      { "id": "tool_postgres", "name": "PostgreSQL", "category": "Database" },
-      { "id": "tool_dbeaver", "name": "DBeaver", "category": "SQL Client" }
+      { "id": "tool_postgres", "name": "PostgreSQL", "category": "Database" }
     ]
   },
   {
@@ -80,12 +123,10 @@
     "description": "Configuring UART, SPI, I2C, Timers, ADC, and PWM for sensor/actuator control.",
     "isFoundational": false,
     "subskills": [
-      { "id": "sub_mcu_comms", "skillId": "skill_microcontrollers", "name": "UART, SPI & I2C Bus Communication", "description": "Master-slave packet timing and arbitration" },
-      { "id": "sub_mcu_pwm", "skillId": "skill_microcontrollers", "name": "Timers, Counters & PWM Generation", "description": "Motor speed control and precision event triggering" }
+      { "id": "sub_mcu_comms", "skillId": "skill_microcontrollers", "name": "UART, SPI & I2C Bus Communication", "description": "Master-slave packet timing and arbitration" }
     ],
     "tools": [
-      { "id": "tool_logic_analyzer", "name": "Saleae Logic Analyzer", "category": "Hardware Debugger" },
-      { "id": "tool_oscilloscope", "name": "Digital Storage Oscilloscope", "category": "Hardware Test" }
+      { "id": "tool_logic_analyzer", "name": "Saleae Logic Analyzer", "category": "Hardware Debugger" }
     ]
   },
   {
@@ -95,27 +136,10 @@
     "description": "Combinational logic, sequential state machines, setup/hold timings, and Boolean minimization.",
     "isFoundational": true,
     "subskills": [
-      { "id": "sub_fsm_design", "skillId": "skill_digital_electronics", "name": "Finite State Machines (Mealy/Moore)", "description": "Synchronous state transition design" },
-      { "id": "sub_timing_analysis", "skillId": "skill_digital_electronics", "name": "Static Timing & Clock Domains", "description": "Clock skew, setup time, and hold margins" }
+      { "id": "sub_fsm_design", "skillId": "skill_digital_electronics", "name": "Finite State Machines (Mealy/Moore)", "description": "Synchronous state transition design" }
     ],
     "tools": [
-      { "id": "tool_verilog", "name": "Verilog HDL", "category": "Hardware Description" },
-      { "id": "tool_modelsim", "name": "ModelSim", "category": "Simulation" }
-    ]
-  },
-  {
-    "id": "skill_power_analysis",
-    "domainId": "domain_eee_power",
-    "name": "Power System Analysis & Grid Protection",
-    "description": "Load flow computations, symmetrical components, fault currents, and protective relay settings.",
-    "isFoundational": true,
-    "subskills": [
-      { "id": "sub_fault_calc", "skillId": "skill_power_analysis", "name": "Short-Circuit & Fault Calculations", "description": "Per-unit system and sequence networks" },
-      { "id": "sub_relays", "skillId": "skill_power_analysis", "name": "Protective Relays & Circuit Breakers", "description": "Overcurrent, differential, and distance coordination" }
-    ],
-    "tools": [
-      { "id": "tool_etap", "name": "ETAP", "category": "Power Simulation" },
-      { "id": "tool_matlab_power", "name": "MATLAB SimPowerSystems", "category": "Simulation" }
+      { "id": "tool_verilog", "name": "Verilog HDL", "category": "Hardware Description" }
     ]
   },
   {
@@ -125,12 +149,10 @@
     "description": "Feature-based solid modeling, constraint-based parametric assemblies, and sheet metal drafting.",
     "isFoundational": true,
     "subskills": [
-      { "id": "sub_cad_features", "skillId": "skill_cad_modeling", "name": "Parametric Sketching & Solid Features", "description": "Extrusions, sweeps, lofts, and filleting" },
-      { "id": "sub_gdt", "skillId": "skill_cad_modeling", "name": "Geometric Dimensioning & Tolerancing (GD&T)", "description": "Datum reference frames, position tolerances, and runout" }
+      { "id": "sub_cad_features", "skillId": "skill_cad_modeling", "name": "Parametric Sketching & Solid Features", "description": "Extrusions, sweeps, lofts, and filleting" }
     ],
     "tools": [
-      { "id": "tool_solidworks", "name": "SolidWorks", "category": "CAD Software" },
-      { "id": "tool_fusion", "name": "Autodesk Fusion 360", "category": "CAD Software" }
+      { "id": "tool_solidworks", "name": "SolidWorks", "category": "CAD Software" }
     ]
   },
   {
@@ -140,11 +162,23 @@
     "description": "Stress-strain analysis, mesh convergence, boundary constraints, and factor of safety evaluation.",
     "isFoundational": false,
     "subskills": [
-      { "id": "sub_fea_meshing", "skillId": "skill_fea_simulation", "name": "Meshing Quality & Convergence Study", "description": "Hex/tet meshing, singularities, and refinement" },
-      { "id": "sub_von_mises", "skillId": "skill_fea_simulation", "name": "Von Mises Stress & Yield Criteria", "description": "Failure theories under static and cyclic loads" }
+      { "id": "sub_fea_meshing", "skillId": "skill_fea_simulation", "name": "Meshing Quality & Convergence Study", "description": "Hex/tet meshing, singularities, and refinement" }
     ],
     "tools": [
       { "id": "tool_ansys", "name": "ANSYS Mechanical", "category": "FEA Solver" }
+    ]
+  },
+  {
+    "id": "skill_vehicle_dynamics",
+    "domainId": "domain_mech_automotive",
+    "name": "Vehicle Dynamics & Powertrain Systems",
+    "description": "Suspension geometry, roll center calculations, longitudinal tire traction, and electric drivetrain sizing.",
+    "isFoundational": false,
+    "subskills": [
+      { "id": "sub_suspension_kinematics", "skillId": "skill_vehicle_dynamics", "name": "Quarter-Car Model & Suspension Kinematics", "description": "Damping ratios, spring stiffness, and camber curves" }
+    ],
+    "tools": [
+      { "id": "tool_carsim", "name": "CarSim", "category": "Vehicle Simulation" }
     ]
   },
   {
@@ -154,12 +188,38 @@
     "description": "Bending moment/shear envelopes, limit state design, column buckling, and seismic load codes.",
     "isFoundational": true,
     "subskills": [
-      { "id": "sub_rc_design", "skillId": "skill_structural_analysis", "name": "Limit State Concrete Beam & Slab Design", "description": "Flexural capacity, shear stirrups, and deflection limits" },
-      { "id": "sub_frame_analysis", "skillId": "skill_structural_analysis", "name": "Portal Frame & Truss Force Distribution", "description": "Moment distribution and matrix stiffness methods" }
+      { "id": "sub_rc_design", "skillId": "skill_structural_analysis", "name": "Limit State Concrete Beam & Slab Design", "description": "Flexural capacity, shear stirrups, and deflection limits" }
     ],
     "tools": [
-      { "id": "tool_staad", "name": "STAAD.Pro", "category": "Structural Analysis" },
-      { "id": "tool_etabs", "name": "ETABS", "category": "Structural Modeling" }
+      { "id": "tool_staad", "name": "STAAD.Pro", "category": "Structural Analysis" }
+    ]
+  },
+  {
+    "id": "skill_process_control",
+    "domainId": "domain_chem_process",
+    "name": "Process Dynamics & Automation",
+    "description": "Transfer functions, tuning PID controllers (Ziegler-Nichols), SCADA interfaces, and control valve sizing.",
+    "isFoundational": true,
+    "subskills": [
+      { "id": "sub_pid_tuning", "skillId": "skill_process_control", "name": "PID Feedback Tuning & Stability Margins", "description": "Gain margin, phase margin, and Bode response" },
+      { "id": "sub_plc_scada", "skillId": "skill_process_control", "name": "PLC Programming & SCADA Integration", "description": "Ladder logic and industrial sensor loop calibration" }
+    ],
+    "tools": [
+      { "id": "tool_aspen", "name": "Aspen Plus", "category": "Process Simulator" },
+      { "id": "tool_matlab_simulink", "name": "Simulink", "category": "Control Simulation" }
+    ]
+  },
+  {
+    "id": "skill_bioprocess",
+    "domainId": "domain_biotech_process",
+    "name": "Bioprocess Engineering & Fermentation",
+    "description": "Microbial growth kinetics (Monod model), dissolved oxygen mass transfer (kLa), and sterile bioreactor operation.",
+    "isFoundational": true,
+    "subskills": [
+      { "id": "sub_fermentation_kinetics", "skillId": "skill_bioprocess", "name": "Bioreactor Scale-up & Mass Transfer", "description": "Aeration rates, impeller shear, and volumetric oxygen transfer" }
+    ],
+    "tools": [
+      { "id": "tool_superpro", "name": "SuperPro Designer", "category": "Bioprocess Simulator" }
     ]
   }
 ]

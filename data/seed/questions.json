@@ -1,0 +1,172 @@
+[
+  {
+    "id": "q_fault_1",
+    "domainId": "domain_eee_power",
+    "skillId": "skill_fault_analysis",
+    "subskillId": "sub_sym_components",
+    "difficulty": 1,
+    "question": "In Fortescue symmetrical component transformation, which sequence components exist in a balanced three-phase system under normal operating conditions?",
+    "options": [
+      { "id": "opt_a", "text": "Positive sequence only", "isCorrect": true, "explanation": "A balanced 3-phase system has equal magnitudes displaced by 120°, producing only positive sequence currents (Ia1)." },
+      { "id": "opt_b", "text": "Zero sequence only", "isCorrect": false, "explanation": "Zero sequence currents require a neutral return path and an unbalance." },
+      { "id": "opt_c", "text": "Positive and negative sequences equally", "isCorrect": false, "explanation": "Negative sequence appears only during phase unbalance or asymmetrical faults." },
+      { "id": "opt_d", "text": "Positive, negative, and zero sequences", "isCorrect": false, "explanation": "All three sequences only exist simultaneously under unsymmetrical fault conditions." }
+    ],
+    "correctAnswer": "opt_a",
+    "expectedTimeSeconds": 45,
+    "explanation": "Balanced sinusoidal 3-phase quantities decompose purely into positive sequence components having the same phase sequence as the original system."
+  },
+  {
+    "id": "q_fault_2",
+    "domainId": "domain_eee_power",
+    "skillId": "skill_fault_analysis",
+    "subskillId": "sub_unsym_faults",
+    "difficulty": 2,
+    "question": "For a Single Line-to-Ground (SLG) fault on phase A through fault impedance Zf, how are the positive, negative, and zero sequence networks connected?",
+    "options": [
+      { "id": "opt_a", "text": "Connected in parallel", "isCorrect": false, "explanation": "Parallel sequence interconnection represents a Double Line-to-Ground (DLG) fault." },
+      { "id": "opt_b", "text": "Connected in series", "isCorrect": true, "explanation": "In an SLG fault, Ia1 = Ia2 = Ia0 = Ia / 3, which dictates that all three sequence networks are connected in series." },
+      { "id": "opt_c", "text": "Positive and negative in series, zero disconnected", "isCorrect": false, "explanation": "Line-to-Line (L-L) faults have zero sequence disconnected, not SLG." },
+      { "id": "opt_d", "text": "Positive and zero in parallel, negative disconnected", "isCorrect": false, "explanation": "Incorrect boundary condition." }
+    ],
+    "correctAnswer": "opt_b",
+    "expectedTimeSeconds": 60,
+    "explanation": "Because fault boundary conditions enforce Ib = 0 and Ic = 0, the sequence currents are equal: Ia0 = Ia1 = Ia2. Equal currents through networks define a series connection."
+  },
+  {
+    "id": "q_fault_3",
+    "domainId": "domain_eee_power",
+    "skillId": "skill_fault_analysis",
+    "subskillId": "sub_unsym_faults",
+    "difficulty": 3,
+    "question": "A 100 MVA generator with X1 = 0.20 p.u., X2 = 0.20 p.u., and X0 = 0.08 p.u. experiences an unloaded bolted SLG fault at its solidly grounded terminals (Prefault voltage = 1.0 p.u.). What is the subtransient symmetrical fault current in p.u.?",
+    "options": [
+      { "id": "opt_a", "text": "2.08 p.u.", "isCorrect": false, "explanation": "This would be the per-phase sequence current Ia1, not the total phase fault current Ia = 3 * Ia1." },
+      { "id": "opt_b", "text": "6.25 p.u.", "isCorrect": true, "explanation": "Ia1 = Vf / (X1 + X2 + X0) = 1.0 / (0.2 + 0.2 + 0.08) = 1.0 / 0.48 = 2.083 p.u. Fault current Ia = 3 * Ia1 = 3 * 2.083 = 6.25 p.u." },
+      { "id": "opt_c", "text": "5.00 p.u.", "isCorrect": false, "explanation": "5.0 p.u. corresponds to a 3-phase symmetrical fault (1.0 / 0.2)." },
+      { "id": "opt_d", "text": "12.5 p.u.", "isCorrect": false, "explanation": "Overestimated current." }
+    ],
+    "correctAnswer": "opt_b",
+    "expectedTimeSeconds": 90,
+    "explanation": "Total SLG fault current is given by Ia = 3 * Ia1 = 3 * [Vf / (X1 + X2 + X0)] = 3 * [1.0 / 0.48] = 6.25 p.u."
+  },
+  {
+    "id": "q_fault_4",
+    "domainId": "domain_eee_power",
+    "skillId": "skill_fault_analysis",
+    "subskillId": "sub_bus_impedance",
+    "difficulty": 4,
+    "question": "When modifying an existing Z-Bus matrix by adding a branch with impedance Zb between existing bus i and existing bus j, which element in the augmented column determines the loop impedance before Kron reduction?",
+    "options": [
+      { "id": "opt_a", "text": "Zii + Zjj - 2*Zij + Zb", "isCorrect": true, "explanation": "The loop impedance Z_loop = Zth,ij + Zb = Zii + Zjj - 2*Zij + Zb." },
+      { "id": "opt_b", "text": "Zii + Zjj + Zij + Zb", "isCorrect": false, "explanation": "Mutual coupling terms subtract, not add, when driving loop currents." },
+      { "id": "opt_c", "text": "Zii * Zjj / (Zii + Zjj) + Zb", "isCorrect": false, "explanation": "Not a parallel impedance calculation." },
+      { "id": "opt_d", "text": "Zij - Zb", "isCorrect": false, "explanation": "Incorrect matrix dimension formulation." }
+    ],
+    "correctAnswer": "opt_a",
+    "expectedTimeSeconds": 90,
+    "explanation": "The Thevenin impedance between buses i and j is Zth = Zii + Zjj - 2*Zij. Adding a branch of Zb between them creates a closed loop with diagonal impedance Z_loop = Zii + Zjj - 2*Zij + Zb, which is eliminated via Kron reduction."
+  },
+  {
+    "id": "q_fault_5",
+    "domainId": "domain_eee_power",
+    "skillId": "skill_fault_analysis",
+    "subskillId": "sub_unsym_faults",
+    "difficulty": 5,
+    "question": "Under what condition will the Single Line-to-Ground fault current exceed the Three-Phase symmetrical fault current on a grounded synchronous generator?",
+    "options": [
+      { "id": "opt_a", "text": "When zero sequence reactance X0 is less than positive sequence subtransient reactance X1''", "isCorrect": true, "explanation": "SLG current = 3 / (X1 + X2 + X0). Since X2 ≈ X1, if X0 < X1, then (2*X1 + X0) < 3*X1, making 3 / (2*X1 + X0) > 1 / X1." },
+      { "id": "opt_b", "text": "When zero sequence reactance X0 is greater than 2 * X1", "isCorrect": false, "explanation": "Higher X0 suppresses SLG current below 3-phase fault levels." },
+      { "id": "opt_c", "text": "Only when the generator is ungrounded", "isCorrect": false, "explanation": "In an ungrounded generator, zero sequence impedance is infinite and SLG current is zero." },
+      { "id": "opt_d", "text": "It is mathematically impossible for SLG to ever exceed a 3-phase fault", "isCorrect": false, "explanation": "False: tightly grounded salient-pole machines routinely exhibit higher SLG currents than 3-phase faults." }
+    ],
+    "correctAnswer": "opt_a",
+    "expectedTimeSeconds": 90,
+    "explanation": "Because 3-phase fault current is I_3ph = 1.0 / X1 and SLG is I_slg = 3.0 / (X1 + X2 + X0) ≈ 3.0 / (2*X1 + X0). Whenever X0 < X1, I_slg exceeds I_3ph, which is why neutral grounding reactors are used."
+  },
+  {
+    "id": "q_dsa_1",
+    "domainId": "domain_cse_sw",
+    "skillId": "skill_dsa",
+    "subskillId": "sub_dsa_arrays",
+    "difficulty": 1,
+    "question": "What is the amortized average time complexity of inserting a key-value pair into a well-dimensioned hash table?",
+    "options": [
+      { "id": "opt_a", "text": "O(1)", "isCorrect": true, "explanation": "Direct bucket computation via hash function executes in constant time." },
+      { "id": "opt_b", "text": "O(log n)", "isCorrect": false, "explanation": "Logarithmic is typical for binary search trees." },
+      { "id": "opt_c", "text": "O(n)", "isCorrect": false, "explanation": "O(n) is the worst case under catastrophic hash collision clustering." },
+      { "id": "opt_d", "text": "O(n log n)", "isCorrect": false, "explanation": "Typical for comparison sorting." }
+    ],
+    "correctAnswer": "opt_a",
+    "expectedTimeSeconds": 30,
+    "explanation": "With a good uniform hash distribution and dynamic resizing before load factor exceeds 0.75, hash table insertions are O(1) amortized."
+  },
+  {
+    "id": "q_dsa_2",
+    "domainId": "domain_cse_sw",
+    "skillId": "skill_dsa",
+    "subskillId": "sub_dsa_arrays",
+    "difficulty": 2,
+    "question": "In a sorted array of n integers, which approach finds two numbers that sum to a target T with O(n) time and O(1) auxiliary space?",
+    "options": [
+      { "id": "opt_a", "text": "Two pointers moving inward from array endpoints", "isCorrect": true, "explanation": "Because the array is already sorted, incrementing left increases sum, decrementing right decreases sum in O(n) time and O(1) space." },
+      { "id": "opt_b", "text": "Nested loops checking every pair", "isCorrect": false, "explanation": "Nested loops require O(n^2) time." },
+      { "id": "opt_c", "text": "Hash map storing complements", "isCorrect": false, "explanation": "Hash map achieves O(n) time but consumes O(n) extra space." },
+      { "id": "opt_d", "text": "Binary search on every element", "isCorrect": false, "explanation": "Takes O(n log n) time." }
+    ],
+    "correctAnswer": "opt_a",
+    "expectedTimeSeconds": 45,
+    "explanation": "Two-pointer convergence exploits the pre-sorted invariant, eliminating memory allocations while guaranteeing single-pass O(n) search."
+  },
+  {
+    "id": "q_dsa_3",
+    "domainId": "domain_cse_sw",
+    "skillId": "skill_dsa",
+    "subskillId": "sub_dsa_trees",
+    "difficulty": 3,
+    "question": "Which tree traversal sequence applied to a valid Binary Search Tree (BST) visits keys in strictly ascending numerical order?",
+    "options": [
+      { "id": "opt_a", "text": "In-order (Left, Root, Right)", "isCorrect": true, "explanation": "By definition, left subtree contains smaller keys, root is current, right subtree contains greater keys." },
+      { "id": "opt_b", "text": "Pre-order (Root, Left, Right)", "isCorrect": false, "explanation": "Pre-order visits root before left subtree." },
+      { "id": "opt_c", "text": "Post-order (Left, Right, Root)", "isCorrect": false, "explanation": "Post-order is used for bottom-up cleanup or expression evaluation." },
+      { "id": "opt_d", "text": "Level-order (Breadth-First)", "isCorrect": false, "explanation": "Level-order visits top-to-bottom across depths." }
+    ],
+    "correctAnswer": "opt_a",
+    "expectedTimeSeconds": 40,
+    "explanation": "In-order traversal of a BST guarantees non-decreasing sorted order."
+  },
+  {
+    "id": "q_dsa_4",
+    "domainId": "domain_cse_sw",
+    "skillId": "skill_dsa",
+    "subskillId": "sub_dsa_trees",
+    "difficulty": 4,
+    "question": "In Dijkstra's shortest path algorithm implemented with a Min-Heap (priority queue) on a graph with V vertices and E edges, what is the tight asymptotic time complexity?",
+    "options": [
+      { "id": "opt_a", "text": "O((V + E) log V)", "isCorrect": true, "explanation": "Each vertex is extracted once (V log V) and each edge can trigger a decrease-key operation (E log V)." },
+      { "id": "opt_b", "text": "O(V^2)", "isCorrect": false, "explanation": "O(V^2) is Dijkstra with an unsorted array, not a binary min-heap." },
+      { "id": "opt_c", "text": "O(V * E)", "isCorrect": false, "explanation": "O(V * E) is Bellman-Ford complexity." },
+      { "id": "opt_d", "text": "O(E log E)", "isCorrect": false, "explanation": "Equivalent to Kruskal's MST sorting phase." }
+    ],
+    "correctAnswer": "opt_a",
+    "expectedTimeSeconds": 60,
+    "explanation": "Using a binary min-heap yields O((V + E) log V). With Fibonacci heaps it improves to O(E + V log V)."
+  },
+  {
+    "id": "q_relays_1",
+    "domainId": "domain_eee_power",
+    "skillId": "skill_protective_relays",
+    "subskillId": "sub_relay_coord",
+    "difficulty": 2,
+    "question": "Why is a time grading margin (typically 0.2 to 0.4 seconds) required between successive overcurrent relays in a radial distribution feeder?",
+    "options": [
+      { "id": "opt_a", "text": "To account for circuit breaker operating time, CT errors, and relay overshoot", "isCorrect": true, "explanation": "The margin ensures downstream breaker interrupts the fault before the upstream backup relay trips." },
+      { "id": "opt_b", "text": "To allow the line voltage to recover to normal rated magnitude", "isCorrect": false, "explanation": "Voltage does not recover until the fault is isolated." },
+      { "id": "opt_c", "text": "Because induction disc relays have negative time inertia", "isCorrect": false, "explanation": "Induction discs have forward inertia causing overshoot." },
+      { "id": "opt_d", "text": "To prevent transformer core saturation during fault clearing", "isCorrect": false, "explanation": "Relay grading does not manage transformer core flux." }
+    ],
+    "correctAnswer": "opt_a",
+    "expectedTimeSeconds": 60,
+    "explanation": "The grading margin provides sufficient time for the downstream breaker clearing time (50-100ms) + relay overshoot + safety tolerance so discrimination is preserved."
+  }
+]
