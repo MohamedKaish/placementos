@@ -1,11 +1,10 @@
 'use client';
 
 import React from 'react';
-import { CalibrationUIResult } from '@/types/team2-contract';
-import { AlertTriangle, LayoutDashboard, ArrowRight } from 'lucide-react';
+import { CalibrationResult } from '@/types/team2-contract';
 
 interface CalibrationResultScreenProps {
-  result: CalibrationUIResult;
+  result: CalibrationResult;
   onStartMission: () => void;
   onViewDashboard: () => void;
 }
@@ -16,207 +15,496 @@ export const CalibrationResultScreen: React.FC<CalibrationResultScreenProps> = (
   onViewDashboard,
 }) => {
   return (
-    <div className="w-full max-w-full overflow-x-hidden bg-grid-matrix min-h-screen pb-12">
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 py-6 space-y-5">
-        {/* Top Telemetry Status Banner */}
-        <div className="border border-outline-variant bg-surface-container-lowest p-4 flex flex-col md:flex-row items-start md:items-center justify-between gap-3">
-          <div className="flex items-center gap-2.5">
-            <div className="w-2.5 h-2.5 bg-primary-container"></div>
-            <h1 className="font-label-lg text-label-lg tracking-wider uppercase text-on-surface font-semibold">
-              DIAGNOSTIC CALIBRATION COMPLETE <span className="text-outline font-normal">{'//'}</span>{' '}
-              <span className="text-primary font-bold">EVIDENCE VERIFICATION AUDIT #8841-B</span>
-            </h1>
+    <div className="w-full min-h-screen pt-16 bg-surface">
+      {/* Top Utility Context Bar */}
+      <div className="w-full bg-surface-container-low px-4 sm:px-8 py-2.5 border-b border-outline-variant/30">
+        <div className="max-w-[1440px] mx-auto flex flex-wrap items-center justify-between gap-3 font-mono text-[12px] text-on-surface-variant">
+          <div className="flex items-center gap-2">
+            <span>Assessments</span>
+            <span className="material-symbols-outlined text-[14px]">chevron_right</span>
+            <span>Diagnostic Run #{result.runId}</span>
+            <span className="material-symbols-outlined text-[14px]">chevron_right</span>
+            <span className="text-primary font-semibold">Flagship Calibration Result</span>
           </div>
-          <div className="flex items-center gap-3 text-label-sm text-outline font-mono">
-            <span>TIMESTAMP: {new Date(result.timestamp).toLocaleDateString()}</span>
-            <span className="border border-outline-variant px-1.5 py-0.5 bg-surface-container text-primary uppercase">
-              [PROCTOR_NODE: V-309]
+          <div className="flex items-center gap-2">
+            <span className="px-2 py-0.5 bg-surface-container-highest rounded text-on-surface font-mono text-[11px]">
+              TELEMETRY RUN: 0x7E3_GRID
+            </span>
+            <span className="px-2 py-0.5 bg-tertiary-container text-on-tertiary font-mono text-[11px] rounded flex items-center gap-1">
+              <span className="material-symbols-outlined text-[12px]">verified</span> BENCHMARK LOCKED
             </span>
           </div>
         </div>
+      </div>
 
-        {/* MAIN CENTERPIECE: THE THREE LARGE PILLARS */}
-        <section aria-label="Comparative Telemetry Triad" className="grid grid-cols-1 md:grid-cols-3 gap-0 border border-outline-variant bg-surface-container-low">
-          {/* Pillar 1: CLAIMED SKILL */}
-          <div className="p-6 md:p-8 border-b md:border-b-0 md:border-r border-outline-variant bg-surface-container-lowest flex flex-col justify-between relative overflow-hidden">
-            <div className="absolute top-0 left-0 w-full h-1 bg-outline-variant"></div>
-            <div>
-              <div className="flex items-center justify-between mb-4">
-                <span className="border border-outline-variant px-1.5 py-0.5 text-label-sm font-label-sm uppercase tracking-wider text-outline bg-surface-container">
-                  [CLAIMED_ONLY]
+      {/* Main Canvas Container */}
+      <div className="w-full px-4 sm:px-8 py-6">
+        <div className="max-w-[1440px] mx-auto flex flex-col gap-6">
+          {/* Section 1: Executive Calibration Header */}
+          <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 bg-surface-container-lowest p-6 rounded-lg border border-outline-variant/40 shadow-sm">
+            <div className="flex flex-col gap-2 max-w-3xl">
+              <div className="flex flex-wrap items-center gap-2 mb-1">
+                <span className="px-2.5 py-0.5 bg-secondary-fixed text-on-secondary-fixed font-mono text-[11px] rounded uppercase tracking-wider font-semibold">
+                  Diagnostic Run #104
                 </span>
-                <span className="text-label-sm text-outline font-mono">COL_01</span>
-              </div>
-              <h2 className="text-label-lg font-label-lg uppercase tracking-wider text-on-surface-variant font-bold">
-                CLAIMED SKILL
-              </h2>
-              <p className="text-body-sm text-on-surface-variant mt-1">Candidate Self-Assessment</p>
-            </div>
-
-            <div className="my-8">
-              <div className="flex items-baseline gap-2">
-                <span className="font-headline-xl text-headline-xl font-bold tracking-tight text-on-surface">
-                  {result.claimedScore.toFixed(1)}
+                <span className="px-2.5 py-0.5 bg-surface-container-high text-on-surface font-mono text-[11px] rounded flex items-center gap-1">
+                  <span className="material-symbols-outlined text-[14px] text-primary">engineering</span>
+                  {result.department} Specialization: High-Voltage Transmission
                 </span>
-                <span className="font-headline-md text-headline-md text-outline">/ 10</span>
               </div>
-              <div className="w-full bg-surface-container-highest h-1.5 mt-3">
-                <div className="bg-outline h-1.5" style={{ width: `${(result.claimedScore / 10) * 100}%` }}></div>
-              </div>
-            </div>
-
-            <div className="pt-4 border-t border-outline-variant text-[11px] font-mono text-outline">
-              Confidence Rating: High Self-Efficacy (92nd %ile)
-            </div>
-          </div>
-
-          {/* Pillar 2: DEMONSTRATED SKILL */}
-          <div className="p-6 md:p-8 border-b md:border-b-0 md:border-r border-outline-variant bg-surface-container-low flex flex-col justify-between relative overflow-hidden">
-            <div className="absolute top-0 left-0 w-full h-1 bg-secondary"></div>
-            <div>
-              <div className="flex items-center justify-between mb-4">
-                <span className="border border-secondary/40 px-1.5 py-0.5 text-label-sm font-label-sm uppercase tracking-wider text-secondary bg-secondary/10 font-bold">
-                  [DEMONSTRATED]
-                </span>
-                <span className="text-label-sm text-secondary font-mono">COL_02</span>
-              </div>
-              <h2 className="text-label-lg font-label-lg uppercase tracking-wider text-secondary font-bold">
-                DEMONSTRATED SKILL
-              </h2>
-              <p className="text-body-sm text-on-surface-variant mt-1">Diagnostic Objective Audit</p>
-            </div>
-
-            <div className="my-8">
-              <div className="flex items-baseline gap-2">
-                <span className="font-headline-xl text-headline-xl font-bold tracking-tight text-secondary">
-                  {result.demonstratedScore.toFixed(1)}
-                </span>
-                <span className="font-headline-md text-headline-md text-outline">/ 10</span>
-              </div>
-              <div className="w-full bg-surface-container-highest h-1.5 mt-3">
-                <div className="bg-secondary h-1.5" style={{ width: `${(result.demonstratedScore / 10) * 100}%` }}></div>
-              </div>
-            </div>
-
-            <div className="pt-4 border-t border-outline-variant text-[11px] font-mono text-secondary">
-              Verified by: Sequence Grounding Probe #PS-04
-            </div>
-          </div>
-
-          {/* Pillar 3: REQUIRED SKILL */}
-          <div className="p-6 md:p-8 bg-surface-container-lowest flex flex-col justify-between relative overflow-hidden">
-            <div className="absolute top-0 left-0 w-full h-1 bg-primary"></div>
-            <div>
-              <div className="flex items-center justify-between mb-4">
-                <span className="border border-primary/40 px-1.5 py-0.5 text-label-sm font-label-sm uppercase tracking-wider text-primary bg-primary/10 font-bold">
-                  [TARGET_BAR]
-                </span>
-                <span className="text-label-sm text-primary font-mono">COL_03</span>
-              </div>
-              <h2 className="text-label-lg font-label-lg uppercase tracking-wider text-primary font-bold">
-                REQUIRED SKILL
-              </h2>
-              <p className="text-body-sm text-on-surface-variant mt-1">Tier-1 Industry Placement Benchmark</p>
-            </div>
-
-            <div className="my-8">
-              <div className="flex items-baseline gap-2">
-                <span className="font-headline-xl text-headline-xl font-bold tracking-tight text-primary">
-                  {result.requiredScore.toFixed(1)}
-                </span>
-                <span className="font-headline-md text-headline-md text-outline">/ 10</span>
-              </div>
-              <div className="w-full bg-surface-container-highest h-1.5 mt-3">
-                <div className="bg-primary h-1.5" style={{ width: `${(result.requiredScore / 10) * 100}%` }}></div>
-              </div>
-            </div>
-
-            <div className="pt-4 border-t border-outline-variant text-[11px] font-mono text-primary">
-              Role: Power Systems Engineer (High Voltage Grid)
-            </div>
-          </div>
-        </section>
-
-        {/* CALIBRATION GAP CALLOUT (AMBER STRIPED ALERT) */}
-        <div className="rounded-xl border border-amber-500/40 bg-amber-500/10 p-6 space-y-3 backdrop-blur-md">
-          <div className="flex items-start gap-3">
-            <AlertTriangle className="w-6 h-6 text-amber-400 shrink-0 mt-0.5" />
-            <div>
-              <h3 className="font-mono text-sm text-amber-400 uppercase font-bold tracking-wider">
-                [DELTA_FLAG] +{result.calibrationGap.toFixed(1)} OVERCONFIDENCE GAP ({result.calibrationStatus})
-              </h3>
-              <p className="text-sm text-slate-200 mt-1 leading-relaxed">
-                {result.explanation}
+              <h1 className="font-headline-xl text-2xl sm:text-3xl text-on-surface font-bold tracking-tight">
+                Skill Calibration: {result.targetSkill}
+              </h1>
+              <p className="font-body-md text-[14px] text-on-surface-variant leading-relaxed">
+                Objective alignment between self-reported proficiency, empirical diagnostic evidence, and market benchmark requirements for Tier-1 Infrastructure roles.
               </p>
+              <div className="flex items-center gap-2 mt-1 font-mono text-[11px]">
+                <span className="w-2 h-2 rounded-full bg-primary animate-ping"></span>
+                <span className="text-on-surface-variant">Benchmark Profile:</span>
+                <span className="text-on-surface font-semibold">{result.roleTitle} (Tier-1 Grid & Energy Infrastructure)</span>
+              </div>
+            </div>
+
+            {/* Quick Actions */}
+            <div className="flex items-center gap-3 self-start lg:self-end">
+              <button
+                onClick={onViewDashboard}
+                className="px-4 py-2 bg-surface-container text-on-surface font-mono text-[12px] font-medium rounded flex items-center gap-1.5 hover:bg-surface-container-high transition-colors shadow-sm"
+              >
+                <span className="material-symbols-outlined text-[16px]">dashboard</span>
+                Readiness Dashboard
+              </button>
+              <button
+                onClick={onStartMission}
+                className="px-4 py-2 bg-primary text-white font-mono text-[12px] font-semibold rounded flex items-center gap-1.5 hover:bg-primary-container transition-colors shadow-sm"
+              >
+                <span className="material-symbols-outlined text-[16px]">bolt</span>
+                Launch Target Mission
+              </button>
             </div>
           </div>
-          <div className="pt-3 border-t border-tertiary/40 flex flex-col sm:flex-row justify-between sm:items-center text-body-sm text-on-surface-variant gap-2">
-            <div>
-              <span className="text-outline font-mono">CRITICAL IMPACT: </span>
-              {result.meaning}
+
+          {/* Section 2: Signature 3-Pillar Calibration Metric Visualization */}
+          <div className="flex flex-col gap-4">
+            <div className="flex items-center justify-between font-mono text-[12px]">
+              <div className="flex items-center gap-2">
+                <span className="text-primary uppercase tracking-wider font-bold">PIPELINE TELEMETRY</span>
+                <span className="text-outline-variant">/</span>
+                <span className="text-on-surface-variant">Three-Point Triangulation Model</span>
+              </div>
+              <span className="text-on-surface-variant">Delta Confidence Interval: {result.confidenceInterval}</span>
             </div>
-            <div className="text-tertiary font-bold font-mono">
-              DEFICIT TO TARGET BAR: -2.5 INDEX
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {/* Card 1: Claimed */}
+              <div className="bg-surface-container-lowest p-6 rounded-lg border border-outline-variant/40 shadow-sm flex flex-col justify-between relative overflow-hidden">
+                <div className="absolute top-0 left-0 right-0 h-1 bg-secondary"></div>
+                <div>
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="font-mono text-[11px] uppercase tracking-wider text-on-surface-variant font-medium">
+                      Stage 01: Claimed
+                    </span>
+                    <span className="px-2 py-0.5 bg-secondary-fixed text-on-secondary-fixed font-mono text-[11px] rounded font-medium">
+                      Pre-Test Intake
+                    </span>
+                  </div>
+                  <div className="flex items-baseline gap-2 my-2">
+                    <span className="font-headline-xl text-4xl sm:text-5xl text-on-surface font-bold">
+                      {result.claimedScore.toFixed(1)}
+                    </span>
+                    <span className="font-headline-sm text-lg text-on-surface-variant font-semibold">
+                      / 10
+                    </span>
+                  </div>
+                  <p className="font-mono text-[13px] text-on-surface-variant font-semibold">
+                    Self-Reported Baseline
+                  </p>
+                  <p className="font-body-sm text-[13px] text-on-surface-variant mt-2 leading-relaxed">
+                    Stated skill level prior to empirical telemetry probe. Reflects student perception of theoretical power transmission fundamentals.
+                  </p>
+                </div>
+                <div className="mt-4 pt-2 bg-surface-container-low p-3 rounded">
+                  <div className="flex justify-between items-center font-mono text-[11px] text-on-surface-variant">
+                    <span>Self-Efficacy Index:</span>
+                    <span className="font-semibold text-on-surface">{result.selfEfficacyIndex}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Card 2: Demonstrated (Hero Card) */}
+              <div className="bg-surface-container-lowest p-6 rounded-lg border-2 border-error/50 shadow-md flex flex-col justify-between relative overflow-hidden ring-1 ring-error/20">
+                <div className="absolute top-0 left-0 right-0 h-1.5 bg-error"></div>
+                <div>
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="font-mono text-[11px] uppercase tracking-wider text-error font-bold flex items-center gap-1.5">
+                      <span className="w-2 h-2 rounded-full bg-error animate-pulse"></span>
+                      Stage 02: Demonstrated
+                    </span>
+                    <span className="px-2 py-0.5 bg-error-container text-on-error-container font-mono text-[11px] rounded font-bold">
+                      Empirical Truth
+                    </span>
+                  </div>
+                  <div className="flex items-baseline gap-2 my-2">
+                    <span className="font-headline-xl text-4xl sm:text-5xl text-error font-bold">
+                      {result.demonstratedScore.toFixed(1)}
+                    </span>
+                    <span className="font-headline-sm text-lg text-on-surface-variant font-semibold">
+                      / 10
+                    </span>
+                  </div>
+                  <p className="font-mono text-[13px] text-on-surface font-bold">
+                    Empirically Verified Diagnostic
+                  </p>
+                  <p className="font-body-sm text-[13px] text-on-surface-variant mt-2 leading-relaxed">
+                    Measured through timed sequence transformation challenges, vector derivations, and real-time asymmetric fault simulations under cognitive load.
+                  </p>
+                </div>
+                <div className="mt-4 pt-2 bg-error-container/40 p-3 rounded flex items-center justify-between font-mono text-[12px]">
+                  <span className="text-on-surface font-medium">Demonstrated Calibration Variance:</span>
+                  <span className="font-bold text-error">+{result.calibrationGap.toFixed(1)} Gap</span>
+                </div>
+              </div>
+
+              {/* Card 3: Required */}
+              <div className="bg-surface-container-lowest p-6 rounded-lg border border-outline-variant/40 shadow-sm flex flex-col justify-between relative overflow-hidden">
+                <div className="absolute top-0 left-0 right-0 h-1 bg-primary"></div>
+                <div>
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="font-mono text-[11px] uppercase tracking-wider text-primary font-bold">
+                      Stage 03: Required
+                    </span>
+                    <span className="px-2 py-0.5 bg-primary-fixed text-on-primary-fixed font-mono text-[11px] rounded font-medium">
+                      Hiring Threshold
+                    </span>
+                  </div>
+                  <div className="flex items-baseline gap-2 my-2">
+                    <span className="font-headline-xl text-4xl sm:text-5xl text-primary font-bold">
+                      {result.requiredScore.toFixed(1)}
+                    </span>
+                    <span className="font-headline-sm text-lg text-on-surface-variant font-semibold">
+                      / 10
+                    </span>
+                  </div>
+                  <p className="font-mono text-[13px] text-on-surface-variant font-semibold">
+                    Target Role Demand
+                  </p>
+                  <p className="font-body-sm text-[13px] text-on-surface-variant mt-2 leading-relaxed">
+                    Aggregated market bar calibrated against 140+ active Power Systems Engineer technical scorecards in Tier-1 infrastructure organizations.
+                  </p>
+                </div>
+                <div className="mt-4 pt-2 bg-primary-fixed/30 p-3 rounded">
+                  <div className="flex justify-between items-center font-mono text-[11px] text-on-surface-variant">
+                    <span>Distance to Cutoff Bar:</span>
+                    <span className="font-bold text-primary font-mono text-[13px]">-2.5 Pts</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Signature Calibration Continuum Spectrum */}
+            <div className="bg-surface-container-lowest p-6 rounded-lg border border-outline-variant/40 shadow-sm flex flex-col gap-4">
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-2">
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="font-mono text-[13px] text-on-surface font-bold uppercase tracking-wider">
+                      Calibration Continuum Spectrum
+                    </span>
+                    <span className="px-2.5 py-0.5 rounded bg-error-container text-on-error-container font-mono text-[11px] font-bold uppercase">
+                      {result.calibrationStatus}
+                    </span>
+                  </div>
+                  <p className="font-body-sm text-[13px] text-on-surface-variant mt-0.5">
+                    Positioning score anchors across mathematical 0.0 — 10.0 proficiency coordinates
+                  </p>
+                </div>
+
+                <div className="flex items-center gap-4 font-mono text-[11px]">
+                  <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded bg-error"></span> Demonstrated (4.5)</span>
+                  <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded bg-primary"></span> Target Bar (7.0)</span>
+                  <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded bg-secondary"></span> Claimed (8.0)</span>
+                </div>
+              </div>
+
+              {/* The Range Track */}
+              <div className="w-full pt-8 pb-4 relative">
+                <div className="w-full h-3 bg-surface-container rounded-full relative">
+                  {/* Gap Segment: Demonstrated to Target */}
+                  <div className="absolute h-3 bg-primary/20" style={{ left: '45%', width: '25%' }}></div>
+                  {/* Gap Segment: Target to Claimed */}
+                  <div className="absolute h-3 bg-secondary/20" style={{ left: '70%', width: '10%' }}></div>
+
+                  {/* 4.5 Marker (DEMONSTRATED) */}
+                  <div className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 flex flex-col items-center z-10" style={{ left: '45%' }}>
+                    <div className="absolute -top-7 px-2 py-0.5 bg-error text-white font-mono text-[11px] rounded whitespace-nowrap font-bold shadow-sm">
+                      4.5 DEMONSTRATED
+                    </div>
+                    <div className="w-4 h-4 rounded-full bg-error ring-4 ring-error-container"></div>
+                  </div>
+
+                  {/* 7.0 Marker (REQUIRED) */}
+                  <div className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 flex flex-col items-center z-10" style={{ left: '70%' }}>
+                    <div className="absolute -top-7 px-2 py-0.5 bg-primary text-white font-mono text-[11px] rounded whitespace-nowrap font-bold shadow-sm">
+                      7.0 TARGET BAR
+                    </div>
+                    <div className="w-4 h-4 rounded-full bg-primary ring-4 ring-primary-fixed"></div>
+                  </div>
+
+                  {/* 8.0 Marker (CLAIMED) */}
+                  <div className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 flex flex-col items-center z-10" style={{ left: '80%' }}>
+                    <div className="absolute -top-7 px-2 py-0.5 bg-secondary text-white font-mono text-[11px] rounded whitespace-nowrap font-semibold shadow-sm">
+                      8.0 CLAIMED
+                    </div>
+                    <div className="w-4 h-4 rounded-full bg-secondary ring-4 ring-secondary-fixed"></div>
+                  </div>
+                </div>
+
+                <div className="w-full flex justify-between font-mono text-[11px] text-on-surface-variant mt-3 px-1">
+                  <span>0.0</span>
+                  <span>2.0</span>
+                  <span className="font-semibold text-error">4.5 Demonstrated</span>
+                  <span className="font-semibold text-primary">7.0 Target Bar</span>
+                  <span className="font-semibold text-secondary">8.0 Claimed</span>
+                  <span>10.0</span>
+                </div>
+              </div>
+
+              {/* Dual Telemetry Diagnostic Readouts */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-1">
+                <div className="p-4 bg-error-container/30 rounded border border-error/30 flex items-start gap-3">
+                  <span className="material-symbols-outlined text-error text-[22px] shrink-0 mt-0.5">warning</span>
+                  <div className="flex flex-col">
+                    <div className="flex items-center gap-2 font-mono">
+                      <span className="text-[13px] text-error font-bold">Calibration Gap: +{result.calibrationGap.toFixed(1)}</span>
+                      <span className="text-[11px] text-on-surface-variant font-medium">(OVERCONFIDENT)</span>
+                    </div>
+                    <p className="font-body-sm text-[13px] text-on-surface-variant mt-1 leading-normal">
+                      Overestimation vs Empirical Evidence: You currently demonstrate significantly less than you believe you know. High-risk profile for technical system design boards.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="p-4 bg-primary-fixed/20 rounded border border-primary/30 flex items-start gap-3">
+                  <span className="material-symbols-outlined text-primary text-[22px] shrink-0 mt-0.5">trending_up</span>
+                  <div className="flex flex-col">
+                    <div className="flex items-center gap-2 font-mono">
+                      <span className="text-[13px] text-primary font-bold">Readiness Gap: -2.5</span>
+                      <span className="text-[11px] text-on-surface-variant font-medium">(Distance to Target Bar)</span>
+                    </div>
+                    <p className="font-body-sm text-[13px] text-on-surface-variant mt-1 leading-normal">
+                      Empirical distance to reach hiring readiness. Projected remediation velocity: ~1 targeted intervention mission to bridge the deficit before placement.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Section 3: Forensic Evidence & Weak Subskill Breakdown ("WHY?") */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            {/* Left 7 Columns: Forensic Evidence Used */}
+            <div className="lg:col-span-7 flex flex-col gap-4">
+              <div className="bg-surface-container-lowest p-6 rounded-lg border border-outline-variant/40 shadow-sm flex flex-col gap-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <span className="font-mono text-[11px] text-error font-bold uppercase tracking-wider">
+                      PRIMARY SKILL BOTTLENECK
+                    </span>
+                    <h3 className="font-headline-sm text-xl text-on-surface font-bold mt-0.5">
+                      WEAK SUBSKILL: Fault Analysis (Symmetrical & Unsymmetrical)
+                    </h3>
+                  </div>
+                  <span className="px-2.5 py-1 bg-error-container text-on-error-container font-mono text-[11px] font-bold rounded">
+                    CRITICAL GAP IDENTIFIED
+                  </span>
+                </div>
+
+                <p className="font-body-md text-[14px] text-on-surface-variant leading-relaxed">
+                  The diagnostic telemetry engine detected systemic calculation errors during sequence network impedance formulation (Z₀, Z₁, Z₂) under simulated line-to-ground (SLG) and double line-to-ground (LLG) fault conditions.
+                </p>
+
+                {/* Evidence Used List */}
+                <div className="flex flex-col gap-3">
+                  <span className="font-mono text-[11px] uppercase tracking-wider text-on-surface font-bold">
+                    Forensic Evidence Used in Calibration:
+                  </span>
+
+                  {result.evidenceUsed.map((ev, idx) => (
+                    <div
+                      key={idx}
+                      className="p-3.5 bg-surface-container-low rounded border border-outline-variant/30 flex items-start gap-3"
+                    >
+                      <div className="w-7 h-7 rounded bg-error/10 text-error font-mono text-[12px] font-bold flex items-center justify-center shrink-0 mt-0.5">
+                        0{idx + 1}
+                      </div>
+                      <div className="flex flex-col">
+                        <span className="font-mono text-[13px] font-bold text-on-surface">
+                          {ev.label}
+                        </span>
+                        <div className="flex items-center gap-3 font-mono text-[11px] text-on-surface-variant mt-0.5">
+                          <span>Weight: {Math.round(ev.confidenceWeight * 100)}%</span>
+                          <span>•</span>
+                          <span>Samples: {ev.sampleCount}</span>
+                          <span>•</span>
+                          <span className="text-primary font-semibold">{ev.status}</span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Meaning Card */}
+                <div className="p-4 bg-surface-container rounded border-l-4 border-error">
+                  <span className="font-mono text-[11px] uppercase tracking-wider text-on-surface font-bold block mb-1">
+                    WHAT THIS MEANS
+                  </span>
+                  <p className="font-body-sm text-[13px] text-on-surface-variant leading-relaxed">
+                    {result.meaning}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Right 5 Columns: Subskills Matrix */}
+            <div className="lg:col-span-5 flex flex-col gap-4">
+              <div className="bg-surface-container-lowest p-6 rounded-lg border border-outline-variant/40 shadow-sm flex flex-col gap-4 h-full">
+                <div>
+                  <span className="font-mono text-[11px] text-on-surface-variant uppercase tracking-wider font-semibold">
+                    Diagnostic Subskill Matrix
+                  </span>
+                  <h3 className="font-headline-sm text-lg text-on-surface font-bold mt-0.5">
+                    {result.department} Domain Breakdown
+                  </h3>
+                </div>
+
+                <div className="flex flex-col gap-4">
+                  {/* Fault Analysis (The Critical Weakness) */}
+                  <div className="p-3 bg-error-container/20 rounded border border-error/30 flex flex-col gap-1.5">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-1.5">
+                        <span className="material-symbols-outlined text-[16px] text-error">cancel</span>
+                        <span className="font-mono text-[13px] text-error font-bold">
+                          Fault Analysis
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2 font-mono text-[12px]">
+                        <span className="font-bold text-error">4.5 / 10</span>
+                        <span className="bg-error text-white px-1.5 py-0.5 rounded font-bold text-[10px]">
+                          WEAK SUBSKILL
+                        </span>
+                      </div>
+                    </div>
+                    <div className="w-full bg-surface-container h-2 rounded-full overflow-hidden">
+                      <div className="bg-error h-2 rounded-full" style={{ width: '45%' }}></div>
+                    </div>
+                    <span className="font-body-sm text-[11px] text-on-surface-variant leading-tight">
+                      Root cause: 4 of 7 errors stemmed from zero/negative sequence impedance sign conventions and reference earth bus grounding factors.
+                    </span>
+                  </div>
+
+                  {/* Power Flow */}
+                  <div className="p-3 bg-surface-container-low rounded border border-outline-variant/30 flex flex-col gap-1.5">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-1.5">
+                        <span className="material-symbols-outlined text-[16px] text-tertiary">check_circle</span>
+                        <span className="font-mono text-[13px] text-on-surface font-semibold">
+                          Load Flow Studies
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2 font-mono text-[12px]">
+                        <span className="font-bold text-on-surface">6.8 / 10</span>
+                        <span className="text-tertiary bg-tertiary-fixed/30 px-1.5 py-0.5 rounded font-semibold text-[10px]">
+                          CALIBRATED
+                        </span>
+                      </div>
+                    </div>
+                    <div className="w-full bg-surface-container h-2 rounded-full overflow-hidden">
+                      <div className="bg-tertiary h-2 rounded-full" style={{ width: '68%' }}></div>
+                    </div>
+                    <span className="font-body-sm text-[11px] text-on-surface-variant">
+                      Newton-Raphson & Fast Decoupled matrix assembly verified.
+                    </span>
+                  </div>
+
+                  {/* Protection */}
+                  <div className="p-3 bg-surface-container-low rounded border border-outline-variant/30 flex flex-col gap-1.5">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-1.5">
+                        <span className="material-symbols-outlined text-[16px] text-on-surface-variant">radio_button_partial</span>
+                        <span className="font-mono text-[13px] text-on-surface font-semibold">
+                          Protection & Relaying
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2 font-mono text-[12px]">
+                        <span className="font-bold text-on-surface">6.9 / 10</span>
+                        <span className="text-on-surface-variant bg-surface-container-high px-1.5 py-0.5 rounded text-[10px]">
+                          SURPASSED
+                        </span>
+                      </div>
+                    </div>
+                    <div className="w-full bg-surface-container h-2 rounded-full overflow-hidden">
+                      <div className="bg-primary h-2 rounded-full" style={{ width: '69%' }}></div>
+                    </div>
+                    <span className="font-body-sm text-[11px] text-on-surface-variant">
+                      Overcurrent and distance relay coordination within tolerances.
+                    </span>
+                  </div>
+                </div>
+
+                <div className="mt-auto pt-3 border-t border-outline-variant/30 flex items-center justify-between font-mono text-[11px]">
+                  <span className="text-on-surface-variant">Target Benchmark:</span>
+                  <span className="font-bold text-primary">7.0 Required Bar</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Section 4: Targeted Prescription / Next Action */}
+          <div className="bg-surface-container-lowest p-6 rounded-lg border-2 border-primary/40 shadow-sm flex flex-col gap-4 relative overflow-hidden">
+            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary via-secondary to-primary-container"></div>
+            
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div className="flex items-center gap-3">
+                <span className="p-2.5 rounded bg-primary-fixed text-on-primary-fixed flex items-center justify-center">
+                  <span className="material-symbols-outlined text-[24px]">crisis_alert</span>
+                </span>
+                <div>
+                  <span className="font-mono text-[11px] text-primary font-bold uppercase tracking-wider">
+                    NEXT ACTION: GENERATED TARGETED MISSION
+                  </span>
+                  <h2 className="font-headline-sm text-xl text-on-surface font-bold">
+                    Mission: Symmetrical Faults & Sequence Network Resolution
+                  </h2>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2 font-mono text-[12px] text-on-surface-variant bg-surface-container px-3 py-1.5 rounded">
+                <span className="material-symbols-outlined text-[16px]">timer</span>
+                <span>Est. Duration: <strong>40 Minutes Structured Stages</strong></span>
+              </div>
+            </div>
+
+            <p className="font-body-md text-[14px] text-on-surface-variant leading-relaxed">
+              Prescribed intervention module engineered to extinguish the <strong className="text-error font-mono">+3.5 calibration gap</strong>. 
+              This mission re-anchors sequence network derivations, enforces zero-sequence loop grounding equations ($3Z_n$), and validates mastery before placement interviews.
+            </p>
+
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-3 border-t border-outline-variant/30">
+              <div className="flex items-center gap-2 text-on-surface-variant font-mono text-[11px]">
+                <span className="material-symbols-outlined text-[16px] text-primary">bolt</span>
+                <span>Generated directly from Team 1 mission engine based on empirical evidence.</span>
+              </div>
+
+              <button
+                onClick={onStartMission}
+                className="w-full sm:w-auto px-6 py-3 bg-primary hover:bg-primary-container text-white font-mono text-[13px] font-bold rounded shadow flex items-center justify-center gap-2 transition-colors"
+              >
+                <span>Launch Today&apos;s Targeted Mission</span>
+                <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
+              </button>
             </div>
           </div>
         </div>
-
-        {/* WEAK SUBSKILLS BREAKDOWN TABLE */}
-        <div className="border border-outline-variant bg-surface-container-low p-6 space-y-4">
-          <div className="flex items-center justify-between border-b border-outline-variant pb-3">
-            <span className="font-label-lg text-label-lg uppercase font-bold text-on-surface">
-              Diagnostic Fault Analysis // Root-Cause Trace
-            </span>
-            <span className="text-label-sm text-outline font-mono">3 SUB-AREAS EVALUATED</span>
-          </div>
-
-          <div className="overflow-x-auto">
-            <table className="w-full text-left font-body-sm text-body-sm border-collapse">
-              <thead>
-                <tr className="border-b border-outline-variant text-label-sm text-outline uppercase font-mono bg-surface-container-lowest">
-                  <th className="py-2.5 px-3">Subskill Component</th>
-                  <th className="py-2.5 px-3">Claimed</th>
-                  <th className="py-2.5 px-3">Demonstrated</th>
-                  <th className="py-2.5 px-3">Required</th>
-                  <th className="py-2.5 px-3">Divergence</th>
-                  <th className="py-2.5 px-3">Root-Cause Trace</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-outline-variant/60 font-mono">
-                {result.weakSubskills.map((sub, idx) => (
-                  <tr key={idx} className="hover:bg-surface-container transition-colors">
-                    <td className="py-3 px-3 font-semibold text-on-surface">{sub.name}</td>
-                    <td className="py-3 px-3 text-outline">{sub.claimedScore.toFixed(1)}</td>
-                    <td className="py-3 px-3 text-secondary font-bold">{sub.demonstratedScore.toFixed(1)}</td>
-                    <td className="py-3 px-3 text-primary">{sub.requiredScore.toFixed(1)}</td>
-                    <td className="py-3 px-3 text-tertiary font-bold">+{sub.gap.toFixed(1)} Delta</td>
-                    <td className="py-3 px-3 text-on-surface-variant font-sans text-xs">{sub.rootCause}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        {/* Action Button Strip */}
-        <div className="pt-4 flex flex-col sm:flex-row justify-between items-center gap-4">
-          <button
-            onClick={onViewDashboard}
-            className="w-full sm:w-auto px-6 py-3.5 rounded-lg border border-slate-700 bg-slate-800/80 text-white font-medium uppercase tracking-wider text-xs hover:border-cyan-500 hover:bg-slate-800 transition-all flex items-center justify-center gap-2"
-          >
-            <LayoutDashboard className="w-4 h-4 text-cyan-400" />
-            <span>View Full Readiness Dashboard</span>
-          </button>
-
-          <button
-            onClick={onStartMission}
-            className="w-full sm:w-auto px-8 py-3.5 rounded-lg bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 font-bold uppercase tracking-wider text-xs transition-all flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(6,182,212,0.4)]"
-          >
-            <span>EXECUTE TARGETED INTERVENTION MISSION // FAULT ANALYSIS</span>
-            <ArrowRight className="w-4 h-4 text-slate-950" />
-          </button>
-        </div>
-      </main>
+      </div>
     </div>
   );
 };

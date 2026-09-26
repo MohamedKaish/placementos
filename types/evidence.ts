@@ -3,12 +3,16 @@
  * Differentiator: "Claimed skill != Demonstrated skill"
  */
 
+import { SkillProficiencyLevel } from './skill-graph';
+
 export type EvidenceSourceType =
-  | 'assessment_performance'   // Highest trust (1.0)
-  | 'verifiable_project'       // High trust (0.85)
-  | 'internship_certification' // Medium-high trust (0.70)
-  | 'resume_claim'             // Low trust (0.35)
-  | 'self_assessment';         // Lowest trust (0.10) - strictly for calibration detection
+  | 'resume_parsed'
+  | 'project_repo'
+  | 'coursework_certificate'
+  | 'internship_experience'
+  | 'technical_assessment'
+  | 'live_coding'
+  | 'faculty_endorsement';
 
 export interface EvidenceItem {
   id: string;
@@ -19,7 +23,7 @@ export interface EvidenceItem {
   description?: string;
   url?: string;
   confidenceScore: number; // 0.0 to 1.0 (reliability of evidence)
-  demonstratedLevel: number; // 1.0 to 5.0
+  demonstratedLevel: SkillProficiencyLevel;
   extractedKeywords?: string[];
   verifiedAt?: string;
   metadata?: Record<string, unknown>;
@@ -27,25 +31,18 @@ export interface EvidenceItem {
 
 export interface StudentClaimedSkill {
   skillId: string;
-  claimedLevel: number; // 1.0 to 5.0 (or normalized from 1-10 scale)
+  claimedLevel: SkillProficiencyLevel;
   selfAssessedAt: string;
-  confidenceSelfRating: number; // 1-5 scale of student subjective confidence
+  confidenceSelfRating: number; // 1-5 scale of how sure student feels
 }
-
-export type DemonstratedScoreStatus = 'ASSESSED' | 'NOT_ASSESSED';
 
 export interface SkillEvidenceSummary {
   skillId: string;
-  skillName?: string;
-  status: DemonstratedScoreStatus;
-  claimedLevel: number; // What student claims (1.0 to 5.0)
-  demonstratedLevel: number | 'NOT_ASSESSED'; // Evidence-backed level or NOT_ASSESSED
-  confidence: number; // 0.0 to 1.0
-  confidenceBand: 'high' | 'medium' | 'low' | 'none';
-  calibrationGap: number | 'NOT_ASSESSED'; // claimed - demonstrated
-  calibrationState: 'overconfident' | 'underconfident' | 'well_calibrated' | 'NOT_ASSESSED';
+  claimedLevel: SkillProficiencyLevel;
+  evidenceBackedLevel: number; // Computed continuous level 0.0 - 5.0
+  demonstratedLevel?: SkillProficiencyLevel; // From direct interactive assessments
+  calibrationGap: number; // Claimed minus Demonstrated/Evidence-backed (+ means overconfident, - means imposter syndrome)
   evidenceCount: number;
-  evidenceTypes: EvidenceSourceType[];
-  highestConfidenceSource?: EvidenceSourceType;
-  lastAssessedAt?: string;
+  highestConfidenceSource: EvidenceSourceType;
+  lastEvaluatedAt: string;
 }

@@ -1,195 +1,226 @@
 'use client';
 
-import React from 'react';
-import { ReassessmentResultUI } from '@/types/team2-contract';
-import { ShieldCheck, RotateCcw, ArrowLeft } from 'lucide-react';
+import React, { useState } from 'react';
+import { defaultPlacementService } from '@/lib/placement-service';
 
 interface ReassessmentScreenProps {
-  reassessment: ReassessmentResultUI;
   onRestartDemo: () => void;
   onViewDashboard: () => void;
 }
 
 export const ReassessmentScreen: React.FC<ReassessmentScreenProps> = ({
-  reassessment,
   onRestartDemo,
   onViewDashboard,
 }) => {
-  const isDataSufficient = reassessment.dataSufficiency === 'SUFFICIENT';
+  const [hasCompletedMission, setHasCompletedMission] = useState<boolean>(true);
+
+  const reassessmentData = defaultPlacementService.runReassessment(hasCompletedMission);
 
   return (
-    <div className="w-full bg-grid-matrix min-h-screen pb-16 font-mono overflow-x-hidden">
-      {/* Sub-Header / Run Calibration Ribbon */}
-      <div className="w-full bg-surface-container-low border-b border-outline-variant px-4 sm:px-6 py-2.5 flex flex-wrap justify-between items-center gap-4 text-xs">
-        <div className="flex items-center gap-3">
-          <span className="text-outline uppercase tracking-wider">TELEMETRY_WINDOW:</span>
-          <span className="bg-surface-container px-2 py-0.5 border border-outline-variant text-on-surface font-semibold">
-            Post-Mission Calibration Run
-          </span>
-          <span className="text-outline-variant">|</span>
-          <span className="text-outline uppercase">RUN_ID:</span>
-          <span className="text-primary font-bold">{reassessment.verificationTelemetryRun}</span>
-        </div>
-        <div className="flex items-center gap-4 text-on-surface-variant">
-          <span>AUDIT PIPELINE: <strong className="text-secondary">ONLINE</strong></span>
-          <span>UNCERTAINTY ENVELOPE: <strong className="text-on-surface">&plusmn;0.12 INDEX</strong></span>
-          <span>STATUS: <strong className="text-primary uppercase">{reassessment.status}</strong></span>
+    <div className="w-full min-h-screen pt-16 bg-surface">
+      {/* Top Breadcrumb Context Bar */}
+      <div className="w-full bg-surface-container-low px-4 sm:px-8 py-2.5 border-b border-outline-variant/30">
+        <div className="max-w-[1440px] mx-auto flex flex-wrap items-center justify-between gap-3 text-[12px] font-mono text-on-surface-variant">
+          <div className="flex items-center gap-2">
+            <span>Reassessment</span>
+            <span className="material-symbols-outlined text-[14px]">chevron_right</span>
+            <span>Telemetry Run #0x8A1</span>
+            <span className="material-symbols-outlined text-[14px]">chevron_right</span>
+            <span className="text-primary font-semibold">Post-Intervention Verification</span>
+          </div>
+
+          <div className="flex items-center gap-3">
+            {/* Toggle to test both requirements: with data vs NOT ENOUGH DATA */}
+            <div className="flex items-center gap-1.5 bg-surface-container-lowest px-2 py-1 rounded border border-outline-variant/40">
+              <span className="text-[11px]">Telemetry Mode:</span>
+              <button
+                onClick={() => setHasCompletedMission(true)}
+                className={`px-2 py-0.5 rounded text-[10px] font-bold ${
+                  hasCompletedMission
+                    ? 'bg-primary text-white'
+                    : 'text-on-surface-variant hover:text-on-surface'
+                }`}
+              >
+                Post-Mission (+2.7Δ)
+              </button>
+              <button
+                onClick={() => setHasCompletedMission(false)}
+                className={`px-2 py-0.5 rounded text-[10px] font-bold ${
+                  !hasCompletedMission
+                    ? 'bg-error text-white'
+                    : 'text-on-surface-variant hover:text-on-surface'
+                }`}
+              >
+                Insufficient Data
+              </button>
+            </div>
+          </div>
         </div>
       </div>
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 py-6 md:py-8 space-y-8 font-sans overflow-x-hidden">
-        {/* Top Header */}
-        <div className="border-l-2 border-primary pl-4 py-1">
-          <div className="flex items-center gap-2 mb-1 font-mono text-label-sm">
-            <span className="text-primary uppercase font-bold tracking-widest">[RECALIBRATION_FEED]</span>
-            <span className="text-outline-variant">&bull;</span>
-            <span className="text-outline">EMPIRICAL PROOF OF GROWTH</span>
-          </div>
-          <h1 className="text-headline-lg font-headline-lg text-on-surface tracking-tight font-bold">
-            Learning Velocity &amp; Telemetry Reassessment
-          </h1>
-          <p className="text-body-md text-on-surface-variant mt-1">
-            Verifiable delta measurement following completion of Mission #04 (Fault Analysis Remediation).
-          </p>
-        </div>
-
-        {/* Bento Top Tier */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-          {/* Left: Large Before -> After Demonstration Comparison (7 cols) */}
-          <div className="lg:col-span-7 bg-[#111827] border border-[#1F293D] p-6 flex flex-col justify-between space-y-6">
-            <div className="flex justify-between items-center border-b border-[#1F293D] pb-3">
-              <div className="flex items-center gap-2 font-mono text-label-md">
-                <span className="w-2 h-2 bg-secondary"></span>
-                <span className="text-on-surface uppercase font-bold tracking-wider">
-                  COMPETENCY INDEX AUDIT: BEFORE VS. AFTER
-                </span>
+      <div className="max-w-[1000px] w-full mx-auto px-4 sm:px-8 py-8 flex flex-col gap-6">
+        <div className="bg-surface-container-lowest p-6 sm:p-8 rounded-lg border border-outline-variant/40 shadow-sm flex flex-col gap-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 bg-secondary-fixed text-on-secondary-fixed font-mono text-[11px] rounded uppercase font-semibold mb-1.5">
+                Verification Telemetry Probe
               </div>
-              <span className="font-mono text-label-sm text-secondary bg-secondary/10 border border-secondary px-2 py-0.5 font-bold">
-                [DEMONSTRATED]
-              </span>
+              <h1 className="font-headline-lg text-2xl sm:text-3xl text-on-surface font-bold tracking-tight">
+                Skill Reassessment & Learning Velocity
+              </h1>
+              <p className="font-body-md text-[14px] text-on-surface-variant mt-1 leading-relaxed">
+                Objective before-and-after comparison following targeted intervention mission.
+              </p>
             </div>
 
-            {/* Metric Transition Visual */}
-            <div className="grid grid-cols-1 md:grid-cols-11 items-center gap-4 py-4 font-mono">
-              {/* BEFORE Box */}
-              <div className="md:col-span-5 bg-[#0B0F17] border border-[#1F293D] p-5 text-center">
-                <div className="flex items-center justify-between border-b border-[#1F293D] pb-1.5 mb-3 text-label-sm">
-                  <span className="text-outline uppercase">DIAGNOSTIC #8841-B</span>
-                  <span className="text-tertiary bg-tertiary/10 border border-tertiary px-1 font-bold">[DELTA_FLAG]</span>
-                </div>
-                <div className="text-headline-xl font-headline-xl text-outline-variant font-bold leading-none my-3">
-                  {reassessment.beforeScore.toFixed(1)}
-                  <span className="text-headline-sm font-headline-sm text-outline"> / 10</span>
-                </div>
-                <p className="text-label-sm text-error/90">Critical Overconfidence Gap</p>
-                <div className="w-full bg-[#1F293D] h-1.5 mt-3">
-                  <div className="bg-outline h-1.5" style={{ width: `${(reassessment.beforeScore / 10) * 100}%` }}></div>
-                </div>
-              </div>
-
-              {/* Delta Vector Icon */}
-              <div className="md:col-span-1 flex flex-col items-center justify-center text-center">
-                <span className="text-primary font-bold text-2xl">&rarr;</span>
-                <span className="text-label-sm text-outline font-bold">DELTA</span>
-              </div>
-
-              {/* AFTER Box */}
-              <div className="md:col-span-5 bg-[#0B0F17] border border-secondary p-5 text-center relative shadow-[0_0_20px_rgba(78,222,163,0.08)]">
-                <div className="flex items-center justify-between border-b border-secondary/30 pb-1.5 mb-3 text-label-sm">
-                  <span className="text-secondary uppercase font-semibold">REASSESSMENT #8902-C</span>
-                  <span className="text-secondary bg-secondary/15 border border-secondary px-1 font-bold">VERIFIED</span>
-                </div>
-                <div className="text-headline-xl font-headline-xl text-secondary font-bold leading-none my-3">
-                  {reassessment.afterScore.toFixed(1)}
-                  <span className="text-headline-sm font-headline-sm text-secondary/70"> / 10</span>
-                </div>
-                <p className="text-label-sm text-secondary font-semibold">Grounded Rigor Confirmed</p>
-                <div className="w-full bg-[#1F293D] h-1.5 mt-3">
-                  <div className="bg-secondary h-1.5" style={{ width: `${(reassessment.afterScore / 10) * 100}%` }}></div>
-                </div>
-              </div>
-            </div>
-
-            {/* Delta Callout Banner */}
-            <div className="pt-4 border-t border-[#1F293D] flex flex-wrap items-center justify-between gap-4 font-mono">
-              <div className="flex items-center gap-3">
-                <span className="bg-secondary/10 border border-secondary text-secondary font-label-lg px-3 py-1 font-bold tracking-wider">
-                  +{reassessment.delta.toFixed(1)} INDEX GAIN
-                </span>
-                <span className="text-body-sm text-on-surface-variant font-sans">
-                  Surpasses 7.0 Tier-1 Placement Bar
-                </span>
-              </div>
-              <span className="text-label-sm text-outline">CALIBRATION GAP: RESOLVED</span>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={onViewDashboard}
+                className="px-3.5 py-2 bg-surface-container text-on-surface hover:bg-surface-container-high rounded font-mono text-[12px] font-semibold flex items-center gap-1 transition-colors"
+              >
+                <span className="material-symbols-outlined text-[16px]">dashboard</span>
+                Dashboard
+              </button>
+              <button
+                onClick={onRestartDemo}
+                className="px-3.5 py-2 bg-primary text-white hover:bg-primary-container rounded font-mono text-[12px] font-bold flex items-center gap-1 transition-colors shadow-sm"
+              >
+                <span className="material-symbols-outlined text-[16px]">restart_alt</span>
+                Reset Demo
+              </button>
             </div>
           </div>
 
-          {/* Right: Learning Velocity & Cryptographic Stamp (5 cols) */}
-          <div className="lg:col-span-5 space-y-6">
-            {/* Learning Velocity Card */}
-            <div className="border border-outline-variant bg-surface-container-low p-6 space-y-4 font-mono">
-              <div className="flex items-center justify-between border-b border-outline-variant pb-2">
-                <span className="font-label-sm text-secondary uppercase font-bold tracking-widest">[LEARNING_VELOCITY]</span>
-                <span className="text-label-sm text-outline">dx/dt METRIC</span>
+          {/* Conditional Display: Sufficient Data vs NOT ENOUGH DATA */}
+          {reassessmentData.dataSufficiency === 'NOT_ENOUGH_DATA' ? (
+            /* Insufficient Data State - As explicitly mandated by prompt */
+            <div className="p-8 bg-surface-container-low rounded-lg border-2 border-dashed border-outline-variant flex flex-col items-center justify-center text-center gap-4">
+              <div className="w-12 h-12 rounded-full bg-surface-container-high text-on-surface-variant flex items-center justify-center">
+                <span className="material-symbols-outlined text-[28px]">hourglass_empty</span>
               </div>
 
-              {isDataSufficient && reassessment.learningVelocity !== null ? (
-                <div className="space-y-4">
-                  <div className="flex items-baseline gap-2">
-                    <span className="font-headline-xl text-headline-xl font-bold text-secondary">
-                      {reassessment.learningVelocity}
+              <div className="flex flex-col gap-1 max-w-md">
+                <span className="font-headline-sm text-lg text-on-surface font-bold">
+                  NOT ENOUGH DATA
+                </span>
+                <p className="font-body-sm text-[13px] text-on-surface-variant leading-relaxed">
+                  {reassessmentData.notes}
+                </p>
+                <p className="font-mono text-[11px] text-outline mt-2">
+                  System safety rule: Never invent improvement when empirical samples are incomplete.
+                </p>
+              </div>
+
+              <button
+                onClick={() => setHasCompletedMission(true)}
+                className="mt-2 px-5 py-2 bg-primary hover:bg-primary-container text-white font-mono text-[12px] font-bold rounded shadow transition-colors"
+              >
+                Simulate Mission Verification Telemetry
+              </button>
+            </div>
+          ) : (
+            /* Sufficient Data State - Demonstrating Before -> After and Learning Velocity */
+            <div className="flex flex-col gap-6">
+              {/* Before vs After Cards */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {/* BEFORE */}
+                <div className="p-5 bg-surface-container-low rounded-lg border border-outline-variant/40 flex flex-col justify-between">
+                  <div>
+                    <span className="font-mono text-[11px] uppercase tracking-wider text-error font-bold block mb-1">
+                      Before Intervention
                     </span>
-                    <span className="text-body-md text-outline">Index Points / Study Hour</span>
+                    <span className="text-[12px] text-on-surface-variant block mb-2">
+                      Pre-Mission Baseline
+                    </span>
+                    <div className="flex items-baseline gap-1 font-mono">
+                      <span className="text-3xl font-bold text-error">
+                        {reassessmentData.beforeScore.toFixed(1)}
+                      </span>
+                      <span className="text-on-surface-variant text-[14px]">/ 10</span>
+                    </div>
                   </div>
-                  <p className="text-body-sm text-on-surface-variant font-sans">
-                    Demonstrates rapid skill acquisition when guided by targeted sequence grounding intervention.
-                  </p>
-                  <div className="p-3 bg-surface-container-lowest border border-outline-variant text-xs text-outline space-y-1">
-                    <div>FORMULA: (AfterScore - BeforeScore) / StudyTimeHours</div>
-                    <div>CALCULATION: (7.2 - 4.5) / 6.0 hrs = 0.45 pts/hr</div>
-                    <div className="text-secondary font-bold">PERCENTILE: 94th against engineering cohort</div>
+                  <div className="mt-4 pt-2 border-t border-outline-variant/30 font-mono text-[11px] text-error font-semibold">
+                    BELOW 7.0 BENCHMARK (-2.5)
                   </div>
                 </div>
-              ) : (
-                <div className="p-4 bg-surface-container-lowest border border-outline-variant text-xs text-outline">
-                  <div className="text-tertiary font-bold mb-1">[NOT_ENOUGH_DATA]</div>
-                  Insufficient historical re-test points recorded. Complete mission practice tasks to compute learning velocity.
-                </div>
-              )}
-            </div>
 
-            {/* Cryptographic Telemetry Stamp */}
-            <div className="border border-outline-variant bg-surface-container-lowest p-5 text-[11px] font-mono text-outline space-y-2 rounded-xl">
-              <div className="text-on-surface font-semibold flex items-center gap-2">
-                <ShieldCheck className="w-4 h-4 text-emerald-400" />
-                <span className="text-white">CRYPTOGRAPHIC AUDIT SEAL</span>
+                {/* ARROW DELTA GAIN */}
+                <div className="p-5 bg-primary/5 rounded-lg border-2 border-primary flex flex-col justify-between items-center text-center">
+                  <div className="w-full">
+                    <span className="font-mono text-[11px] uppercase tracking-wider text-primary font-bold block mb-1">
+                      Empirical Delta Gain
+                    </span>
+                    <span className="text-[12px] text-on-surface-variant block mb-2">
+                      Delta Verified
+                    </span>
+                    <div className="font-mono text-3xl font-bold text-primary">
+                      +{reassessmentData.delta.toFixed(1)}
+                    </div>
+                  </div>
+                  <div className="mt-4 pt-2 border-t border-primary/30 font-mono text-[11px] text-primary font-bold">
+                    SURPASSED TIER-1 CUTOFF
+                  </div>
+                </div>
+
+                {/* AFTER */}
+                <div className="p-5 bg-surface-container-low rounded-lg border border-outline-variant/40 flex flex-col justify-between">
+                  <div>
+                    <span className="font-mono text-[11px] uppercase tracking-wider text-tertiary font-bold block mb-1">
+                      After Intervention
+                    </span>
+                    <span className="text-[12px] text-on-surface-variant block mb-2">
+                      Post-Mission Telemetry
+                    </span>
+                    <div className="flex items-baseline gap-1 font-mono">
+                      <span className="text-3xl font-bold text-tertiary">
+                        {reassessmentData.afterScore.toFixed(1)}
+                      </span>
+                      <span className="text-on-surface-variant text-[14px]">/ 10</span>
+                    </div>
+                  </div>
+                  <div className="mt-4 pt-2 border-t border-outline-variant/30 font-mono text-[11px] text-tertiary font-semibold flex items-center justify-between">
+                    <span>STATUS: READY</span>
+                    <span>&gt; 7.0 BAR</span>
+                  </div>
+                </div>
               </div>
-              <div>SHA-256: 8F4A2C19E7B31024D980F16C5A23E09941BC8841B</div>
-              <div>PROCTOR_STAMP: PlacementOS Empirical Proof Engine</div>
-              <div>TELEMETRY_SOURCE: Sequence Grounding Interactive Sandbox Probe</div>
+
+              {/* Learning Velocity Metric */}
+              <div className="p-5 bg-surface-container-lowest rounded-lg border border-outline-variant/40 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div className="flex items-start gap-3">
+                  <div className="w-10 h-10 rounded bg-tertiary/10 text-tertiary flex items-center justify-center shrink-0 mt-0.5">
+                    <span className="material-symbols-outlined text-[24px]">speed</span>
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="font-mono text-[11px] text-primary font-bold uppercase tracking-wider">
+                      Quantified Learning Velocity
+                    </span>
+                    <span className="font-headline-sm text-lg text-on-surface font-bold">
+                      +{reassessmentData.learningVelocity} Index Points per Study Hour
+                    </span>
+                    <p className="font-body-sm text-[13px] text-on-surface-variant mt-0.5">
+                      {reassessmentData.notes}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="shrink-0 font-mono text-[11px] bg-tertiary-fixed text-on-tertiary-fixed px-3 py-1.5 rounded font-bold">
+                  92ND PERCENTILE VELOCITY
+                </div>
+              </div>
+
+              {/* Verified Telemetry Run Card */}
+              <div className="p-4 bg-inverse-surface text-inverse-on-surface rounded font-mono text-[12px] flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-tertiary-fixed animate-ping"></span>
+                  <span>VERIFICATION AUDIT RUN: {reassessmentData.verificationTelemetryRun}</span>
+                </div>
+                <span className="text-tertiary-fixed font-bold">BENCHMARK ACHIEVED</span>
+              </div>
             </div>
-          </div>
+          )}
         </div>
-
-        {/* Action Button Controls */}
-        <div className="pt-6 border-t border-slate-800 flex flex-col sm:flex-row justify-between items-center gap-4">
-          <button
-            onClick={onViewDashboard}
-            className="w-full sm:w-auto px-6 py-3.5 rounded-lg border border-slate-700 bg-slate-800/80 text-white font-medium uppercase tracking-wider text-xs hover:border-cyan-500 transition-all flex items-center justify-center gap-2"
-          >
-            <ArrowLeft className="w-4 h-4 text-slate-400" />
-            <span>Return to Readiness Dashboard</span>
-          </button>
-
-          <button
-            onClick={onRestartDemo}
-            className="w-full sm:w-auto px-8 py-3.5 rounded-lg bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 font-bold uppercase tracking-wider text-xs transition-all flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(6,182,212,0.4)]"
-          >
-            <RotateCcw className="w-4 h-4 text-slate-950" />
-            <span>RESTART PLACEMENTOS DEMO JOURNEY</span>
-          </button>
-        </div>
-      </main>
+      </div>
     </div>
   );
 };

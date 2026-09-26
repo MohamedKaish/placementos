@@ -10,69 +10,49 @@ import { MissionScreen } from '@/components/MissionScreen';
 import { ReadinessDashboardScreen } from '@/components/ReadinessDashboardScreen';
 import { ReassessmentScreen } from '@/components/ReassessmentScreen';
 import { defaultPlacementService } from '@/lib/placement-service';
-import {
-  CalibrationUIResult,
-  MissionUI,
-  ReadinessReportUI,
-  ReassessmentResultUI,
-} from '@/types/team2-contract';
+import { CalibrationResult, Mission, ReadinessReport } from '@/types/team2-contract';
 
 export default function Home() {
   const [currentScreen, setCurrentScreen] = useState<ScreenId>('landing');
-
-  // Live state from PlacementService
-  const [calibrationResult, setCalibrationResult] = useState<CalibrationUIResult>(() =>
-    defaultPlacementService.getCalibrationResult()
+  const [calibrationResult, setCalibrationResult] = useState<CalibrationResult>(() =>
+    defaultPlacementService.finalizeAssessment()
   );
-  const [mission, setMission] = useState<MissionUI>(() =>
+  const [mission, setMission] = useState<Mission>(() =>
     defaultPlacementService.generateTargetedMission()
   );
-  const [readinessReport, setReadinessReport] = useState<ReadinessReportUI>(() =>
+  const [readinessReport, setReadinessReport] = useState<ReadinessReport>(() =>
     defaultPlacementService.getReadinessReport()
   );
-  const [reassessment, setReassessment] = useState<ReassessmentResultUI>(() =>
-    defaultPlacementService.runReassessment(false)
-  );
 
-  const departments = defaultPlacementService.getDepartments();
-  const jobRoles = defaultPlacementService.getJobRoles();
-
-  // Navigation & Flow Handlers
+  // Demo Flow Navigation Handlers
   const handleStartDemo = () => {
-    setCurrentScreen('onboarding');
-  };
-
-  const handleCustomIntake = () => {
+    // Directly proceeds to Onboarding with EEE / Power Systems Engineer preset
     setCurrentScreen('onboarding');
   };
 
   const handleOnboardingComplete = (data: {
-    departmentCode: string;
-    academicYear: string;
+    department: any;
+    academicYear: any;
     roleId: string;
     claimedScore: number;
-    candidateName: string;
   }) => {
-    defaultPlacementService.setCandidateConfig({
-      departmentCode: data.departmentCode,
-      academicYear: data.academicYear,
+    // Start diagnostic assessment session
+    defaultPlacementService.startAssessment({
       roleId: data.roleId,
+      department: data.department,
+      academicYear: data.academicYear,
       claimedScore: data.claimedScore,
-      name: data.candidateName,
     });
-    setCalibrationResult(defaultPlacementService.getCalibrationResult());
-    setReadinessReport(defaultPlacementService.getReadinessReport());
     setCurrentScreen('assessment');
   };
 
-  const handleAssessmentComplete = () => {
-    const updatedCalibration = defaultPlacementService.getCalibrationResult();
-    const updatedMission = defaultPlacementService.generateTargetedMission();
-    const updatedReadiness = defaultPlacementService.getReadinessReport();
-
-    setCalibrationResult(updatedCalibration);
-    setMission(updatedMission);
-    setReadinessReport(updatedReadiness);
+  const handleAssessmentComplete = (result: CalibrationResult) => {
+    setCalibrationResult(result);
+    // Generate targeted mission based on calibration
+    const generatedMission = defaultPlacementService.generateTargetedMission();
+    setMission(generatedMission);
+    // Update readiness report
+    setReadinessReport(defaultPlacementService.getReadinessReport());
     setCurrentScreen('calibration');
   };
 
@@ -81,9 +61,7 @@ export default function Home() {
   };
 
   const handleMissionComplete = () => {
-    defaultPlacementService.completeActiveMission();
-    setReassessment(defaultPlacementService.runReassessment(true));
-    setCurrentScreen('reassessment');
+    setCurrentScreen('dashboard');
   };
 
   const handleRestartDemo = () => {
@@ -91,35 +69,27 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-background text-on-surface flex flex-col font-mono selection:bg-primary-container selection:text-on-primary-container">
-      {/* Top Application Header Navigation */}
+    <div className="min-h-screen bg-surface flex flex-col">
+      {/* Top Header Navigation */}
       <Header
         currentScreen={currentScreen}
         onNavigate={(screen) => setCurrentScreen(screen)}
-        targetRole={calibrationResult.roleTitle}
-        department={calibrationResult.department}
-        candidateName={calibrationResult.candidateName}
-        readinessStatus={readinessReport.overallBand}
+        targetRole={calibrationResult?.roleTitle ?? 'Power Systems Engineer'}
+        department={calibrationResult?.department ?? 'EEE'}
+        readinessStatus={readinessReport?.overallBand === 'DEVELOPING' ? 'Developing' : 'Ready'}
       />
 
-      {/* Screen Router */}
+      {/* Screen Routing */}
       <main className="flex-1 w-full">
         {currentScreen === 'landing' && (
           <LandingScreen
             onStartDemo={handleStartDemo}
-            onCustomIntake={handleCustomIntake}
-            onViewDashboard={() => setCurrentScreen('dashboard')}
-            departments={departments}
-            jobRoles={jobRoles}
+            onCustomIntake={() => setCurrentScreen('onboarding')}
           />
         )}
 
         {currentScreen === 'onboarding' && (
-          <OnboardingScreen
-            departments={departments}
-            jobRoles={jobRoles}
-            onComplete={handleOnboardingComplete}
-          />
+          <OnboardingScreen onComplete={handleOnboardingComplete} />
         )}
 
         {currentScreen === 'assessment' && (
@@ -153,23 +123,21 @@ export default function Home() {
 
         {currentScreen === 'reassessment' && (
           <ReassessmentScreen
-            reassessment={reassessment}
             onRestartDemo={handleRestartDemo}
             onViewDashboard={() => setCurrentScreen('dashboard')}
           />
         )}
       </main>
 
-      {/* Persistent Institutional Telemetry Footer */}
-      <footer className="w-full bg-surface-container-lowest border-t border-outline-variant py-4 select-none">
-        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 md:px-8 flex flex-col md:flex-row items-center justify-between gap-3 text-label-sm text-outline">
-          <div className="flex items-center gap-2">
-            <span className="w-2 h-2 bg-primary"></span>
-            <span>&copy; 2026 PlacementOS &bull; Evidence-Weighted Career Readiness Intelligence</span>
+      {/* Persistent Enterprise Footer */}
+      <footer className="w-full bg-surface-container-low border-t border-outline-variant/20 py-6 mt-auto">
+        <div className="max-w-[1440px] mx-auto px-4 sm:px-8 flex flex-col md:flex-row items-center justify-between gap-4 font-mono text-[12px] text-on-surface-variant">
+          <div>
+            &copy; 2026 PlacementOS Enterprise. All rights reserved. High-Density Talent Telemetry.
           </div>
           <div className="flex items-center gap-6">
-            <span className="text-on-surface">Team 1 Intelligence Layer &bull; Stitch Precision Telemetry UI</span>
-            <span className="text-primary font-bold">Hackathon Demo Flow: EEE &bull; Power Systems Engineer</span>
+            <span className="text-on-surface font-semibold">Team 1 Core Intelligence Layer &bull; Team 2 Stitch UI Integration</span>
+            <span className="text-primary font-semibold">Primary Demo: EEE &bull; Power Systems Engineer</span>
           </div>
         </div>
       </footer>

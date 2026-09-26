@@ -1,270 +1,171 @@
 'use client';
 
 import React from 'react';
-import { Department, JobRole } from '@/types/skill-graph';
-import {
-  ArrowRight,
-  BarChart3,
-  AlertTriangle,
-  Sparkles,
-  ShieldCheck,
-  Cpu,
-  GraduationCap,
-  Briefcase,
-} from 'lucide-react';
 
 interface LandingScreenProps {
   onStartDemo: () => void;
   onCustomIntake: () => void;
-  onViewDashboard: () => void;
-  departments: Department[];
-  jobRoles: JobRole[];
 }
 
 export const LandingScreen: React.FC<LandingScreenProps> = ({
   onStartDemo,
   onCustomIntake,
-  onViewDashboard,
-  departments,
-  jobRoles,
 }) => {
-  return (
-    <div className="w-full max-w-full overflow-x-hidden min-h-screen pb-16 bg-[#070A12] bg-grid-matrix relative">
-      {/* Ambient background glow spotlights */}
-      <div className="absolute top-0 left-1/4 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none -z-10" />
-      <div className="absolute top-1/3 right-1/4 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none -z-10" />
+  const departments = [
+    { code: 'EEE', name: 'Electrical & Electronics', benchmarkCount: 42, activeRole: 'Power Systems Engineer' },
+    { code: 'CSE', name: 'Computer Science', benchmarkCount: 68, activeRole: 'Distributed Systems' },
+    { code: 'ECE', name: 'Electronics & Communication', benchmarkCount: 54, activeRole: 'Embedded Firmware' },
+    { code: 'Mechanical', name: 'Mechanical Engineering', benchmarkCount: 39, activeRole: 'Robotics Control' },
+    { code: 'Civil', name: 'Civil Infrastructure', benchmarkCount: 31, activeRole: 'FEA & Structural' },
+    { code: 'Chemical', name: 'Chemical Engineering', benchmarkCount: 28, activeRole: 'Process Automation' },
+    { code: 'Biotechnology', name: 'Biotechnology', benchmarkCount: 24, activeRole: 'Bioprocess Scale-Up' },
+  ];
 
-      {/* Coordinate & System Header Ticks */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex justify-between font-mono text-[11px] text-slate-500 select-none">
-        <div className="flex items-center gap-2">
-          <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
-          <span>ARRAY_LOC // 0x4B21_ALPHA</span>
-        </div>
-        <div className="flex items-center gap-2 text-cyan-400/80">
-          <Cpu className="w-3.5 h-3.5" />
-          <span>SYS_ENGINE // PLACEMENTOS_CORE_ONLINE</span>
+  return (
+    <div className="w-full min-h-screen pt-20 pb-16 flex flex-col items-center">
+      {/* Top Telemetry Breadcrumb Bar */}
+      <div className="w-full bg-surface-container-low px-4 sm:px-8 py-2.5 border-b border-outline-variant/30">
+        <div className="max-w-[1440px] mx-auto flex flex-wrap items-center justify-between gap-3 text-[12px] font-mono text-on-surface-variant">
+          <div className="flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+            <span className="font-semibold text-on-surface">PLACEMENTOS CORE v2.4</span>
+            <span className="text-outline-variant">|</span>
+            <span>SYSTEM AUDIT: 7 ENGINEERING DISCIPLINES ONLINE</span>
+          </div>
+          <div className="flex items-center gap-3">
+            <span className="px-2 py-0.5 bg-surface-container-highest rounded text-on-surface font-semibold text-[11px]">
+              TRUST ENGINE: EMPIRICAL TELEMETRY
+            </span>
+          </div>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6">
-        {/* ==================== HERO SECTION ==================== */}
-        <section className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center my-6 lg:my-10">
-          {/* Left: Strategic Value Proposition */}
-          <div className="lg:col-span-6 flex flex-col justify-center space-y-5">
-            <div className="inline-flex items-center gap-2 rounded-full border border-cyan-500/30 bg-cyan-950/40 backdrop-blur-md px-3.5 py-1.5 text-cyan-300 font-mono text-xs tracking-wider w-max shadow-[0_0_15px_rgba(6,182,212,0.2)]">
-              <Sparkles className="w-3.5 h-3.5 text-cyan-400 animate-pulse" />
-              <span>EVIDENCE-BASED CAREER READINESS FOR ENGINEERING</span>
+      {/* Hero Section */}
+      <div className="max-w-[1440px] w-full mx-auto px-4 sm:px-8 pt-10 pb-8 flex flex-col gap-10">
+        <div className="max-w-4xl flex flex-col gap-5">
+          <div className="inline-flex items-center gap-2 px-3 py-1 bg-surface-container-high rounded text-on-surface font-mono text-[12px] w-fit border border-outline-variant/40">
+            <span className="material-symbols-outlined text-[14px] text-primary">verified</span>
+            Institutional Career Readiness & Skill Calibration
+          </div>
+
+          <h1 className="font-headline-xl text-3xl sm:text-5xl lg:text-6xl text-on-surface font-extrabold tracking-tight leading-[1.15]">
+            Know what you claim.<br />
+            Prove what you can demonstrate.<br />
+            <span className="text-primary">Close the gap before placement.</span>
+          </h1>
+
+          <p className="font-body-lg text-base sm:text-lg text-on-surface-variant max-w-2xl leading-relaxed">
+            PlacementOS replaces subjective self-assessment with forensic skill telemetry. 
+            We calculate your empirical calibration gap against Tier-1 engineering benchmarks 
+            and prescribe targeted intervention missions before placement day.
+          </p>
+
+          {/* Primary Action Buttons */}
+          <div className="flex flex-wrap items-center gap-4 pt-2">
+            <button
+              onClick={onStartDemo}
+              className="px-6 py-3.5 bg-primary hover:bg-primary-container text-white font-mono text-[14px] font-semibold rounded shadow-sm flex items-center gap-2.5 transition-colors"
+            >
+              <span>Launch Primary Demo (EEE Power Systems)</span>
+              <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
+            </button>
+
+            <button
+              onClick={onCustomIntake}
+              className="px-5 py-3.5 bg-surface-container hover:bg-surface-container-high text-on-surface font-mono text-[14px] font-medium rounded border border-outline-variant/50 transition-colors flex items-center gap-2"
+            >
+              <span className="material-symbols-outlined text-[18px]">tune</span>
+              <span>Custom Student Intake</span>
+            </button>
+          </div>
+        </div>
+
+        {/* 3 Core Architecture Pillars */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4">
+          <div className="bg-surface-container-lowest p-6 rounded-lg border border-outline-variant/40 shadow-sm flex flex-col gap-3 relative overflow-hidden">
+            <div className="w-10 h-10 rounded bg-primary/10 text-primary flex items-center justify-center">
+              <span className="material-symbols-outlined text-[22px]">troubleshoot</span>
             </div>
-
-            <h1 className="font-extrabold text-3xl sm:text-4xl lg:text-[44px] text-white tracking-tight leading-[1.15]">
-              Know what you claim. <br />
-              <span className="bg-gradient-to-r from-cyan-400 via-sky-300 to-emerald-400 bg-clip-text text-transparent">
-                Prove what you can demonstrate.
-              </span> <br />
-              Close the gap before placement.
-            </h1>
-
-            <p className="text-slate-300 text-sm sm:text-base max-w-xl leading-relaxed">
-              PlacementOS replaces self-reported resume claims with verifiable demonstrated engineering capability. We benchmark real telemetry against Tier-1 hiring matrices to pinpoint latent competence gaps before placement day.
+            <h3 className="font-headline-sm text-[18px] text-on-surface font-bold">
+              01. Claimed vs Demonstrated
+            </h3>
+            <p className="font-body-md text-[14px] text-on-surface-variant leading-normal">
+              Self-reported skills on CVs routinely diverge from empirical execution under pressure. 
+              Our adaptive diagnostic probes capture concrete telemetry rather than rote recall.
             </p>
-
-            {/* Call to Action Cluster */}
-            <div className="pt-2 flex flex-wrap gap-4 items-center">
-              <button
-                onClick={onStartDemo}
-                className="inline-flex items-center gap-2.5 px-6 py-3.5 rounded-lg bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 font-bold text-xs uppercase tracking-wider transition-all duration-200 shadow-[0_0_25px_rgba(6,182,212,0.4)] hover:shadow-[0_0_35px_rgba(6,182,212,0.6)] active:scale-[0.98]"
-              >
-                <span>Diagnose My Readiness</span>
-                <ArrowRight className="w-4 h-4 text-slate-950" />
-              </button>
-
-              <button
-                onClick={onViewDashboard}
-                className="inline-flex items-center gap-2 px-5 py-3.5 rounded-lg bg-slate-900/80 hover:bg-slate-800 text-slate-200 hover:text-white font-semibold text-xs uppercase tracking-wider border border-slate-700/80 hover:border-cyan-500/50 transition-all duration-200 backdrop-blur-md"
-              >
-                <BarChart3 className="w-4 h-4 text-cyan-400" />
-                <span>Explore the Intelligence</span>
-              </button>
-            </div>
-
-            {/* Telemetry Live Stream Ticker */}
-            <div className="pt-4 border-t border-slate-800/80 flex flex-wrap gap-5 text-slate-400 font-mono text-xs">
-              <div className="flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                <span>SYS_MONITOR:</span>
-                <span className="text-slate-200 font-semibold">99.98% AUDIT INTEGRITY</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <ShieldCheck className="w-3.5 h-3.5 text-cyan-400" />
-                <span>BENCHMARKS:</span>
-                <span className="text-cyan-300 font-semibold">142 TIER-1 FIRMS</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <span>VERIFIED METRICS:</span>
-                <span className="text-slate-200 font-semibold">3.8M TELEMETRY POINTS</span>
-              </div>
+            <div className="mt-auto pt-3 border-t border-outline-variant/30 font-mono text-[11px] text-secondary font-semibold">
+              TRIANGULATION WITH 98.4% CONFIDENCE
             </div>
           </div>
 
-          {/* Right: Telemetry Calibration Matrix Card (Hero Artifact) */}
-          <div className="lg:col-span-6 rounded-xl border border-cyan-500/30 bg-[#0E1526]/90 backdrop-blur-xl shadow-[0_15px_50px_rgba(0,0,0,0.6)] overflow-hidden relative">
-            {/* Ambient top glowing line */}
-            <div className="h-1 w-full bg-gradient-to-r from-cyan-500 via-sky-400 to-emerald-400"></div>
-
-            {/* Card Header Bar */}
-            <div className="px-5 py-3.5 border-b border-slate-800/80 bg-slate-900/60 flex items-center justify-between">
-              <div className="flex items-center gap-2.5">
-                <span className="w-2.5 h-2.5 rounded-full bg-amber-400 animate-ping"></span>
-                <span className="font-mono text-xs text-white uppercase tracking-wider font-bold">
-                  CALIBRATION MATRIX // EEE-PWR-04
-                </span>
-              </div>
-              <div className="font-mono text-[11px] text-cyan-400/90 font-medium">
-                ID: 0x9AF2_FAULT_ANALYSIS
-              </div>
+          <div className="bg-surface-container-lowest p-6 rounded-lg border border-outline-variant/40 shadow-sm flex flex-col gap-3 relative overflow-hidden">
+            <div className="w-10 h-10 rounded bg-error/10 text-error flex items-center justify-center">
+              <span className="material-symbols-outlined text-[22px]">crisis_alert</span>
             </div>
-
-            <div className="p-5 sm:p-6 space-y-5">
-              {/* Three Large Metric Pillars Side-by-Side */}
-              <div className="grid grid-cols-3 gap-3">
-                {/* Pillar 1: CLAIMED */}
-                <div className="p-4 rounded-lg bg-slate-900/80 border border-slate-800 flex flex-col justify-between">
-                  <span className="text-[10px] text-slate-400 uppercase font-mono font-medium">[CLAIMED_ONLY]</span>
-                  <div className="my-2 flex items-baseline gap-1">
-                    <span className="text-2xl sm:text-3xl font-extrabold text-white">8.0</span>
-                    <span className="text-slate-500 text-xs">/10</span>
-                  </div>
-                  <span className="text-[11px] text-amber-400/90 font-mono truncate">Self-Reported</span>
-                </div>
-
-                {/* Pillar 2: DEMONSTRATED */}
-                <div className="p-4 rounded-lg bg-rose-950/20 border border-rose-500/30 flex flex-col justify-between shadow-[0_0_15px_rgba(244,63,94,0.1)]">
-                  <span className="text-[10px] text-rose-400 uppercase font-mono font-medium">[DEMONSTRATED]</span>
-                  <div className="my-2 flex items-baseline gap-1">
-                    <span className="text-2xl sm:text-3xl font-extrabold text-rose-400">4.5</span>
-                    <span className="text-slate-500 text-xs">/10</span>
-                  </div>
-                  <span className="text-[11px] text-rose-300 font-mono truncate">Diagnostic Probe</span>
-                </div>
-
-                {/* Pillar 3: REQUIRED */}
-                <div className="p-4 rounded-lg bg-emerald-950/20 border border-emerald-500/30 flex flex-col justify-between shadow-[0_0_15px_rgba(16,185,129,0.1)]">
-                  <span className="text-[10px] text-emerald-400 uppercase font-mono font-medium">[TARGET_BAR]</span>
-                  <div className="my-2 flex items-baseline gap-1">
-                    <span className="text-2xl sm:text-3xl font-extrabold text-emerald-400">7.0</span>
-                    <span className="text-slate-500 text-xs">/10</span>
-                  </div>
-                  <span className="text-[11px] text-emerald-300 font-mono truncate">Tier-1 Standard</span>
-                </div>
-              </div>
-
-              {/* Amber Callout Box: Calibration Gap */}
-              <div className="rounded-lg border border-amber-500/40 bg-amber-500/10 p-4 flex items-start gap-3 backdrop-blur-md">
-                <AlertTriangle className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
-                <div>
-                  <div className="font-mono text-xs text-amber-400 uppercase font-bold tracking-wider">
-                    [DELTA_FLAG] +3.5 OVERCONFIDENCE GAP IDENTIFIED
-                  </div>
-                  <p className="text-xs text-slate-300 mt-1 leading-relaxed">
-                    Student claims 8.0/10 in Fault Analysis, but diagnostic probe demonstrates 4.5/10. Root cause: Zero-sequence transformer grounding miscalculation.
-                  </p>
-                </div>
-              </div>
-
-              {/* Action Link to Start Demo */}
-              <div className="flex justify-end pt-1">
-                <button
-                  onClick={onStartDemo}
-                  className="text-cyan-400 hover:text-cyan-300 font-mono text-xs uppercase tracking-wider font-semibold inline-flex items-center gap-1.5 transition-colors group"
-                >
-                  <span>Launch Fault Analysis Diagnostic</span>
-                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                </button>
-              </div>
+            <h3 className="font-headline-sm text-[18px] text-on-surface font-bold">
+              02. Forensic Calibration Gap
+            </h3>
+            <p className="font-body-md text-[14px] text-on-surface-variant leading-normal">
+              High confidence paired with erroneous derivation reveals dangerous blind spots. 
+              We isolate exact weak subskills and root causes down to sign conventions and grounding loop errors.
+            </p>
+            <div className="mt-auto pt-3 border-t border-outline-variant/30 font-mono text-[11px] text-error font-semibold">
+              PINPOINTS WEAK SUBSKILL CAUSES
             </div>
           </div>
-        </section>
 
-        {/* ==================== 7 SUPPORTED DEPARTMENTS ==================== */}
-        <section className="mb-14">
-          <div className="border-b border-slate-800 pb-3 mb-6 flex flex-col sm:flex-row justify-between sm:items-end gap-2">
+          <div className="bg-surface-container-lowest p-6 rounded-lg border border-outline-variant/40 shadow-sm flex flex-col gap-3 relative overflow-hidden">
+            <div className="w-10 h-10 rounded bg-tertiary/10 text-tertiary flex items-center justify-center">
+              <span className="material-symbols-outlined text-[22px]">assignment_turned_in</span>
+            </div>
+            <h3 className="font-headline-sm text-[18px] text-on-surface font-bold">
+              03. Precision Intervention Mission
+            </h3>
+            <p className="font-body-md text-[14px] text-on-surface-variant leading-normal">
+              No generic courses or irrelevant videos. Students receive structured 4-stage missions 
+              specifically targeted to lift verified baseline metrics to Tier-1 hiring standards.
+            </p>
+            <div className="mt-auto pt-3 border-t border-outline-variant/30 font-mono text-[11px] text-tertiary font-semibold">
+              MEASURABLE LEARNING VELOCITY (+2.7Δ)
+            </div>
+          </div>
+        </div>
+
+        {/* Multi-Department Agnostic Coverage */}
+        <div className="bg-surface-container-low p-6 rounded-lg border border-outline-variant/40 flex flex-col gap-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
             <div>
-              <div className="font-mono text-xs text-cyan-400 uppercase tracking-widest">[DEPARTMENT_AGNOSTIC_CORE]</div>
-              <h2 className="text-xl sm:text-2xl text-white font-bold mt-1">
-                Supported Engineering Disciplines
-              </h2>
+              <span className="font-mono text-[11px] text-primary uppercase font-bold tracking-wider">
+                Multi-Department Architecture
+              </span>
+              <h4 className="font-headline-sm text-[16px] text-on-surface font-bold">
+                Supported Engineering Disciplines & Independent Role Graphs
+              </h4>
             </div>
-            <span className="text-xs text-slate-400 font-mono">
-              7 PRIMARY DISCIPLINES // CROSS-DISCIPLINARY ALIGNMENT
+            <span className="font-mono text-[12px] text-on-surface-variant">
+              No Artificial Role-to-Department Restrictions
             </span>
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-3 pt-1">
             {departments.map((dept) => (
               <div
-                key={dept.id}
-                onClick={onCustomIntake}
-                className="p-4 rounded-xl border border-slate-800 bg-slate-900/60 hover:border-cyan-500/50 hover:bg-slate-800/80 transition-all duration-200 cursor-pointer group hover:shadow-[0_0_20px_rgba(6,182,212,0.15)] flex flex-col justify-between"
+                key={dept.code}
+                className="bg-surface-container-lowest p-3 rounded border border-outline-variant/30 flex flex-col justify-between gap-1 shadow-xs"
               >
-                <div>
-                  <div className="flex justify-between items-center mb-2">
-                    <span className="text-lg font-bold text-white group-hover:text-cyan-400 transition-colors font-mono">
-                      {dept.code}
-                    </span>
-                    <GraduationCap className="w-4 h-4 text-slate-500 group-hover:text-cyan-400 transition-colors" />
-                  </div>
-                  <h3 className="text-sm font-semibold text-slate-200 mb-1 truncate">{dept.name}</h3>
-                  <p className="text-xs text-slate-400 line-clamp-2 leading-relaxed">{dept.description}</p>
-                </div>
+                <span className="font-mono text-[14px] font-bold text-primary">
+                  {dept.code}
+                </span>
+                <span className="text-[12px] text-on-surface font-medium truncate">
+                  {dept.name}
+                </span>
+                <span className="font-mono text-[10px] text-on-surface-variant mt-1">
+                  {dept.benchmarkCount} Benchmarks
+                </span>
               </div>
             ))}
           </div>
-        </section>
-
-        {/* ==================== 8 INDEPENDENT ROLES ==================== */}
-        <section className="mb-14">
-          <div className="border-b border-slate-800 pb-3 mb-6 flex flex-col sm:flex-row justify-between sm:items-end gap-2">
-            <div>
-              <div className="font-mono text-xs text-emerald-400 uppercase tracking-widest">[INDUSTRY_RUBRICS]</div>
-              <h2 className="text-xl sm:text-2xl text-white font-bold mt-1">
-                Cross-Disciplinary Target Roles
-              </h2>
-            </div>
-            <span className="text-xs text-slate-400 font-mono">
-              STANDARDIZED HIRING THRESHOLDS
-            </span>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {jobRoles.map((role) => (
-              <div
-                key={role.id}
-                onClick={onCustomIntake}
-                className="p-4 rounded-xl border border-slate-800 bg-slate-900/60 hover:border-emerald-500/50 hover:bg-slate-800/80 transition-all duration-200 cursor-pointer group hover:shadow-[0_0_20px_rgba(16,185,129,0.15)] flex flex-col justify-between"
-              >
-                <div>
-                  <div className="flex justify-between items-start mb-2">
-                    <span className="text-[10px] text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-2 py-0.5 rounded font-bold font-mono">
-                      {(role.marketDemandRating || 'high').toUpperCase()} DEMAND
-                    </span>
-                    <Briefcase className="w-3.5 h-3.5 text-slate-500 group-hover:text-emerald-400 transition-colors" />
-                  </div>
-                  <h3 className="text-sm font-bold text-white group-hover:text-emerald-400 transition-colors mb-1.5 truncate">
-                    {role.title}
-                  </h3>
-                  <p className="text-xs text-slate-400 line-clamp-2 mb-3 leading-relaxed">
-                    {role.description}
-                  </p>
-                </div>
-
-                <div className="pt-2.5 border-t border-slate-800 flex items-center justify-between text-xs text-slate-400 font-mono">
-                  <span>Prerequisites:</span>
-                  <span className="text-cyan-400 font-semibold">Min Level 3+</span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
+        </div>
       </div>
     </div>
   );

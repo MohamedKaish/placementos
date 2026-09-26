@@ -27,33 +27,6 @@
     ]
   },
   {
-    "id": "role_power_engineer",
-    "title": "Power Systems Engineer",
-    "description": "Engineers high-voltage grids, industrial substations, protective relay schemes, and renewable energy integration. Targeted by EEE and Electrical/Mechanical energy candidates.",
-    "marketDemandRating": "high",
-    "targetDomains": ["domain_eee_power", "domain_eee_control"],
-    "requirements": [
-      {
-        "skillId": "skill_fault_analysis",
-        "weight": 0.45,
-        "minimumLevel": 3,
-        "critical": true
-      },
-      {
-        "skillId": "skill_protective_relays",
-        "weight": 0.30,
-        "minimumLevel": 3,
-        "critical": true
-      },
-      {
-        "skillId": "skill_power_analysis",
-        "weight": 0.25,
-        "minimumLevel": 2,
-        "critical": false
-      }
-    ]
-  },
-  {
     "id": "role_embedded",
     "title": "Embedded Systems Engineer",
     "description": "Bridges firmware and hardware by writing low-level drivers, managing microcontroller peripherals, and ensuring real-time reliability. Cross-department target for ECE, EEE, and CSE students.",
@@ -87,87 +60,6 @@
     ]
   },
   {
-    "id": "role_mech_designer",
-    "title": "Mechanical Design Engineer",
-    "description": "Designs industrial components, assemblies, and mechanisms with parametric CAD, applying FEA structural validation and GD&T drafting standards.",
-    "marketDemandRating": "medium",
-    "targetDomains": ["domain_mech_design", "domain_mech_thermal"],
-    "requirements": [
-      {
-        "skillId": "skill_cad_modeling",
-        "weight": 0.50,
-        "minimumLevel": 3,
-        "critical": true
-      },
-      {
-        "skillId": "skill_fea_simulation",
-        "weight": 0.35,
-        "minimumLevel": 3,
-        "critical": true
-      },
-      {
-        "skillId": "skill_python_data",
-        "weight": 0.15,
-        "minimumLevel": 2,
-        "critical": false
-      }
-    ]
-  },
-  {
-    "id": "role_automotive",
-    "title": "Automotive Engineer",
-    "description": "Designs vehicle powertrain and chassis subsystems, optimizes suspension kinematics, and integrates EV drivetrain dynamics.",
-    "marketDemandRating": "high",
-    "targetDomains": ["domain_mech_automotive", "domain_mech_design"],
-    "requirements": [
-      {
-        "skillId": "skill_vehicle_dynamics",
-        "weight": 0.45,
-        "minimumLevel": 3,
-        "critical": true
-      },
-      {
-        "skillId": "skill_cad_modeling",
-        "weight": 0.35,
-        "minimumLevel": 3,
-        "critical": true
-      },
-      {
-        "skillId": "skill_fea_simulation",
-        "weight": 0.20,
-        "minimumLevel": 2,
-        "critical": false
-      }
-    ]
-  },
-  {
-    "id": "role_structural",
-    "title": "Structural Engineer",
-    "description": "Designs reinforced concrete and steel superstructures, calculates wind/seismic load envelopes, and manages building safety compliance.",
-    "marketDemandRating": "medium",
-    "targetDomains": ["domain_civil_structures", "domain_civil_project"],
-    "requirements": [
-      {
-        "skillId": "skill_structural_analysis",
-        "weight": 0.60,
-        "minimumLevel": 3,
-        "critical": true
-      },
-      {
-        "skillId": "skill_cad_modeling",
-        "weight": 0.25,
-        "minimumLevel": 2,
-        "critical": false
-      },
-      {
-        "skillId": "skill_python_data",
-        "weight": 0.15,
-        "minimumLevel": 2,
-        "critical": false
-      }
-    ]
-  },
-  {
     "id": "role_data_analyst",
     "title": "Data Analyst",
     "description": "Extracts actionable insights from business data using SQL, statistical modeling, and data pipelines. Targeted by CSE, Mechanical, Civil, and Electrical students with analytical aptitude.",
@@ -195,27 +87,81 @@
     ]
   },
   {
-    "id": "role_process_automation",
-    "title": "Process Automation Engineer",
-    "description": "Configures industrial control loops, PLC/SCADA systems, and automated safety valves in continuous manufacturing and chemical processing facilities.",
-    "marketDemandRating": "high",
-    "targetDomains": ["domain_chem_process", "domain_eee_control"],
+    "id": "role_power_engineer",
+    "title": "Power Systems Engineer",
+    "description": "Engineers high-voltage grids, industrial substations, protective relay schemes, and renewable energy integration. Targeted by EEE and Electrical/Mechanical energy candidates.",
+    "marketDemandRating": "medium",
+    "targetDomains": ["domain_eee_power", "domain_eee_control"],
     "requirements": [
       {
-        "skillId": "skill_process_control",
-        "weight": 0.50,
+        "skillId": "skill_power_analysis",
+        "weight": 0.55,
         "minimumLevel": 3,
         "critical": true
       },
       {
-        "skillId": "skill_microcontrollers",
-        "weight": 0.30,
+        "skillId": "skill_digital_electronics",
+        "weight": 0.25,
         "minimumLevel": 2,
         "critical": false
       },
       {
         "skillId": "skill_python_data",
         "weight": 0.20,
+        "minimumLevel": 2,
+        "critical": false
+      }
+    ]
+  },
+  {
+    "id": "role_mech_designer",
+    "title": "Mechanical Design Engineer",
+    "description": "Designs industrial components, assemblies, and mechanisms with parametric CAD, applying FEA structural validation and GD&T drafting standards.",
+    "marketDemandRating": "medium",
+    "targetDomains": ["domain_mech_design", "domain_mech_thermal"],
+    "requirements": [
+      {
+        "skillId": "skill_cad_modeling",
+        "weight": 0.50,
+        "minimumLevel": 3,
+        "critical": true
+      },
+      {
+        "skillId": "skill_fea_simulation",
+        "weight": 0.35,
+        "minimumLevel": 3,
+        "critical": true
+      },
+      {
+        "skillId": "skill_python_data",
+        "weight": 0.15,
+        "minimumLevel": 2,
+        "critical": false
+      }
+    ]
+  },
+  {
+    "id": "role_civil_structural",
+    "title": "Civil / Structural Engineer",
+    "description": "Designs reinforced concrete and steel superstructures, calculates wind/seismic load envelopes, and manages building safety compliance.",
+    "marketDemandRating": "medium",
+    "targetDomains": ["domain_civil_structures", "domain_civil_project"],
+    "requirements": [
+      {
+        "skillId": "skill_structural_analysis",
+        "weight": 0.60,
+        "minimumLevel": 3,
+        "critical": true
+      },
+      {
+        "skillId": "skill_cad_modeling",
+        "weight": 0.25,
+        "minimumLevel": 2,
+        "critical": false
+      },
+      {
+        "skillId": "skill_python_data",
+        "weight": 0.15,
         "minimumLevel": 2,
         "critical": false
       }

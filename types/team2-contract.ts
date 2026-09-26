@@ -1,54 +1,78 @@
-/**
- * PlacementOS - Team 2 (Product & UI) Official Type Contracts
- * Clean public interfaces exposed for the UI layer.
- */
+export type Department = 
+  | 'CSE'
+  | 'EEE'
+  | 'ECE'
+  | 'Mechanical'
+  | 'Civil'
+  | 'Chemical'
+  | 'Biotechnology';
 
-import { Department, Domain, Skill, Subskill, Tool, JobRole, RoleSkillRequirement } from './skill-graph';
-import { EvidenceItem, SkillEvidenceSummary, StudentClaimedSkill } from './evidence';
-import { AssessmentQuestion, AssessmentSession, AssessmentResult, AdaptiveStepResult, StudentQuestionConfidence } from './assessment';
-import { SkillGapAnalysis, SkillCalibrationComparison, RoleReadinessReport } from './scoring';
-import { PreparationMission, MissionStep } from './mission';
-import { UserProfile } from './user';
-import { ReassessmentResult, LearningVelocityResult } from './reassessment';
+export type AcademicYear = 'Year 1' | 'Year 2' | 'Year 3' | 'Year 4';
 
-// Explicit re-exports matching Team 2 specifications
-export type StudentProfile = UserProfile;
-export type { Department, Domain, Skill, Subskill, Tool, JobRole };
-export type SkillRequirement = RoleSkillRequirement;
-export type SkillEvidence = EvidenceItem;
-export type { AssessmentQuestion, AssessmentSession, AssessmentResult, AdaptiveStepResult, StudentQuestionConfidence };
-export type SkillGap = SkillGapAnalysis;
-export type Mission = PreparationMission;
-export type { MissionStep };
-export type { ReassessmentResult, LearningVelocityResult, RoleReadinessReport, SkillCalibrationComparison, SkillEvidenceSummary, StudentClaimedSkill };
+export type ReadinessBand = 'READY' | 'DEVELOPING' | 'EARLY_STAGE' | 'NOT_ASSESSED';
 
-export interface ReadinessDimension {
-  name: string;
-  score: number | null; // null if NOT_ASSESSED
-  label: string;
-  status: 'passed' | 'warning' | 'critical' | 'not_assessed';
-  benchmarkScore?: number;
-  evidenceCount?: number;
-  notes?: string;
+export type CalibrationStatus = 'OVERCONFIDENT' | 'CALIBRATED' | 'UNDERCONFIDENT';
+
+export type EvidenceTrustLevel = 
+  | 'CLAIMED'
+  | 'UNVERIFIED_SELF'
+  | 'AUTOMATED_TEST'
+  | 'DIAGNOSTIC_ASSESSMENT'
+  | 'EMPIRICAL_TELEMETRY';
+
+export interface RoleProfile {
+  id: string;
+  title: string;
+  industry: string;
+  departmentAgnostic: boolean;
+  recommendedDepartments: Department[];
+  targetSkill: string;
+  benchmarkThresholds: {
+    technical: number;
+    aptitude: number;
+    communication: number;
+    overall: number;
+  };
+  requiredSkills: Array<{
+    skillId: string;
+    skillName: string;
+    requiredScore: number;
+    subskills: string[];
+  }>;
 }
 
-// UI Presentation Models for Stitch Screens
-export interface CandidateConfig {
-  name: string;
-  departmentCode: string;
-  academicYear: string;
-  roleId: string;
-  claimedScore: number;
+export interface AssessmentQuestion {
+  id: string;
+  skillId: string;
+  skillName: string;
+  subskill: string;
+  difficulty: 'BASIC' | 'INTERMEDIATE' | 'ADVANCED';
+  questionText: string;
+  contextCodeOrFormula?: string;
+  options: Array<{
+    id: string;
+    text: string;
+  }>;
+  correctOptionId: string;
+  explanation: string;
+  sequenceFactor?: string;
 }
 
-export interface WeakSubskillItem {
+export interface AssessmentSubmission {
+  questionId: string;
+  selectedOptionId: string;
+  confidence: 'LOW' | 'MEDIUM' | 'HIGH';
+  timeSpentSeconds: number;
+}
+
+export interface WeakSubskill {
   name: string;
   claimedScore: number;
   demonstratedScore: number;
   requiredScore: number;
   gap: number;
   rootCause: string;
-  errorTrace?: string;
+  errorTrace: string;
 }
 
 export interface EvidenceTelemetryItem {
@@ -59,30 +83,30 @@ export interface EvidenceTelemetryItem {
   status: 'VERIFIED' | 'TELEMETRY_LOGGED' | 'IN_PROGRESS';
 }
 
-export interface CalibrationUIResult {
+export interface CalibrationResult {
   runId: string;
-  candidateName: string;
+  studentId: string;
   roleId: string;
   roleTitle: string;
-  department: string;
-  academicYear: string;
+  department: Department;
+  academicYear: AcademicYear;
   targetSkill: string;
-  claimedScore: number;
-  demonstratedScore: number;
-  requiredScore: number;
-  calibrationGap: number;
-  calibrationStatus: 'OVERCONFIDENT' | 'CALIBRATED' | 'UNDERCONFIDENT';
-  selfEfficacyIndex: string;
-  confidenceInterval: string;
+  claimedScore: number;      // e.g. 8.0
+  demonstratedScore: number; // e.g. 4.5
+  requiredScore: number;     // e.g. 7.0
+  calibrationGap: number;    // +3.5
+  calibrationStatus: CalibrationStatus;
+  selfEfficacyIndex: string; // "Very High (92nd %ile)"
+  confidenceInterval: string;// "98.4%"
   evidenceUsed: EvidenceTelemetryItem[];
-  weakSubskills: WeakSubskillItem[];
+  weakSubskills: WeakSubskill[];
   explanation: string;
   meaning: string;
   nextActionRecommendation: string;
   timestamp: string;
 }
 
-export interface MissionStageUI {
+export interface MissionStage {
   id: number;
   title: string;
   duration: string;
@@ -90,7 +114,7 @@ export interface MissionStageUI {
   description: string;
 }
 
-export interface MissionUI {
+export interface Mission {
   id: string;
   targetSkill: string;
   title: string;
@@ -99,9 +123,9 @@ export interface MissionUI {
   objective: string;
   practiceTask: string;
   estimatedDuration: string;
-  stages: MissionStageUI[];
+  stages: MissionStage[];
   successCriteria: string[];
-  deltaTarget: string;
+  deltaTarget: string; // "+2.5 Index"
   benchmarkTarget: number;
   verifiedBaseline: number;
   simulationSandbox: {
@@ -114,17 +138,26 @@ export interface MissionUI {
   };
 }
 
-export interface ReadinessReportUI {
+export interface ReadinessDimension {
+  name: 'Technical' | 'Aptitude' | 'Communication' | 'Interview Readiness' | 'Evidence Strength';
+  score: number | null; // null if NOT_ASSESSED
+  status: ReadinessBand;
+  benchmarkScore: number;
+  evidenceCount: number;
+  notes: string;
+}
+
+export interface ReadinessReport {
   studentProfile: {
     name: string;
     targetRole: string;
-    department: string;
-    academicYear: string;
+    department: Department;
+    academicYear: AcademicYear;
     telemetryRunId: string;
   };
-  overallBand: 'READY' | 'DEVELOPING' | 'EARLY_STAGE' | 'NOT_ASSESSED';
+  overallBand: ReadinessBand;
   overallScore: number | null;
-  integrityScore: number;
+  integrityScore: number; // e.g. 88
   dimensions: ReadinessDimension[];
   skillsBreakdown: Array<{
     name: string;
@@ -137,12 +170,12 @@ export interface ReadinessReportUI {
   dataSufficiency: 'SUFFICIENT' | 'NOT_ENOUGH_DATA';
 }
 
-export interface ReassessmentResultUI {
+export interface ReassessmentResult {
   skill: string;
   beforeScore: number;
   afterScore: number;
   delta: number;
-  learningVelocity: number | null;
+  learningVelocity: number | null; // null if insufficient data
   status: 'IMPROVED' | 'STAGNANT' | 'NOT_ENOUGH_DATA';
   dataSufficiency: 'SUFFICIENT' | 'NOT_ENOUGH_DATA';
   verifiedAt: string;

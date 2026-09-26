@@ -1,264 +1,268 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { AssessmentQuestion, CalibrationResult } from '@/types/team2-contract';
 import { defaultPlacementService } from '@/lib/placement-service';
-import { AssessmentQuestion, StudentQuestionConfidence } from '@/types/assessment';
-import { Timer, ArrowRight } from 'lucide-react';
 
 interface AssessmentScreenProps {
-  onComplete: () => void;
+  onComplete: (result: CalibrationResult) => void;
 }
 
 export const AssessmentScreen: React.FC<AssessmentScreenProps> = ({ onComplete }) => {
-  const [currentQuestion, setCurrentQuestion] = useState<AssessmentQuestion | null>(() => {
-    const session = defaultPlacementService.startDiagnosticSession();
-    return session.firstQuestion || null;
-  });
-  const [questionIndex, setQuestionIndex] = useState<number>(1);
-  const totalQuestions = 4;
-  const [selectedOptionId, setSelectedOptionId] = useState<string>('');
-  const [confidence, setConfidence] = useState<StudentQuestionConfidence>('high');
-  const [secondsElapsed, setSecondsElapsed] = useState<number>(0);
-  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [questions, setQuestions] = useState<AssessmentQuestion[]>([]);
+  const [currentIndex, setCurrentIndex] = useState<number>(0);
+  const [selectedOption, setSelectedOption] = useState<string>('');
+  const [confidence, setConfidence] = useState<'LOW' | 'MEDIUM' | 'HIGH'>('HIGH');
+  const [submissionsCount, setSubmissionsCount] = useState<number>(0);
+  const [startTime, setStartTime] = useState<number>(Date.now());
 
-  // Timer Tick
   useEffect(() => {
-    const interval = setInterval(() => {
-      setSecondsElapsed((prev) => prev + 1);
-    }, 1000);
-    return () => clearInterval(interval);
+    const session = defaultPlacementService.startAssessment({
+      roleId: 'power-systems-engineer',
+      department: 'EEE',
+      academicYear: 'Year 4',
+      claimedScore: 8.0,
+    });
+    setQuestions(session.questions);
+    setStartTime(Date.now());
   }, []);
 
+  const currentQ = questions[currentIndex];
+
   const handleSelectOption = (optId: string) => {
-    setSelectedOptionId(optId);
+    setSelectedOption(optId);
   };
 
-  const handleNextQuestion = () => {
-    if (!selectedOptionId || !currentQuestion) return;
+  const handleNextOrSubmit = () => {
+    if (!currentQ || !selectedOption) return;
 
-    setIsSubmitting(true);
+    const timeSpent = Math.max(1, Math.round((Date.now() - startTime) / 1000));
 
-    try {
-      const response = defaultPlacementService.submitDiagnosticAnswer(
-        currentQuestion.id,
-        selectedOptionId,
-        confidence,
-        secondsElapsed
-      );
+    // Submit answer to Team 1 service layer
+    defaultPlacementService.submitAnswer({
+      questionId: currentQ.id,
+      selectedOptionId: selectedOption,
+      confidence,
+      timeSpentSeconds: timeSpent,
+    });
 
+    setSubmissionsCount((prev) => prev + 1);
 
-      if (response.isFinished || !response.nextQuestion || questionIndex >= totalQuestions) {
-        // Finalize
-        defaultPlacementService.finalizeDiagnosticAssessment();
-        onComplete();
-      } else {
-        setCurrentQuestion(response.nextQuestion);
-        setQuestionIndex((prev) => prev + 1);
-        setSelectedOptionId('');
-        setIsSubmitting(false);
-      }
-    } catch {
-      // In case of any edge case finalize smoothly
-      defaultPlacementService.finalizeDiagnosticAssessment();
-      onComplete();
+    if (currentIndex < questions.length - 1) {
+      setCurrentIndex((prev) => prev + 1);
+      setSelectedOption('');
+      // For questions, default confidence to HIGH to simulate the overconfidence pattern requested in demo
+      setConfidence('HIGH');
+      setStartTime(Date.now());
+    } else {
+      // Finalize through Team 1 engine
+      const finalResult = defaultPlacementService.finalizeAssessment();
+      onComplete(finalResult);
     }
   };
 
-  if (!currentQuestion) {
+  const handleFastForward = () => {
+    // Answer remaining questions and finalize immediately
+    questions.forEach((q, idx) => {
+      // Intentionally simulate the student's pattern: confident but miscalculating sequence grounding
+      const chosen = idx === 0 ? q.correctOptionId : (q.options[1]?.id || q.options[0].id);
+      defaultPlacementService.submitAnswer({
+        questionId: q.id,
+        selectedOptionId: chosen,
+        confidence: 'HIGH',
+        timeSpentSeconds: 15,
+      });
+    });
+    const finalResult = defaultPlacementService.finalizeAssessment();
+    onComplete(finalResult);
+  };
+
+  if (!currentQ) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center text-on-surface font-mono">
-        <div className="flex items-center space-x-2">
-          <span className="w-2 h-2 bg-primary animate-ping"></span>
-          <span>INITIALIZING ADAPTIVE DIAGNOSTIC PROBE...</span>
+      <div className="w-full min-h-screen pt-24 flex items-center justify-center">
+        <div className="flex items-center gap-3 font-mono text-[14px]">
+          <span className="w-2.5 h-2.5 rounded-full bg-primary animate-ping"></span>
+          <span>Loading telemetry probe questions...</span>
         </div>
       </div>
     );
   }
 
+  const progressPercent = Math.round(((currentIndex + 1) / questions.length) * 100);
+
   return (
-    <div className="w-full max-w-full overflow-x-hidden bg-grid-matrix min-h-screen pb-12">
-      {/* Top Telemetry Masthead */}
-      <section className="w-full bg-surface-container-low border-b border-outline-variant p-4">
-        <div className="max-w-7xl mx-auto flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-          <div className="border-l-2 border-primary pl-3">
-            <div className="font-label-sm text-label-sm text-outline uppercase tracking-widest">Active Evaluation Module</div>
-            <div className="font-headline-sm text-headline-sm text-on-surface font-semibold">
-              Power Systems / Symmetrical &amp; Unsymmetrical Fault Analysis
+    <div className="w-full min-h-screen pt-20 pb-16 bg-surface">
+      {/* Top Context Bar */}
+      <div className="w-full bg-surface-container-low px-4 sm:px-8 py-2.5 border-b border-outline-variant/30">
+        <div className="max-w-[1440px] mx-auto flex flex-wrap items-center justify-between gap-3 text-[12px] font-mono text-on-surface-variant">
+          <div className="flex items-center gap-2">
+            <span>Assessments</span>
+            <span className="material-symbols-outlined text-[14px]">chevron_right</span>
+            <span>Diagnostic Run #104</span>
+            <span className="material-symbols-outlined text-[14px]">chevron_right</span>
+            <span className="text-primary font-semibold">Live Empirical Telemetry Probe</span>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <span className="px-2 py-0.5 bg-surface-container-highest rounded text-on-surface font-semibold text-[11px]">
+              MODE: FORENSIC TRIANGULATION
+            </span>
+            <button
+              onClick={handleFastForward}
+              className="text-primary hover:underline text-[11px] font-medium"
+              title="Fast-forward assessment to generate flagship calibration results"
+            >
+              [Quick Demo Complete]
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div className="max-w-[1000px] w-full mx-auto px-4 sm:px-8 py-8 flex flex-col gap-6">
+        {/* Progress & Header */}
+        <div className="bg-surface-container-lowest p-6 rounded-lg border border-outline-variant/40 shadow-sm flex flex-col gap-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="px-2.5 py-0.5 bg-secondary-fixed text-on-secondary-fixed font-mono text-[11px] rounded font-semibold uppercase">
+                Question {currentIndex + 1} of {questions.length}
+              </span>
+              <span className="font-mono text-[12px] text-on-surface-variant">
+                Target Skill: <strong className="text-on-surface">{currentQ.skillName}</strong>
+              </span>
+              <span className="px-2 py-0.5 bg-surface-container-high text-on-surface font-mono text-[11px] rounded">
+                Subskill: {currentQ.subskill}
+              </span>
+            </div>
+
+            <div className="flex items-center gap-3">
+              <span className="font-mono text-[12px] text-on-surface-variant">
+                Progress: <strong className="text-primary">{progressPercent}%</strong>
+              </span>
             </div>
           </div>
 
-          <div className="flex items-center gap-6 bg-surface-container-lowest px-4 py-2 border border-outline-variant font-body-sm text-body-sm self-start lg:self-auto">
-            <div className="flex items-center space-x-2">
-              <Timer className="w-4 h-4 text-primary" />
-              <span className="text-outline uppercase text-label-sm">Response Latency:</span>
-              <span className="font-bold text-on-surface font-mono">{secondsElapsed}s</span>
-            </div>
-            <div className="w-[1px] h-4 bg-outline-variant"></div>
-            <div className="flex items-center space-x-1.5">
-              <span className="inline-block w-2 h-2 bg-secondary"></span>
-              <span className="text-secondary font-label-sm uppercase font-semibold">Level {currentQuestion.difficulty} Probe</span>
-            </div>
+          {/* Progress Bar */}
+          <div className="w-full h-1.5 bg-surface-container rounded-full overflow-hidden">
+            <div
+              className="h-full bg-primary transition-all duration-300 rounded-full"
+              style={{ width: `${progressPercent}%` }}
+            ></div>
           </div>
         </div>
 
-        {/* Stepper Bar */}
-        <div className="max-w-[1440px] mx-auto mt-4 pt-3 border-t border-outline-variant grid grid-cols-4 gap-2">
-          {[1, 2, 3, 4].map((idx) => {
-            const isDone = idx < questionIndex;
-            const isCurrent = idx === questionIndex;
-            return (
-              <div
-                key={idx}
-                className={`h-2 border transition-all ${
-                  isDone
-                    ? 'bg-secondary border-secondary'
-                    : isCurrent
-                    ? 'bg-primary border-primary animate-pulse'
-                    : 'bg-surface-variant border-outline-variant'
-                }`}
-                title={`Item ${idx}`}
-              />
-            );
-          })}
-        </div>
-      </section>
+        {/* Question Canvas */}
+        <div className="bg-surface-container-lowest p-6 sm:p-8 rounded-lg border border-outline-variant/40 shadow-sm flex flex-col gap-6">
+          <div className="flex flex-col gap-3">
+            <div className="flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-primary"></span>
+              <span className="font-mono text-[11px] uppercase tracking-wider text-primary font-bold">
+                Empirical Evaluation Prompt
+              </span>
+            </div>
+            <h2 className="font-headline-sm text-lg sm:text-xl text-on-surface font-semibold leading-relaxed">
+              {currentQ.questionText}
+            </h2>
 
-      {/* Main Assessment Workspace */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 py-6 md:py-8 overflow-x-hidden">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-          {/* Left: Question Formulation Card (8 cols) */}
-          <div className="lg:col-span-8 space-y-6">
-            <div className="bg-surface-container-low border border-outline-variant p-6 space-y-6">
-              <div className="flex items-center justify-between border-b border-outline-variant pb-3">
-                <span className="px-2 py-0.5 bg-surface-container-highest border border-outline font-label-sm text-label-sm text-on-surface uppercase">
-                  Problem Statement ID: {currentQuestion.id.toUpperCase()}
-                </span>
-                <span className="text-outline text-label-sm font-mono">[SUB-TRANSIENT DOMAIN]</span>
+            {currentQ.contextCodeOrFormula && (
+              <div className="p-3.5 bg-inverse-surface text-inverse-on-surface rounded font-mono text-[13px] border border-outline-variant/30 overflow-x-auto">
+                <span className="text-tertiary-fixed font-bold">{'// Telemetry Context Boundary:'}</span>
+                <pre className="mt-1 whitespace-pre-wrap">{currentQ.contextCodeOrFormula}</pre>
               </div>
+            )}
+          </div>
 
-              {/* Question Text */}
-              <h2 className="text-headline-sm font-headline-sm font-bold text-on-surface leading-snug">
-                {currentQuestion.question}
-              </h2>
+          {/* Answer Options */}
+          <div className="flex flex-col gap-3">
+            <span className="font-mono text-[11px] uppercase tracking-wider text-on-surface-variant font-bold">
+              Select Verified Engineering Derivation:
+            </span>
 
-              {/* Technical Schematic / Sequence Formula Box */}
-              <div className="bg-surface-container-lowest border border-outline-variant p-4 font-mono text-xs text-on-surface-variant space-y-2">
-                <div className="text-primary font-bold">[SEQUENCE NETWORK BOUNDARY SPECIFICATION]</div>
-                <div className="text-slate-300">
-                  Ia0 = Ia1 = Ia2 = (1/3) &middot; Ia <br />
-                  Va = Va1 + Va2 + Va0 = 0 &rArr; SLG Fault on Phase A to Earth Bus
-                </div>
-                <div className="text-[11px] text-outline">
-                  Reference Neutral Impedance: Zn &ne; 0 | Transformed Zero-Sequence Loop: Z0 + 3Zn
-                </div>
-              </div>
-
-              {/* Multiple Choice Options */}
-              <div className="space-y-3 pt-2">
-                <div className="font-label-sm text-outline uppercase tracking-wider">Select Mathematical Derivation:</div>
-                {currentQuestion.options.map((option) => {
-                  const isSelected = selectedOptionId === option.id;
-                  return (
-                    <div
-                      key={option.id}
-                      onClick={() => handleSelectOption(option.id)}
-                      className={`p-4 border flex items-start space-x-3 cursor-pointer transition-all ${
-                        isSelected
-                          ? 'border-2 border-primary bg-surface-container-high'
-                          : 'border-outline-variant bg-surface-container hover:border-outline'
-                      }`}
-                    >
-                      <span className={`w-5 h-5 flex items-center justify-center border font-mono text-xs font-bold ${
-                        isSelected ? 'border-primary bg-primary text-on-primary' : 'border-outline text-outline'
-                      }`}>
-                        {option.id.replace('opt_', '').toUpperCase()}
-                      </span>
-                      <span className="font-body-md text-body-md text-on-surface">
-                        {option.text}
-                      </span>
-                    </div>
-                  );
-                })}
-              </div>
-
-              {/* Confidence Level Selector */}
-              <div className="pt-4 border-t border-outline-variant">
-                <div className="font-label-sm text-outline uppercase tracking-wider mb-2">Declare Self-Efficacy Confidence:</div>
-                <div className="grid grid-cols-3 gap-3">
-                  {(['low', 'medium', 'high'] as StudentQuestionConfidence[]).map((lvl) => {
-                    const isSelected = confidence === lvl;
-                    return (
-                      <button
-                        type="button"
-                        key={lvl}
-                        onClick={() => setConfidence(lvl)}
-                        className={`py-2 px-3 border font-label-sm uppercase font-bold transition-all ${
-                          isSelected
-                            ? 'border-primary bg-primary/20 text-primary'
-                            : 'border-outline-variant bg-surface-container text-outline hover:text-on-surface'
-                        }`}
-                      >
-                        [{lvl.toUpperCase()} CONFIDENCE]
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-
-              {/* Submit Action */}
-              <div className="pt-4 flex justify-between items-center">
-                <div className="text-label-sm text-outline font-mono">
-                  QUESTION {questionIndex} OF {totalQuestions}
-                </div>
-                <button
-                  type="button"
-                  disabled={!selectedOptionId || isSubmitting}
-                  onClick={handleNextQuestion}
-                  className={`px-6 py-3 font-label-md uppercase font-bold tracking-wider transition-all flex items-center space-x-2 border ${
-                    !selectedOptionId || isSubmitting
-                      ? 'bg-surface-variant text-outline border-outline-variant cursor-not-allowed'
-                      : 'bg-primary-container text-on-primary-container hover:bg-primary border-primary-container'
+            {currentQ.options.map((opt) => {
+              const isSelected = selectedOption === opt.id;
+              return (
+                <div
+                  key={opt.id}
+                  onClick={() => handleSelectOption(opt.id)}
+                  className={`p-4 rounded-lg border cursor-pointer transition-all flex items-start gap-3.5 ${
+                    isSelected
+                      ? 'border-primary bg-primary/5 ring-1 ring-primary'
+                      : 'border-outline-variant/40 bg-surface-container-low hover:border-outline-variant'
                   }`}
                 >
-                  <span>{questionIndex >= totalQuestions ? 'FINALIZE TELEMETRY & AUDIT' : 'RECORD TELEMETRY & PROCEED'}</span>
-                  <ArrowRight className="w-4 h-4" />
-                </button>
-              </div>
+                  <div
+                    className={`w-5 h-5 rounded-full border mt-0.5 flex items-center justify-center shrink-0 ${
+                      isSelected
+                        ? 'border-primary bg-primary text-white'
+                        : 'border-outline bg-surface-container-lowest'
+                    }`}
+                  >
+                    {isSelected && <span className="w-2 h-2 rounded-full bg-white"></span>}
+                  </div>
+                  <span className="font-body-md text-[14px] text-on-surface leading-normal">
+                    {opt.text}
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Confidence Telemetry Bar (Critical for Overconfidence Calibration) */}
+          <div className="p-4 bg-surface-container-low rounded-lg border border-outline-variant/40 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <span className="font-mono text-[11px] uppercase tracking-wider text-on-surface font-bold block">
+                Self-Reported Confidence Rating
+              </span>
+              <span className="text-[12px] text-on-surface-variant">
+                Used to triangulate epistemic calibration vs overconfidence bias.
+              </span>
+            </div>
+
+            <div className="flex items-center gap-2">
+              {(['LOW', 'MEDIUM', 'HIGH'] as const).map((lvl) => {
+                const isSelected = confidence === lvl;
+                return (
+                  <button
+                    type="button"
+                    key={lvl}
+                    onClick={() => setConfidence(lvl)}
+                    className={`px-3 py-1.5 rounded font-mono text-[12px] border transition-colors ${
+                      isSelected
+                        ? lvl === 'HIGH'
+                          ? 'bg-secondary text-white border-secondary font-bold'
+                          : 'bg-primary text-white border-primary font-bold'
+                        : 'bg-surface-container-lowest text-on-surface border-outline-variant/40 hover:bg-surface-container'
+                    }`}
+                  >
+                    {lvl}
+                  </button>
+                );
+              })}
             </div>
           </div>
 
-          {/* Right: Cognitive Sidebar (4 cols) */}
-          <div className="lg:col-span-4 space-y-6">
-            <div className="bg-surface-container-low border border-outline-variant p-5 space-y-4">
-              <div className="flex items-center justify-between border-b border-outline-variant pb-2">
-                <span className="font-label-sm text-primary uppercase font-bold tracking-widest">[PROCTOR_TELEMETRY]</span>
-                <span className="text-label-sm text-secondary font-mono">NODE_ONLINE</span>
-              </div>
+          {/* Action Bar */}
+          <div className="flex items-center justify-between pt-4 border-t border-outline-variant/30">
+            <span className="font-mono text-[11px] text-on-surface-variant">
+              Telemetry Sample: #{currentQ.id}
+            </span>
 
-              <div className="space-y-3 font-body-sm text-on-surface-variant">
-                <div>
-                  <span className="text-outline text-label-sm uppercase">Engine Logic:</span>
-                  <div className="text-on-surface font-semibold font-mono">Deterministic Adaptive Engine</div>
-                </div>
-                <div>
-                  <span className="text-outline text-label-sm uppercase">Misconception Detection:</span>
-                  <div className="text-on-surface font-semibold font-mono">Active Sequence Grounding Probe</div>
-                </div>
-                <div>
-                  <span className="text-outline text-label-sm uppercase">Hiring Benchmark:</span>
-                  <div className="text-primary font-semibold font-mono">Power Systems Engineer (Tier-1 Grid)</div>
-                </div>
-              </div>
-
-              <div className="p-3 bg-surface-container-lowest border border-outline-variant text-[11px] font-mono text-outline space-y-1">
-                <div>LOG: Diagnostic Session 0x9AF2</div>
-                <div>PROBE: Fault Analysis (SLG / LLG / 3P)</div>
-                <div>CALIBRATION: Comparing self-efficacy claim against recorded empirical error trace.</div>
-              </div>
-            </div>
+            <button
+              onClick={handleNextOrSubmit}
+              disabled={!selectedOption}
+              className={`px-6 py-2.5 font-mono text-[13px] font-semibold rounded shadow-sm flex items-center gap-2 transition-colors ${
+                selectedOption
+                  ? 'bg-primary hover:bg-primary-container text-white cursor-pointer'
+                  : 'bg-surface-container text-on-surface-variant opacity-60 cursor-not-allowed'
+              }`}
+            >
+              <span>{currentIndex === questions.length - 1 ? 'Finalize Telemetry' : 'Submit & Next'}</span>
+              <span className="material-symbols-outlined text-[16px]">
+                {currentIndex === questions.length - 1 ? 'task_alt' : 'arrow_forward'}
+              </span>
+            </button>
           </div>
         </div>
-      </main>
+      </div>
     </div>
   );
 };

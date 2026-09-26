@@ -28,17 +28,5 @@
     "name": "Civil Engineering",
     "code": "CIVIL",
     "description": "Structural analysis, geotechnical surveying, construction management, and environmental systems."
-  },
-  {
-    "id": "dept_chem",
-    "name": "Chemical Engineering",
-    "code": "CHEM",
-    "description": "Chemical process design, reaction kinetics, separation processes, and industrial instrumentation."
-  },
-  {
-    "id": "dept_biotech",
-    "name": "Biotechnology",
-    "code": "BIOTECH",
-    "description": "Bioprocess engineering, bioinformatics, molecular diagnostics, and biopharmaceutical workflows."
   }
 ]

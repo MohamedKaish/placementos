@@ -1,278 +1,235 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Department, JobRole } from '@/types/skill-graph';
-import { User, Building2, GraduationCap, Briefcase, Activity, ArrowRight } from 'lucide-react';
+import { Department, AcademicYear, RoleProfile } from '@/types/team2-contract';
+import { defaultPlacementService } from '@/lib/placement-service';
 
 interface OnboardingScreenProps {
-  departments: Department[];
-  jobRoles: JobRole[];
   onComplete: (data: {
-    departmentCode: string;
-    academicYear: string;
+    department: Department;
+    academicYear: AcademicYear;
     roleId: string;
     claimedScore: number;
-    candidateName: string;
   }) => void;
 }
 
-export const OnboardingScreen: React.FC<OnboardingScreenProps> = ({
-  departments,
-  jobRoles,
-  onComplete,
-}) => {
-  const [selectedDept, setSelectedDept] = useState<string>('EEE');
-  const [selectedYear, setSelectedYear] = useState<string>('Year 3');
-  const [selectedRoleId, setSelectedRoleId] = useState<string>('role_power_systems_engineer');
-  const [claimedScore, setClaimedScore] = useState<number>(8.0);
-  const [candidateName, setCandidateName] = useState<string>('Ananya Rao');
+export const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }) => {
+  const departments = defaultPlacementService.getDepartments();
+  const roles = defaultPlacementService.getJobRoles();
 
-  const selectedRole = jobRoles.find((r) => r.id === selectedRoleId) || jobRoles[0];
+  const [selectedDept, setSelectedDept] = useState<Department>('EEE');
+  const [selectedYear, setSelectedYear] = useState<AcademicYear>('Year 4');
+  const [selectedRole, setSelectedRole] = useState<string>('power-systems-engineer');
+  const [claimedScore, setClaimedScore] = useState<number>(8.0);
+  const [studentName, setStudentName] = useState<string>('Kavya Ramanathan');
+
+  const activeRoleObj = roles.find((r) => r.id === selectedRole) || roles[0];
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onComplete({
-      departmentCode: selectedDept,
+      department: selectedDept,
       academicYear: selectedYear,
-      roleId: selectedRoleId,
+      roleId: selectedRole,
       claimedScore,
-      candidateName,
     });
   };
 
   return (
-    <div className="w-full max-w-full overflow-x-hidden bg-grid-matrix min-h-screen py-6 sm:py-8">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6">
-        {/* Banner */}
-        <div className="mb-8 border border-outline-variant bg-surface-container-lowest p-6 relative">
-          <div className="flex items-center space-x-2 mb-2">
-            <span className="px-1.5 py-0.5 bg-surface-container border border-outline-variant text-label-sm font-label-sm text-primary uppercase font-bold tracking-wider">
-              TELEMETRY INITIALIZATION // PHASE 01
-            </span>
-            <span className="text-outline text-label-sm font-label-sm font-bold">[READY_FOR_CALIBRATION]</span>
+    <div className="w-full min-h-screen pt-20 pb-16 bg-surface">
+      {/* Top Context Bar */}
+      <div className="w-full bg-surface-container-low px-4 sm:px-8 py-2.5 border-b border-outline-variant/30">
+        <div className="max-w-[1440px] mx-auto flex items-center justify-between text-[12px] font-mono text-on-surface-variant">
+          <div className="flex items-center gap-2">
+            <span>Intake</span>
+            <span className="material-symbols-outlined text-[14px]">chevron_right</span>
+            <span className="text-primary font-semibold">Student Profile & Benchmark Alignment</span>
           </div>
-          <h1 className="font-headline-lg text-headline-lg text-on-surface uppercase tracking-tight font-bold">
-            Configure Candidate Diagnostic Profile
-          </h1>
-          <p className="font-body-md text-body-md text-on-surface-variant mt-2 max-w-4xl">
-            Set your academic domain and target engineering role to calibrate benchmark thresholds against live Tier-1 industry hiring rubrics.
-          </p>
+          <span className="px-2 py-0.5 bg-surface-container-highest rounded text-on-surface font-semibold text-[11px]">
+            STEP 01 OF 04: BASELINE SPECIFICATION
+          </span>
         </div>
+      </div>
 
-        {/* Configuration Workspace Form */}
-        <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-          {/* Left Column: Form Parameters (7 cols) */}
-          <div className="lg:col-span-7 space-y-6">
-            {/* Candidate Identity Input */}
-            <div className="border border-outline-variant bg-surface-container-low p-5">
-              <div className="flex items-center justify-between border-b border-outline-variant pb-3 mb-4">
-                <div className="flex items-center space-x-2">
-                  <User className="w-4 h-4 text-primary" />
-                  <h2 className="font-label-lg text-label-lg uppercase tracking-wider text-on-surface">Candidate Identifier</h2>
-                </div>
-                <span className="text-label-sm text-outline">[IDENT_TAG]</span>
-              </div>
+      <div className="max-w-[1000px] w-full mx-auto px-4 sm:px-8 py-8 flex flex-col gap-6">
+        <div className="bg-surface-container-lowest p-6 sm:p-8 rounded-lg border border-outline-variant/40 shadow-sm flex flex-col gap-6">
+          <div>
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 bg-secondary-fixed text-on-secondary-fixed font-mono text-[11px] rounded uppercase font-semibold mb-2">
+              Diagnostic Intake Engine
+            </div>
+            <h1 className="font-headline-lg text-2xl sm:text-3xl text-on-surface font-bold tracking-tight">
+              Candidate Profile & Target Role Configuration
+            </h1>
+            <p className="font-body-md text-on-surface-variant text-[14px] mt-1 leading-relaxed">
+              Define your academic context and stated competency claim. Job roles are intentionally 
+              department-agnostic, enabling cross-disciplinary career tracks without rigid restrictions.
+            </p>
+          </div>
+
+          <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+            {/* Candidate Identity */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
+                <label className="block font-mono text-[11px] uppercase tracking-wider text-on-surface-variant font-bold mb-1.5">
+                  Candidate Name
+                </label>
                 <input
                   type="text"
-                  value={candidateName}
-                  onChange={(e) => setCandidateName(e.target.value)}
-                  className="w-full bg-surface-container-lowest border border-outline-variant px-3 py-2 text-on-surface font-body-md focus:border-primary focus:outline-none"
-                  placeholder="Enter candidate full name"
+                  value={studentName}
+                  onChange={(e) => setStudentName(e.target.value)}
+                  className="w-full px-3.5 py-2.5 bg-surface-container-lowest rounded border border-outline-variant text-on-surface text-[14px] focus:outline-none focus:border-primary font-medium"
                   required
                 />
               </div>
+
+              <div>
+                <label className="block font-mono text-[11px] uppercase tracking-wider text-on-surface-variant font-bold mb-1.5">
+                  Academic Year
+                </label>
+                <select
+                  value={selectedYear}
+                  onChange={(e) => setSelectedYear(e.target.value as AcademicYear)}
+                  className="w-full px-3.5 py-2.5 bg-surface-container-lowest rounded border border-outline-variant text-on-surface text-[14px] focus:outline-none focus:border-primary font-medium"
+                >
+                  <option value="Year 1">Year 1 (Foundational)</option>
+                  <option value="Year 2">Year 2 (Core Engineering)</option>
+                  <option value="Year 3">Year 3 (Pre-Placement Specialization)</option>
+                  <option value="Year 4">Year 4 (Final Year / Placement Ready)</option>
+                </select>
+              </div>
             </div>
 
-            {/* 1. Department Selection */}
-            <div className="border border-outline-variant bg-surface-container-low p-5">
-              <div className="flex items-center justify-between border-b border-outline-variant pb-3 mb-4">
-                <div className="flex items-center space-x-2">
-                  <Building2 className="w-4 h-4 text-primary" />
-                  <h2 className="font-label-lg text-label-lg uppercase tracking-wider text-on-surface">1. Academic Engineering Department</h2>
-                </div>
-                <span className="text-label-sm text-outline uppercase">[SPECIFY_DISCIPLINE]</span>
+            {/* Department Selection */}
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <label className="font-mono text-[11px] uppercase tracking-wider text-on-surface-variant font-bold">
+                  Engineering Department (All 7 Disciplines Supported)
+                </label>
+                <span className="font-mono text-[11px] text-primary">Department-Agnostic Model</span>
               </div>
-              <p className="text-body-sm text-on-surface-variant mb-4">
-                Select candidate parent faculty. Evaluates baseline domain alignment.
-              </p>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+              <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2">
                 {departments.map((dept) => {
-                  const isSelected = selectedDept === dept.code;
+                  const isSelected = selectedDept === dept;
                   return (
                     <button
                       type="button"
-                      key={dept.code}
-                      onClick={() => setSelectedDept(dept.code)}
-                      className={`text-left p-3 border transition-all ${
+                      key={dept}
+                      onClick={() => setSelectedDept(dept)}
+                      className={`p-3 rounded border text-center transition-all ${
                         isSelected
-                          ? 'border-2 border-primary-container bg-surface-container-high'
-                          : 'border-outline-variant bg-surface-container hover:border-outline'
+                          ? 'bg-primary text-white border-primary shadow-sm font-bold'
+                          : 'bg-surface-container-low text-on-surface border-outline-variant/40 hover:bg-surface-container font-medium'
                       }`}
                     >
-                      <div className="flex justify-between items-center mb-1">
-                        <span className={`font-headline-sm text-headline-sm font-bold ${isSelected ? 'text-primary' : 'text-on-surface'}`}>
-                          {dept.code}
-                        </span>
-                        {isSelected && <span className="text-label-sm text-primary font-bold">[SEL]</span>}
-                      </div>
-                      <p className="text-label-sm text-on-surface-variant truncate">{dept.name}</p>
+                      <div className="font-mono text-[13px]">{dept}</div>
                     </button>
                   );
                 })}
               </div>
             </div>
 
-            {/* 2. Academic Seniority */}
-            <div className="border border-outline-variant bg-surface-container-low p-5">
-              <div className="flex items-center justify-between border-b border-outline-variant pb-3 mb-4">
-                <div className="flex items-center space-x-2">
-                  <GraduationCap className="w-4 h-4 text-primary" />
-                  <h2 className="font-label-lg text-label-lg uppercase tracking-wider text-on-surface">2. Academic Seniority Year</h2>
-                </div>
-                <span className="text-label-sm text-outline uppercase">[COHORT]</span>
+            {/* Independent Job Role Selection */}
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <label className="font-mono text-[11px] uppercase tracking-wider text-on-surface-variant font-bold">
+                  Target Job Role (Independent of Department)
+                </label>
+                <span className="font-mono text-[11px] text-on-surface-variant">
+                  Market Benchmark: Tier-1 Infrastructure
+                </span>
               </div>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
-                {['Year 1', 'Year 2', 'Year 3', 'Year 4'].map((year) => {
-                  const isSelected = selectedYear === year;
-                  return (
-                    <button
-                      type="button"
-                      key={year}
-                      onClick={() => setSelectedYear(year)}
-                      className={`text-center py-2.5 px-3 border font-label-md uppercase tracking-wider font-semibold transition-all ${
-                        isSelected
-                          ? 'border-2 border-primary-container bg-surface-container-high text-primary'
-                          : 'border-outline-variant bg-surface-container text-on-surface-variant hover:text-on-surface'
-                      }`}
-                    >
-                      {year}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* 3. Target Career Engineering Role */}
-            <div className="border border-outline-variant bg-surface-container-low p-5">
-              <div className="flex items-center justify-between border-b border-outline-variant pb-3 mb-4">
-                <div className="flex items-center space-x-2">
-                  <Briefcase className="w-4 h-4 text-primary" />
-                  <h2 className="font-label-lg text-label-lg uppercase tracking-wider text-on-surface">3. Target Career Engineering Role</h2>
-                </div>
-                <span className="text-label-sm text-outline uppercase">[DEPARTMENT_AGNOSTIC]</span>
-              </div>
-              <p className="text-body-sm text-on-surface-variant mb-4">
-                Roles are independent of academic discipline. Minimum prerequisite standards apply.
-              </p>
-              <div className="space-y-2">
-                {jobRoles.map((role) => {
-                  const isSelected = selectedRoleId === role.id;
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                {roles.map((role) => {
+                  const isSelected = selectedRole === role.id;
                   return (
                     <div
                       key={role.id}
-                      onClick={() => setSelectedRoleId(role.id)}
-                      className={`p-3 border flex items-center justify-between cursor-pointer transition-all ${
+                      onClick={() => setSelectedRole(role.id)}
+                      className={`p-3.5 rounded border cursor-pointer transition-all flex flex-col justify-between gap-2 ${
                         isSelected
-                          ? 'border-primary bg-surface-container-high'
-                          : 'border-outline-variant bg-surface-container hover:border-outline'
+                          ? 'border-primary bg-primary/5 ring-1 ring-primary'
+                          : 'border-outline-variant/40 bg-surface-container-low hover:border-outline-variant'
                       }`}
                     >
                       <div>
-                        <div className="font-headline-sm text-headline-sm font-bold text-on-surface">
-                          {role.title}
+                        <div className="flex items-center justify-between">
+                          <span className="font-headline-sm text-[14px] font-bold text-on-surface">
+                            {role.title}
+                          </span>
+                          {isSelected && (
+                            <span className="material-symbols-outlined text-primary text-[18px]">
+                              check_circle
+                            </span>
+                          )}
                         </div>
-                        <div className="text-body-sm text-on-surface-variant">{role.description}</div>
+                        <span className="font-mono text-[11px] text-on-surface-variant block mt-0.5">
+                          {role.industry}
+                        </span>
                       </div>
-                      <span className={`text-label-sm font-mono uppercase px-2 py-0.5 border ${
-                        isSelected ? 'border-primary text-primary bg-primary/10' : 'border-outline-variant text-outline'
-                      }`}>
-                        {isSelected ? 'ACTIVE TARGET' : 'SELECT'}
-                      </span>
+
+                      <div className="pt-2 border-t border-outline-variant/30 flex items-center justify-between font-mono text-[11px]">
+                        <span className="text-on-surface-variant">Req. Benchmark:</span>
+                        <span className="font-bold text-primary">
+                          {role.benchmarkThresholds.overall} / 10
+                        </span>
+                      </div>
                     </div>
                   );
                 })}
               </div>
             </div>
 
-            {/* 4. Self-Claimed Skill Competency */}
-            <div className="border border-outline-variant bg-surface-container-low p-5">
-              <div className="flex items-center justify-between border-b border-outline-variant pb-3 mb-4">
-                <div className="flex items-center space-x-2">
-                  <Activity className="w-4 h-4 text-primary" />
-                  <h2 className="font-label-lg text-label-lg uppercase tracking-wider text-on-surface">
-                    4. Self-Claimed Technical Competency (Fault Analysis)
-                  </h2>
+            {/* Self-Declared Claimed Score Slider */}
+            <div className="bg-surface-container-low p-4 sm:p-5 rounded border border-outline-variant/40 flex flex-col gap-3">
+              <div className="flex items-center justify-between">
+                <div>
+                  <label className="font-mono text-[11px] uppercase tracking-wider text-on-surface-variant font-bold block">
+                    Self-Reported Baseline Claim (0 - 10)
+                  </label>
+                  <span className="text-[12px] text-on-surface-variant">
+                    How proficient do you consider yourself in {activeRoleObj.targetSkill}?
+                  </span>
                 </div>
-                <span className="text-label-sm text-tertiary font-bold">{claimedScore.toFixed(1)} / 10.0</span>
+                <div className="font-headline-lg text-2xl font-bold font-mono text-primary bg-surface-container-lowest px-3 py-1 rounded border border-outline-variant/40">
+                  {claimedScore.toFixed(1)} <span className="text-[14px] text-on-surface-variant font-normal">/ 10</span>
+                </div>
               </div>
-              <p className="text-body-sm text-on-surface-variant mb-4">
-                Indicate what you believe your current ability level is in Power Systems & Fault Calculations.
-              </p>
-              <div className="space-y-2">
-                <input
-                  type="range"
-                  min="1"
-                  max="10"
-                  step="0.5"
-                  value={claimedScore}
-                  onChange={(e) => setClaimedScore(parseFloat(e.target.value))}
-                  className="w-full accent-primary"
-                />
-                <div className="flex justify-between text-label-sm text-outline font-mono">
-                  <span>1.0 (Novice)</span>
-                  <span>5.0 (Developing)</span>
-                  <span className="text-tertiary font-bold">8.0 (Target Demo: Claimed High)</span>
-                  <span>10.0 (Master)</span>
-                </div>
+
+              <input
+                type="range"
+                min="1.0"
+                max="10.0"
+                step="0.5"
+                value={claimedScore}
+                onChange={(e) => setClaimedScore(parseFloat(e.target.value))}
+                className="w-full accent-primary cursor-pointer h-2 bg-surface-variant rounded-lg"
+              />
+
+              <div className="flex justify-between font-mono text-[10px] text-on-surface-variant">
+                <span>1.0 (Novice)</span>
+                <span>5.0 (Moderate)</span>
+                <span className="font-semibold text-primary">8.0 (Primary Demo Stated Baseline)</span>
+                <span>10.0 (Mastery)</span>
               </div>
             </div>
-          </div>
 
-          {/* Right Column: Benchmark Target Role Preview & Required Skills (5 cols) */}
-          <div className="lg:col-span-5 space-y-6">
-            <div className="border border-outline-variant bg-surface-container-low p-6 sticky top-20">
-              <div className="flex items-center justify-between border-b border-outline-variant pb-3 mb-4">
-                <span className="font-label-sm text-primary uppercase font-bold tracking-widest">[TARGET_BENCHMARK]</span>
-                <span className="text-label-sm text-outline font-mono">TIER-1 HIRING SPEC</span>
-              </div>
-
-              <h3 className="font-headline-md text-headline-md font-bold text-on-surface mb-2">
-                {selectedRole.title}
-              </h3>
-              <p className="text-body-sm text-on-surface-variant mb-6">
-                {selectedRole.description}
-              </p>
-
-              <div className="space-y-4 mb-8">
-                <div className="font-label-md text-on-surface uppercase font-bold tracking-wider">
-                  Required Competency Gates:
-                </div>
-                {selectedRole.requirements.map((req) => (
-                  <div key={req.skillId} className="p-3 bg-surface-container-lowest border border-outline-variant flex justify-between items-center">
-                    <div>
-                      <div className="font-label-md text-on-surface font-semibold">
-                        {req.skillId.replace('skill_', '').replace(/_/g, ' ').toUpperCase()}
-                      </div>
-                      <div className="text-[11px] text-outline">Weight: {Math.round(req.weight * 100)}%</div>
-                    </div>
-                    <span className="text-label-sm font-mono text-secondary px-2 py-0.5 border border-secondary/30 bg-secondary/10">
-                      MIN LVL {req.minimumLevel}.0+
-                    </span>
-                  </div>
-                ))}
+            {/* Action Bar */}
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-2 border-t border-outline-variant/30">
+              <div className="flex items-center gap-2 font-mono text-[11px] text-on-surface-variant">
+                <span className="material-symbols-outlined text-[16px] text-tertiary">lock</span>
+                <span>Inputs will be cross-referenced against empirical telemetry probe.</span>
               </div>
 
               <button
                 type="submit"
-                className="w-full py-4 px-6 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 font-bold uppercase tracking-wider text-xs transition-all flex items-center justify-center gap-2 rounded-lg shadow-[0_0_20px_rgba(6,182,212,0.4)]"
+                className="w-full sm:w-auto px-6 py-3 bg-primary hover:bg-primary-container text-white font-mono text-[14px] font-semibold rounded shadow-sm flex items-center justify-center gap-2 transition-colors"
               >
-                <span>INITIALIZE TELEMETRY PROBE & START ASSESSMENT</span>
-                <ArrowRight className="w-4 h-4 text-slate-950" />
+                <span>Initialize Diagnostic Assessment</span>
+                <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
               </button>
             </div>
-          </div>
-        </form>
+          </form>
+        </div>
       </div>
     </div>
   );

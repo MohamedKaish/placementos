@@ -48,12 +48,6 @@
     "description": "Thermodynamics, heat transfer modeling, CFD simulations, and HVAC system layout."
   },
   {
-    "id": "domain_mech_automotive",
-    "departmentId": "dept_mech",
-    "name": "Automotive & Powertrain Engineering",
-    "description": "Vehicle dynamics, chassis design, internal combustion & EV battery powertrains."
-  },
-  {
     "id": "domain_civil_structures",
     "departmentId": "dept_civil",
     "name": "Structural Analysis & Design",
@@ -64,17 +58,5 @@
     "departmentId": "dept_civil",
     "name": "Construction & Estimation",
     "description": "Quantity surveying, project scheduling (CPM/PERT), and building codes compliance."
-  },
-  {
-    "id": "domain_chem_process",
-    "departmentId": "dept_chem",
-    "name": "Process Engineering & Automation",
-    "description": "Chemical plant instrumentation, PID feedback control, DCS/SCADA, and mass balance modeling."
-  },
-  {
-    "id": "domain_biotech_process",
-    "departmentId": "dept_biotech",
-    "name": "Bioprocess & Molecular Analytics",
-    "description": "Bioreactor scale-up, fermentation kinetics, downstream chromatography, and bio-data profiling."
   }
 ]
