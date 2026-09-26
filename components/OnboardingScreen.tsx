@@ -10,6 +10,7 @@ interface OnboardingScreenProps {
     academicYear: AcademicYear;
     roleId: string;
     claimedScore: number;
+    studentName: string;
   }) => void;
 }
 
@@ -21,7 +22,7 @@ export const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }
   const [selectedYear, setSelectedYear] = useState<AcademicYear>('Year 4');
   const [selectedRole, setSelectedRole] = useState<string>('power-systems-engineer');
   const [claimedScore, setClaimedScore] = useState<number>(8.0);
-  const [studentName, setStudentName] = useState<string>('Kavya Ramanathan');
+  const [studentName, setStudentName] = useState<string>('');
 
   const activeRoleObj = roles.find((r) => r.id === selectedRole) || roles[0];
 
@@ -32,6 +33,7 @@ export const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }
       academicYear: selectedYear,
       roleId: selectedRole,
       claimedScore,
+      studentName: studentName.trim() || 'Candidate',
     });
   };
 
@@ -208,7 +210,7 @@ export const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }
               <div className="flex justify-between font-mono text-[10px] text-on-surface-variant">
                 <span>1.0 (Novice)</span>
                 <span>5.0 (Moderate)</span>
-                <span className="font-semibold text-primary">8.0 (Primary Demo Stated Baseline)</span>
+                <span className="font-semibold text-primary">8.0 (High Confidence)</span>
                 <span>10.0 (Mastery)</span>
               </div>
             </div>

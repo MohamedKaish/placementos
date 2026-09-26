@@ -19,7 +19,7 @@ import { getQuestionsForDepartment, DepartmentCode } from '@/data/seed/assessmen
 
 export class PlacementService {
   private currentStudent = {
-    name: 'Kavya Ramanathan',
+    name: 'Candidate',
     department: 'EEE' as Department,
     academicYear: 'Year 4' as AcademicYear,
     claimedScore: 8.0,
@@ -229,13 +229,14 @@ export class PlacementService {
     department: Department;
     academicYear: AcademicYear;
     claimedScore?: number;
+    candidateName?: string;
   }): {
     runId: string;
     role: RoleProfile;
     questions: AssessmentQuestion[];
   } {
     this.currentStudent = {
-      name: 'Kavya Ramanathan',
+      name: params.candidateName || 'Candidate',
       department: params.department,
       academicYear: params.academicYear,
       claimedScore: params.claimedScore ?? 8.0,
@@ -511,10 +512,10 @@ export class PlacementService {
 
     return {
       studentProfile: {
-        name: 'Kavya Ramanathan',
+        name: this.currentStudent.name,
         targetRole: 'Power Systems Engineer',
-        department: 'EEE',
-        academicYear: 'Year 4',
+        department: this.currentStudent.department,
+        academicYear: this.currentStudent.academicYear,
         telemetryRunId: '0x7E3_GRID',
       },
       overallBand,

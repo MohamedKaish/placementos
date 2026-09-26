@@ -17,6 +17,7 @@ interface HeaderProps {
   targetRole?: string;
   department?: string;
   readinessStatus?: string;
+  candidateName?: string;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -25,7 +26,11 @@ export const Header: React.FC<HeaderProps> = ({
   targetRole = 'Power Systems Engineer',
   department = 'EEE',
   readinessStatus = 'Developing',
+  candidateName = '',
 }) => {
+  const initials = candidateName
+    ? candidateName.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2)
+    : 'U';
   const navItems: Array<{ id: ScreenId; label: string }> = [
     { id: 'landing', label: 'Overview' },
     { id: 'onboarding', label: 'Intake' },
@@ -91,19 +96,21 @@ export const Header: React.FC<HeaderProps> = ({
             </span>
           </div>
 
+          {candidateName && (
           <div className="flex items-center gap-2 pl-2 border-l border-outline-variant/30">
             <div className="w-8 h-8 rounded-full bg-surface-container-high border border-outline-variant/40 flex items-center justify-center text-[12px] font-semibold text-inverse-on-surface">
-              KR
+              {initials}
             </div>
             <div className="hidden md:flex flex-col text-left">
               <span className="text-[12px] font-medium text-surface-container-lowest leading-tight">
-                Kavya R.
+                {candidateName}
               </span>
               <span className="text-[10px] text-surface-container-high font-mono">
-                0x7E3_GRID
+                {department}
               </span>
             </div>
           </div>
+          )}
         </div>
       </div>
 

@@ -37,9 +37,11 @@ export default function Home() {
     claimedScore: 8.0,
   });
 
-  // Demo Flow Navigation Handlers
-  const handleStartDemo = () => {
-    // Directly proceeds to Onboarding with EEE / Power Systems Engineer preset
+  // Candidate identity
+  const [candidateName, setCandidateName] = useState<string>('');
+
+  // Navigation Handlers
+  const handleStartIntake = () => {
     setCurrentScreen('onboarding');
   };
 
@@ -48,8 +50,9 @@ export default function Home() {
     academicYear: any;
     roleId: string;
     claimedScore: number;
+    studentName: string;
   }) => {
-    // Store onboarding data and navigate to assessment
+    setCandidateName(data.studentName);
     setOnboardingData({
       department: data.department,
       academicYear: data.academicYear,
@@ -77,7 +80,8 @@ export default function Home() {
     setCurrentScreen('dashboard');
   };
 
-  const handleRestartDemo = () => {
+  const handleRestart = () => {
+    setCandidateName('');
     setCurrentScreen('landing');
   };
 
@@ -88,15 +92,16 @@ export default function Home() {
         currentScreen={currentScreen}
         onNavigate={(screen) => setCurrentScreen(screen)}
         targetRole={calibrationResult?.roleTitle ?? 'Power Systems Engineer'}
-        department={calibrationResult?.department ?? 'EEE'}
+        department={onboardingData.department}
         readinessStatus={readinessReport?.overallBand === 'DEVELOPING' ? 'Developing' : 'Ready'}
+        candidateName={candidateName}
       />
 
       {/* Screen Routing */}
       <main className="flex-1 w-full">
         {currentScreen === 'landing' && (
           <LandingScreen
-            onStartDemo={handleStartDemo}
+            onStartDemo={handleStartIntake}
             onCustomIntake={() => setCurrentScreen('onboarding')}
           />
         )}
@@ -112,6 +117,7 @@ export default function Home() {
             roleId={onboardingData.roleId}
             academicYear={onboardingData.academicYear}
             claimedScore={onboardingData.claimedScore}
+            candidateName={candidateName}
           />
         )}
 
@@ -142,7 +148,7 @@ export default function Home() {
 
         {currentScreen === 'reassessment' && (
           <ReassessmentScreen
-            onRestartDemo={handleRestartDemo}
+            onRestartDemo={handleRestart}
             onViewDashboard={() => setCurrentScreen('dashboard')}
           />
         )}
@@ -152,11 +158,10 @@ export default function Home() {
       <footer className="w-full bg-surface-container-low border-t border-outline-variant/20 py-6 mt-auto">
         <div className="max-w-[1440px] mx-auto px-4 sm:px-8 flex flex-col md:flex-row items-center justify-between gap-4 font-mono text-[12px] text-on-surface-variant">
           <div>
-            &copy; 2026 PlacementOS Enterprise. All rights reserved. High-Density Talent Telemetry.
+            &copy; 2026 PlacementOS Enterprise. All rights reserved.
           </div>
           <div className="flex items-center gap-6">
             <span className="text-on-surface font-semibold">Team 1 Core Intelligence Layer &bull; Team 2 Stitch UI Integration</span>
-            <span className="text-primary font-semibold">Primary Demo: EEE &bull; Power Systems Engineer</span>
           </div>
         </div>
       </footer>

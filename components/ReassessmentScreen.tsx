@@ -86,7 +86,7 @@ export const ReassessmentScreen: React.FC<ReassessmentScreenProps> = ({
                 className="px-3.5 py-2 bg-primary text-white hover:bg-primary-container rounded font-mono text-[12px] font-bold flex items-center gap-1 transition-colors shadow-sm"
               >
                 <span className="material-symbols-outlined text-[16px]">restart_alt</span>
-                Reset Demo
+                Start New Assessment
               </button>
             </div>
           </div>

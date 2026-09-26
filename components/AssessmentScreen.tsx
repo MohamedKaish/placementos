@@ -10,6 +10,7 @@ interface AssessmentScreenProps {
   roleId?: string;
   academicYear?: AcademicYear;
   claimedScore?: number;
+  candidateName?: string;
 }
 
 export const AssessmentScreen: React.FC<AssessmentScreenProps> = ({
@@ -18,6 +19,7 @@ export const AssessmentScreen: React.FC<AssessmentScreenProps> = ({
   roleId = 'power-systems-engineer',
   academicYear = 'Year 4',
   claimedScore = 8.0,
+  candidateName = '',
 }) => {
   const [questions, setQuestions] = useState<AssessmentQuestion[]>([]);
   const [currentIndex, setCurrentIndex] = useState<number>(0);
@@ -35,10 +37,11 @@ export const AssessmentScreen: React.FC<AssessmentScreenProps> = ({
       department,
       academicYear,
       claimedScore,
+      candidateName,
     });
     setQuestions(session.questions);
     setStartTime(Date.now());
-  }, [department, roleId, academicYear, claimedScore]);
+  }, [department, roleId, academicYear, claimedScore, candidateName]);
 
   const currentQ = questions[currentIndex];
 
@@ -125,7 +128,7 @@ export const AssessmentScreen: React.FC<AssessmentScreenProps> = ({
               className="text-primary hover:underline text-[11px] font-medium"
               title="Fast-forward assessment to generate flagship calibration results"
             >
-              [Quick Demo Complete]
+              [Quick Complete]
             </button>
           </div>
         </div>

@@ -66,7 +66,7 @@ export const LandingScreen: React.FC<LandingScreenProps> = ({
               onClick={onStartDemo}
               className="px-6 py-3.5 bg-primary hover:bg-primary-container text-white font-mono text-[14px] font-semibold rounded shadow-sm flex items-center gap-2.5 transition-colors"
             >
-              <span>Launch Primary Demo (EEE Power Systems)</span>
+              <span>Begin Placement Assessment</span>
               <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
             </button>
 
