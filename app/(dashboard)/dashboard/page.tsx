@@ -3,38 +3,60 @@ import Link from 'next/link';
 import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { ProgressBar } from '@/components/ui/ProgressBar';
-import { ScoringEngine } from '@/lib/scoring';
-import { jobRoles } from '@/data/seed';
+import { defaultPlacementService } from '@/lib/placement-service';
+import { EvidenceItem } from '@/types/evidence';
 
 export default function DashboardPage() {
-  // Demonstration baseline evaluation using deterministic engine
-  const targetRole = jobRoles[0]; // Software Engineer
-  const sampleUserLevels = {
-    evidenceLevels: {
-      skill_dsa: 2.1,
-      skill_backend_apis: 1.8,
-      skill_sql_analytics: 2.5
+  // Demonstration baseline evaluation using unified PlacementService
+  const sampleEvidence: EvidenceItem[] = [
+    {
+      id: 'ev_demo_1',
+      userId: 'student_demo',
+      skillId: 'skill_dsa',
+      sourceType: 'assessment_performance',
+      title: 'DSA Diagnostic Assessment',
+      confidenceScore: 1.0,
+      demonstratedLevel: 2.1
     },
-    claimedLevels: {
-      skill_dsa: {
-        skillId: 'skill_dsa',
-        claimedLevel: 4 as const,
-        selfAssessedAt: new Date().toISOString(),
-        confidenceSelfRating: 4
-      },
-      skill_backend_apis: {
-        skillId: 'skill_backend_apis',
-        claimedLevel: 3 as const,
-        selfAssessedAt: new Date().toISOString(),
-        confidenceSelfRating: 3
-      }
+    {
+      id: 'ev_demo_2',
+      userId: 'student_demo',
+      skillId: 'skill_backend_apis',
+      sourceType: 'verifiable_project',
+      title: 'Microservices GitHub Repo',
+      confidenceScore: 0.85,
+      demonstratedLevel: 1.8
+    },
+    {
+      id: 'ev_demo_3',
+      userId: 'student_demo',
+      skillId: 'skill_sql_analytics',
+      sourceType: 'assessment_performance',
+      title: 'SQL Assessment',
+      confidenceScore: 1.0,
+      demonstratedLevel: 2.5
+    }
+  ];
+
+  const sampleClaims = {
+    skill_dsa: {
+      skillId: 'skill_dsa',
+      claimedLevel: 4.0,
+      selfAssessedAt: new Date().toISOString(),
+      confidenceSelfRating: 4
+    },
+    skill_backend_apis: {
+      skillId: 'skill_backend_apis',
+      claimedLevel: 3.0,
+      selfAssessedAt: new Date().toISOString(),
+      confidenceSelfRating: 3
     }
   };
 
-  const report = ScoringEngine.evaluateRoleReadiness(
-    targetRole,
-    sampleUserLevels,
-    (id) => id.replace('skill_', '').toUpperCase()
+  const report = defaultPlacementService.evaluateReadiness(
+    'role_swe',
+    sampleEvidence,
+    sampleClaims
   );
 
   return (
@@ -120,7 +142,7 @@ export default function DashboardPage() {
             {report.criticalRequirementsMet ? 'MET' : 'UNMET GAPS'}
           </div>
           <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
-            DSA and Backend APIs are critical gates
+            Critical requirements are strict qualification gates
           </span>
         </Card>
       </div>
@@ -157,7 +179,7 @@ export default function DashboardPage() {
                 <div>
                   <div style={{ fontWeight: 600, fontSize: '0.95rem' }}>{gap.skillName}</div>
                   <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-                    Demonstrated: {gap.currentEvidenceLevel} / Target: Level {gap.requiredLevel}
+                    Demonstrated: {gap.demonstratedLevel} / Target: Level {gap.requiredLevel}
                   </div>
                 </div>
                 <div style={{ textAlign: 'right' }}>
@@ -182,7 +204,7 @@ export default function DashboardPage() {
             “Claimed skill ≠ Demonstrated skill.” Highlights overconfidence and imposter syndrome.
           </p>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginTop: '0.75rem' }}>
-            {report.calibrationGaps.map((cal) => (
+            {report.calibrations.map((cal) => (
               <div
                 key={cal.skillId}
                 style={{
@@ -208,7 +230,9 @@ export default function DashboardPage() {
                         ? 'error'
                         : cal.classification === 'underconfident'
                         ? 'info'
-                        : 'success'
+                        : cal.classification === 'well_calibrated'
+                        ? 'success'
+                        : 'default'
                     }
                   >
                     {cal.classification.replace('_', ' ')}

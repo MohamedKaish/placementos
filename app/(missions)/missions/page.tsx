@@ -2,25 +2,32 @@ import React from 'react';
 import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
-import { MissionEngine } from '@/lib/missions';
+import { defaultPlacementService } from '@/lib/placement-service';
+import { SkillGapAnalysis } from '@/types/scoring';
 
 export default function MissionsPage() {
-  const sampleGap = {
-    skillId: 'skill_dsa',
-    skillName: 'Data Structures & Algorithms',
-    requiredLevel: 3 as const,
-    currentEvidenceLevel: 2.1,
-    gapMagnitude: 0.9,
-    importanceWeight: 0.40,
+  const sampleGap: SkillGapAnalysis = {
+    skillId: 'skill_fault_analysis',
+    skillName: 'Fault Analysis & Symmetrical Components',
+    subskillName: 'Fortescue Symmetrical Components',
+    requiredLevel: 3,
+    demonstratedLevel: 1.5,
+    gapMagnitude: 1.5,
+    importanceWeight: 0.45,
     isCritical: true,
-    status: 'critical_gap' as const
+    evidenceConfidence: 1.0,
+    priorityScore: 10.13,
+    status: 'critical_gap',
+    traceableReason:
+      'Recommended because Fault Analysis is your highest-priority critical demonstrated gap for the selected Power Systems Engineer role (Demonstrated: Level 1.5, Required: Level 3).'
   };
 
-  const sampleMission = MissionEngine.generateMissionFromGap(
+  const missions = defaultPlacementService.generateMissions(
     'user_demo_1',
-    'role_swe',
-    sampleGap
+    'role_power_engineer',
+    [sampleGap]
   );
+  const sampleMission = missions[0];
 
   return (
     <div className="container" style={{ paddingTop: '3rem', paddingBottom: '4rem', maxWidth: '860px' }}>
@@ -40,18 +47,36 @@ export default function MissionsPage() {
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
             <div>
               <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-                LINKED GAP: {sampleMission.linkedSkillName} (Magnitude: -{sampleMission.tracedGapMagnitude})
+                TARGET SKILL: {sampleMission.targetSkill} (Target Role: {sampleMission.targetRole})
               </span>
-              <h3 style={{ marginTop: '0.35rem', fontSize: '1.25rem' }}>{sampleMission.title}</h3>
+              <h3 style={{ marginTop: '0.35rem', fontSize: '1.25rem' }}>{sampleMission.objective}</h3>
             </div>
             <Badge variant="warning">Priority Score: {sampleMission.priorityScore}</Badge>
           </div>
 
-          <p style={{ fontSize: '0.95rem', color: 'var(--text-secondary)' }}>
-            {sampleMission.description}
-          </p>
+          <div
+            style={{
+              padding: '0.75rem',
+              backgroundColor: 'var(--bg-surface-elevated)',
+              borderRadius: 'var(--radius-sm)',
+              border: '1px solid var(--border-default)',
+              fontSize: '0.875rem',
+              color: 'var(--text-secondary)'
+            }}
+          >
+            <strong>Traceable Reason:</strong> {sampleMission.reason}
+          </div>
 
-          <div style={{ marginTop: '1rem' }}>
+          <div style={{ marginTop: '0.5rem' }}>
+            <h4 style={{ fontSize: '0.9rem', marginBottom: '0.35rem', color: 'var(--text-primary)' }}>
+              Hands-On Practice Task:
+            </h4>
+            <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
+              {sampleMission.practice.problemStatement}
+            </p>
+          </div>
+
+          <div style={{ marginTop: '0.75rem' }}>
             <h4 style={{ fontSize: '0.9rem', marginBottom: '0.5rem', color: 'var(--text-primary)' }}>
               Actionable Execution Milestones:
             </h4>
@@ -99,7 +124,7 @@ export default function MissionsPage() {
 
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid var(--border-subtle)' }}>
             <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-              Est. Duration: {sampleMission.estimatedHours} hours • Verification: {sampleMission.verificationMethod}
+              Est. Duration: {sampleMission.estimatedDuration} hours • Verification: {sampleMission.verificationMethod}
             </span>
             <Button variant="primary">Submit Evidence Artifact</Button>
           </div>

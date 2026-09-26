@@ -7,4 +7,6 @@ export * from './evidence';
 export * from './assessment';
 export * from './scoring';
 export * from './mission';
+export * from './reassessment';
 export * from './user';
+export * from './team2-contract';
